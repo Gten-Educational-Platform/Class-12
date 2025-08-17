@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title> Quiz – ----------------------</title>
+  <style>
+    body{font-family:Arial, sans-serif;padding:20px;background:#121212;color:#f0f0f0;}
+    #logo{display:block;margin:0 auto 25px;max-width:180px;}
+    #name-container{background:#1e1e1e;padding:30px;border-radius:6px;max-width:420px;margin:0 auto;}
+    #name-container input{width:100%;padding:10px;margin:10px 0 15px;border:none;border-radius:4px;font-size:16px;}
+    #quiz-container{display:none;}
+    .question{border:1px solid #333;padding:15px;margin-bottom:20px;border-radius:5px;background:#1e1e1e;}
+    .question h3{margin:0 0 10px;}
+    .options label{display:block;margin-bottom:5px;padding:5px;border-radius:4px;background:#2a2a2a;color:#ccc;cursor:pointer;}
+    .submit-button,.toggle-button,.dontknow-button{margin-top:10px;padding:6px 12px;background:#007BFF;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-right:5px;}
+    .solution{display:none;margin-top:10px;background:#2d2d2d;padding:10px;border-left:4px solid #28a745;}
+    #scorecard{background:#2d2d2d;padding:15px;border-radius:6px;margin-top:30px;display:none;}
+    #timer{font-weight:bold;color:#00ffcc;}
+    #studentPrintName{text-align:center;font-size:18px;font-weight:bold;margin-top:-15px;margin-bottom:5px;display:none;}
+    #examDateTime{text-align:center;font-size:14px;margin-bottom:20px;display:none;}
+    @media print {
+      body { background: #fff; color:#000; }
+      .submit-button, .dontknow-button, .toggle-button { display:none !important; }
+      #name-container { display:none !important; }
+    }
+  </style>
+  <!-- MathJax -->
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<img id="logo" src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="Logo" />
+
+<div id="studentPrintName"></div>
+<div id="examDateTime"></div>
+
+<div id="name-container">
+  <h2>Enter your name to begin</h2>
+  <input type="text" id="studentNameInput" placeholder="Your Name" />
+  <button class="submit-button" onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div id="quiz-container">
+  <h2> Quiz – -------------------</h2>
+  <p><strong>Time Elapsed:</strong> <span id="timer">00:00</span></p>
+  <div id="questions-container"></div>
+
+  <div style="margin-top:30px;">
+    <button class="submit-button" onclick="finalSubmit()">Final Submit</button>
+    <button class="submit-button" onclick="printQuestions()">Print Questions</button>
+    <button class="submit-button" id="printScoreBtn" onclick="printScorecard()" style="display:none;">SHARE Scorecard</button>
+    <!-- 🔹 New PDF button -->
+    <button class="submit-button" id="pdfBtn" onclick="downloadPDF()" style="display:none;">Download PDF</button>
+  </div>
+
+  <div id="scorecard">
+    <h3>Your Scorecard</h3>
+    <p id="scoreText"></p>
+    <div id="scoreDetails"></div>
+  </div>
+</div>
+
+<script>
+const Q = [
+  {
+    "id": "q1",
+    "text": "If Kp = Kc(RT)^Δn, what does Δn represent?",
+    "options": ["Change in moles of gas", "Change in energy", "Change in pressure", "Change in temperature"],
+    "correct": "A",
+    "solution": "Δn is the change in number of moles of gaseous products minus reactants."
+  }  
+];
+
+let student = '';
+let timerHandle;
+let printMode = '';
+let examDateTime = '';
+
+function startQuiz() {
+  const name = document.getElementById('studentNameInput').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+  student = name;
+  examDateTime = new Date().toLocaleString();
+  document.getElementById('name-container').style.display = 'none';
+  document.getElementById('quiz-container').style.display = 'block';
+  buildQuestions();
+  if (window.MathJax) MathJax.typesetPromise();
+  startTimer();
+}
+
+function buildQuestions() {
+  const out = document.getElementById('questions-container');
+  out.innerHTML = '';
+  Q.forEach((q, index) => {
+    const optionsHTML = q.options.map((opt, i) => {
+      const letter = String.fromCharCode(65 + i);
+      return `<label><input type="radio" name="${q.id}" value="${letter}" onchange="enableSubmit('${q.id}')"> ${letter}. ${opt}</label>`;
+    }).join('');
+    out.insertAdjacentHTML('beforeend', `
+      <div class="question" id="${q.id}-wrap">
+        <h3>Q${index + 1}. ${q.text}</h3>
+        <div class="options">${optionsHTML}</div>
+        <div id="${q.id}-buttons">
+          <button id="sub-${q.id}" class="submit-button" disabled onclick="grade('${q.id}')">Submit</button>
+          <button class="dontknow-button" onclick="skip('${q.id}')">I Don’t Know</button>
+        </div>
+        <button class="toggle-button" id="btn-sol-${q.id}" style="display:none;" onclick="toggleSolution('sol-${q.id}')">Show Solution</button>
+        <div class="solution" id="sol-${q.id}"><strong>Solution:</strong> ${q.solution}</div>
+      </div>
+    `);
+  });
+}
+
+function enableSubmit(qid) { document.getElementById(`sub-${qid}`).disabled = false; }
+function grade(qid) {
+  const answerKey = Q.find(q => q.id === qid).correct;
+  const chosen = document.querySelector(`input[name="${qid}"]:checked`);
+  if (!chosen) return;
+  document.querySelectorAll(`input[name="${qid}"]`).forEach(input => {
+    const lbl = input.parentElement;
+    lbl.style.background = '#2a2a2a'; lbl.style.color = '#ccc'; input.disabled = true;
+    if (input.checked) {
+      lbl.style.background = input.value === answerKey ? '#28a745' : '#dc3545';
+      lbl.style.color = '#fff';
+    }
+  });
+  showSolutionButton(qid);
+}
+function skip(qid) {
+  document.querySelectorAll(`input[name="${qid}"]`).forEach(r => r.disabled = true);
+  showSolutionButton(qid);
+}
+function showSolutionButton(qid) {
+  document.getElementById(`btn-sol-${qid}`).style.display = 'inline-block';
+  document.getElementById(`${qid}-buttons`).style.display = 'none';
+}
+function toggleSolution(id) {
+  const elem = document.getElementById(id);
+  elem.style.display = elem.style.display === 'block' ? 'none' : 'block';
+}
+
+function startTimer() {
+  const display = document.getElementById('timer');
+  const started = Date.now();
+  timerHandle = setInterval(() => {
+    const s = Math.floor((Date.now() - started) / 1000);
+    display.textContent = `${String((s / 60) | 0).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
+  }, 1000);
+}
+
+function finalSubmit() {
+  clearInterval(timerHandle);
+  let score = 0, detailHTML = '';
+  Q.forEach(q => {
+    const checked = document.querySelector(`input[name="${q.id}"]:checked`);
+    const chosen = checked ? checked.value : 'Not Answered';
+    const correct = (chosen === q.correct);
+    if (correct) score++;
+    detailHTML += `
+      <p><strong>Q: ${q.text}</strong></p>
+      <p>Your Answer: ${chosen}</p>
+      <p>Correct Answer: ${q.correct}</p>
+      <p>${correct ? '✅ Correct' : '❌ Incorrect'}</p>
+      <p><em>Solution:</em> ${q.solution}</p><hr>`;
+  });
+  document.getElementById('scoreText').innerText = `${student}, you scored ${score}/${Q.length}.`;
+  document.getElementById('scoreDetails').innerHTML = detailHTML;
+  document.getElementById('scorecard').style.display = 'block';
+  document.getElementById('printScoreBtn').style.display = 'inline-block';
+  document.getElementById('pdfBtn').style.display = 'inline-block'; // show PDF button
+}
+
+/* Print */
+function printQuestions() { printMode = "questions"; window.print(); }
+function printScorecard() {
+  document.getElementById("studentPrintName").innerText = student;
+  document.getElementById("examDateTime").innerText = "Exam Date & Time: " + examDateTime;
+  printMode = "scorecard"; window.print();
+}
+window.addEventListener('beforeprint', () => {
+  if (printMode === "questions") {
+    document.querySelector("#questions-container").style.display = "block";
+    document.querySelector("#scorecard").style.display = "none";
+    document.querySelector("#logo").style.display = "none";
+    document.querySelector("#name-container").style.display = "none";
+    document.querySelector("#timer").style.display = "none";  
+    document.querySelector("#studentPrintName").style.display = "none";
+    document.querySelector("#examDateTime").style.display = "none";
+  }
+  if (printMode === "scorecard") {
+    document.querySelector("#questions-container").style.display = "none";
+    document.querySelector("#scorecard").style.display = "block";
+    document.querySelector("#logo").style.display = "block";
+    document.querySelector("#name-container").style.display = "none";
+    document.querySelector("#studentPrintName").style.display = "block";
+    document.querySelector("#examDateTime").style.display = "block";
+  }
+});
+window.addEventListener('afterprint', () => {
+  document.querySelector("#questions-container").style.display = "";
+  document.querySelector("#scorecard").style.display = "";
+  document.querySelector("#logo").style.display = "";
+  document.querySelector("#name-container").style.display = "";
+  document.querySelector("#timer").style.display = "";   
+  document.querySelector("#studentPrintName").style.display = "none";
+  document.querySelector("#examDateTime").style.display = "none";
+});
+
+/* 🔹 Download PDF */
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 20;
+  const maxLineWidth = pageWidth - margin * 2;
+
+  doc.setFontSize(14);
+  doc.text("Quiz Scorecard", pageWidth / 2, 20, { align: "center" });
+
+  doc.setFontSize(12);
+  doc.text("Name: " + student, margin, 35);
+  doc.text("Exam Date & Time: " + examDateTime, margin, 45);
+
+  const scoreText = document.getElementById('scoreText').innerText;
+  let y = 60;
+  doc.text(doc.splitTextToSize(scoreText, maxLineWidth), margin, y);
+
+  y += 15;
+
+  // Split all details into wrapped lines
+  const details = document.getElementById('scoreDetails').innerText.split("\n");
+  details.forEach(line => {
+    const wrapped = doc.splitTextToSize(line, maxLineWidth);
+    wrapped.forEach(wline => {
+      if (y > 280) {  // page break
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(wline, margin, y);
+      y += 8;
+    });
+  });
+
+  doc.save(student + "_Scorecard.pdf");
+}
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 20;
+  const maxLineWidth = pageWidth - margin * 2;
+  let y = 20;
+
+  // Title
+  doc.setFontSize(14);
+  doc.text("Quiz Scorecard", pageWidth / 2, y, { align: "center" });
+  y += 15;
+
+  doc.setFontSize(12);
+  // Student Info
+  let info = `Name: ${student}\nExam Date & Time: ${examDateTime}\n${document.getElementById('scoreText').innerText}`;
+  let infoLines = doc.splitTextToSize(info, maxLineWidth);
+  infoLines.forEach(line => {
+    if (y > pageHeight - 15) { doc.addPage(); y = 20; }
+    doc.text(line, margin, y);
+    y += 8;
+  });
+
+  y += 5;
+
+  // Score Details (all Q&A + solutions)
+  const detailsText = document.getElementById('scoreDetails').innerText;
+  const detailLines = doc.splitTextToSize(detailsText, maxLineWidth);
+
+  detailLines.forEach(line => {
+    if (y > pageHeight - 15) { doc.addPage(); y = 20; }
+    doc.text(line, margin, y);
+    y += 8;
+  });
+
+  doc.save(student + "_Scorecard.pdf");
+}
+
+
+</script>
+</body>
+</html>
