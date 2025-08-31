@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>G10 Subject PDFs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .main-button, .chapter-button, .category-button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      text-align: center;
+    }
+    .chapter-button {
+      background-color: #3399FF;
+      margin: 5px 0 0 15px;
+      text-align: left;
+    }
+    .category-button {
+      background-color: #66B2FF;
+      margin: 5px 0 0 30px;
+      text-align: left;
+    }
+    .pdf-links {
+      margin-left: 45px;
+      display: none;
+      background-color: #e6f7ff;
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid #3399ff;
+      color: #003366;
+    }
+    .pdf-links a {
+      display: block;
+      margin: 4px 0;
+      text-decoration: none;
+      color: #003366;
+      font-weight: bold;
+      font-size: 15px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .pdf-links a:hover {
+      background-color: #FF474C;
+      color: #000;
+      padding-left: 5px;
+    }
+    #viewer {
+      display: none;
+    }
+    #pdfFrame {
+      width: 100%;
+      height: 90vh;
+      border: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      #pdfFrame {
+        height: 80vh;
+      }
+      .button-grid {
+        grid-template-columns: 1fr; /* stack in small screen */
+      }
+    }
+    #backButton {
+      display: none;
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .dropbtn {
+      background-color: #FFC107;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      font-weight: bold;
+      text-align: center;
+    }
+    .dropbtn img {
+      width: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>IIT-JEE ANSWERKEY AND SOLUTION</h2>
+
+<button id="backButton" onclick="goBack()">Back</button>
+
+<!-- First Row: DPP Question buttons -->
+<div class="button-grid" id="dppButtons"></div>
+
+<!-- Second Row: Subject buttons -->
+<div class="button-grid" id="subjectButtons"></div>
+
+<div id="subjects"></div>
+
+<div id="viewer">
+  <iframe id="pdfFrame"></iframe>
+</div>
+
+<script>
+  const externalLinks = {
+    Physics: "https://www.g10educationalplatformindia.co.in/courses/DPP--PHYSICS-ANSWER-KEY-AND-SOLUTION-INCLUDED-67ec1078e02a1922b52d025d-67ec1078e02a1922b52d025d",
+    Chemistry: "https://www.g10educationalplatformindia.co.in/courses/DPP--CHEMISTRY-ANSWER-KEY-AND-SOLUTION-INCLUDED-65582f06e4b0d89c81ac7a1f-65582f06e4b0d89c81ac7a1f",
+    Math: "https://www.g10educationalplatformindia.co.in/courses/DPP-MATH-ANSWER-KEY-AND-SOLUTION-INCLUDED-648495a9e4b075073b612868-648495a9e4b075073b612868"
+  };
+
+const googleDriveLinks = {
+    Physics: {
+      "Chapter 1: UNITS AND MEASERMENT": {
+        "Answer Key": [{ id: "1JXzlqEv7U5QYYhQhNWfU-gkMZS_56wxP", name: "DPP 1 to 10" }, { id: "fileID2", name: "DPP2" }],
+        "Solution": [{ id: "1-6EJv0URDf0-CdsmgIfRm1TdDAl1mJMo", name: "DPP1" }, 
+		{ id: "19bD8JdaOEsTsm7HSniJdv_LIM2ouLP9y", name: "DPP2" }, 
+		{ id: "1hxAIYIiwjR5NQwCX27IzZ45UXba0Bjgm", name: "DPP3" }, 
+		{ id: "1WHCdJshhjFzcvG9StTv7BY8bYcHwFwmi", name: "DPP4" }, 
+		{ id: "15lAYNj6IhYrGb6q9Ty6aZdNydfZ76bxO", name: "DPP5" }, 
+		{ id: "1bp62afzsJ5tjSzaY2WyLMbd2cCWBWT9O", name: "DPP6" }, 
+		{ id: "1wxyHExbgHMskl_dPxupk1fCeLFN1AWF9", name: "DPP7" }, 
+		{ id: "1Wv2OosXGQTgSmPfArnUtYhFck12Ez-eq", name: "DPP8" }, 
+		{ id: "1mptFAw8kNOwEe4uWR6L7UO-tvDxCxeKj", name: "DPP9" }, 
+		{ id: "1S7Nl_AzQnGPpb7kDNHAafLWiQCBUVw9O", name: "DPP10" }]
+      },
+      "Chapter 2: MOTION IN STRAIGHT LINE (1D) ": {
+        "Answer Key": [{ id: "1zb3Nn8CxOOOJv8NGjneSGTEvhmYK04og", name: "DPP1to10" }],
+        "Solution": [{ id: "1SXDj-e1P3g7b62KocLpHOEjJeBq90QHU", name: "DPP1" }, 
+		{ id: "1OSv0m9frBZcwzglmZvtLNg3JCaE9uHef", name: "DPP2" }, 
+		{ id: "1h2cjtgoG7psIimjn_zW6UJTWH9of5dnN", name: "DPP3" }, 
+		{ id: "1KQqPRAs4aW_4eVNSW6YCeAFYZAKfjVq1", name: "DPP4" }, 
+		{ id: "15yS1axSA7Mo62NCdL36mpWjrSFlRLXcv", name: "DPP5" }, 
+		{ id: "1Ru2BEwIyWmk6S4gzdgYh-cGYezWWCkX3", name: "DPP6" }, 
+		{ id: "1J72L-5eFbavgWzc-gMmDisPAVNNQTrAq", name: "DPP7" }, 
+		{ id: "15fOvTT9VypzS208HAH6ymY9i8nv7Mb7L", name: "DPP8" },
+		{ id: "15fOvTT9VypzS208HAH6ymY9i8nv7Mb7L", name: "DPP9" },		
+		{ id: "1CrvxTU_3wAk9n3J8jEowy6iGrZOuDmc_", name: "DPP10" }]
+      },
+      "Chapter 3: MOTION IN PLANE (2D)": {
+        "Answer Key": [{ id: "11H4tzXgRXZKeP2FwgmDLGuAJAt6DVohi", name: "DPP1to10" }],
+        "Solution": [{ id: "1RxK8hQ634s9n0eDbtp3UiosaaWzdxiFj", name: "DPP1" }, 
+		{ id: "1sQjEKhwdmwoiNJOapdC4HJzRkX4Q-VZL", name: "DPP2" }, 
+		{ id: "1UNrU6B2_b527fFuhtIqeBa0nHxRAIO7C", name: "DPP3" }, 
+		{ id: "1_kPBJ3gtLZTq28-6fStSsB7Nep8GCeGr", name: "DPP4" }, 
+		{ id: "1_hckCDXNrAG9WmF3GZXPjOQo69B4a057", name: "DPP5" }, 
+		{ id: "1KZ6ZqoNNHGi7CLr0rS996v4Wds15otdl", name: "DPP6" }, 
+		{ id: "1qJszhMjy8_624N2oAYzDMk5cNHyEYGSI", name: "DPP7" }, 
+		{ id: "1IWTu08oG-6vypJ_pOlFqLSDMPUzd28Kq", name: "DPP8" }, 
+		{ id: "1e-jl6Jmkwwl0p-HjKVBdL7jaU5RYVjgC", name: "DPP9" }, 
+		{ id: "1u_z5fDPa-RD5R4PYuP3fh-uL82F6v7_L", name: "DPP10" }]
+      },
+      "Chapter 4: LAWS OF MOTION": {
+        "Answer Key": [{ id: "1CNRJrsh5X3TYiwvBSVBGnWcL-MId4pbX", name: "DPP1to10" }],
+        "Solution": [{ id: "1Oki4T6JDolC5lR6GVbRt-cSmxOh1duss", name: "DPP1" }, 
+		{ id: "1OqiXqbJOiKVkBMl9mAt7b3ZkZIPHFI1k", name: "DPP2" }, 
+		{ id: "1I4B6_Gvqla02gt6QZFjWnuLfiMIfm4Gl", name: "DPP3" }, 
+		{ id: "1920HGEtnjLPOhqySwuebWA1DvNKntXxG", name: "DPP4" }, 
+		{ id: "1GGnKFdmZyjH2ypcvEsQU6JdQGOzCo7Yw", name: "DPP5" }, 
+		{ id: "1iwm39TeUTgKn0m0kb01USmE4OxzSCzwc", name: "DPP6" }, 
+		{ id: "1swm7DUY9lP_hFe0akZ6MOqg8kqtmu2ik", name: "DPP7" }, 
+		{ id: "1B8qXRXw7uDszcFFreo4yPopRcVr4xF-8", name: "DPP8" }, 
+		{ id: "1bgmR-KPhGn0gb3C9P1o_-LSAPYI6vNJm", name: "DPP9" }, 
+		{ id: "1XD1Cmjk8CpiB949ocrODSflZP1QwZQW_", name: "DPP10" }]
+      },
+      "Chapter 5: WORK ENERGY & POWER": {
+        "Answer Key": [{ id: "1m6EvKIvhNLRerjA853SQevq0y13atn8h", name: "DPP1to10" }],
+        "Solution": [{ id: "1F402sJBMy5o4jXnqqwyx8mgU_0gCFKo1", name: "DPP1" }, 
+		{ id: "1p4hUqIa-eMmKO0ZgpsGyRM14PmPChscG", name: "DPP2" }, 
+		{ id: "10TJ6IwudeQ82oj24gYjbb9Yz3nL-UxiW", name: "DPP3" }, 
+		{ id: "1Y7vhM1jXYIu8yqzmRjqWfjxtGZhQdxhg", name: "DPP4" }, 
+		{ id: "1QdrfSRZcUNEr-n7FAG3nKz3vZBVu1mhG", name: "DPP5" }, 
+		{ id: "1RkPMpITvZECPEmVSF2AJThkSWPa6yDT5", name: "DPP6" }, 
+		{ id: "1TQIifnsuu38UMTX38NUZ_-WEOlwCvVCZ", name: "DPP7" }, 
+		{ id: "16D5r6PFlO2VHRaIkGvXXcNcrdwMcYThF", name: "DPP8" }, 
+		{ id: "155u8O_5GwkUmdbXi5bGS3ZM0-hi6pQqd", name: "DPP9" }, 
+		{ id: "1tDrZmY3TUTMYYSr8Jsze5Awy-o4ugaf7", name: "DPP10" }]
+      },
+      "Chapter 6: SYSTEM OF PARTICLE AND ROTATION": {
+        "Answer Key": [{ id: "19MQ8lXBrXYHBvF8ZacYTSq4-ITwPXZfh", name: "DPP1to10" }],
+        "Solution": [{ id: "1r27zupCAanUXAabNP-QFQgDpNMXA5JRn", name: "DPP1" }, 
+		{ id: "1B8EDJX0iJwMLLV3qksto1eL9Pj4_lbfq", name: "DPP2" }, 
+		{ id: "1O459-63rI2SFVcpvjyfdRJ2UbW5PkJsi", name: "DPP3" }, 
+		{ id: "1s8nfv8mipBV7ncqGlCyNqKoUlCywxPvq", name: "DPP4" }, 
+		{ id: "1jc5bfh6zK47VFPqWTbR1srxMJJgBInQz", name: "DPP5" }, 
+		{ id: "137ZyksnwMSs-A5qB6Q2u-8OS6Rr42jQn", name: "DPP6" }, 
+		{ id: "15euMUJ5uoZSn8L9Xls173fHu-pyCte5X", name: "DPP7" }, 
+		{ id: "1WOtI3fXaHXP0JAbhjLe_-BqFHNZ2U768", name: "DPP8" }, 
+		{ id: "1WE0NhjFlmHcXj3AcA6DjS1HA05OMbO7O", name: "DPP9" }, 
+		{ id: "1RXRsANFuhuLxWnNQuJOYKvr_TMS35Rbx", name: "DPP10" }]
+      },
+      "Chapter 7: GRAVITATION": {
+        "Answer Key": [{ id: "1SgJAWNVNweSz9kL9YxgfTLGvKPvz6b3f", name: "DPP1to10" }],
+        "Solution": [{ id: "12ougwTZmSCEULue6EbIqbxMk-t0mcj6K", name: "DPP1" }, 
+		{ id: "1wiya3GIWl6q4niECL3Um9oP1Wkpqyc58", name: "DPP2" }, 
+		{ id: "1qVls6z7O4HC-g1ysJiGxaQr1Dfr1AQrf", name: "DPP3" }, 
+		{ id: "1gK_QLp4va_nJt8CJ1icmgeSNpUfWy3Dy", name: "DPP4" }, 
+		{ id: "1L5p3UQCASw0fQ3B1xdE4jC8BMlvDTGi0", name: "DPP5" }, 
+		{ id: "1IME0bL127IA8ddLXOJlVhfzuoOf2XZpF", name: "DPP6" }, 
+		{ id: "1-gFxksv-g-yuZcO3tyxC0s5TRnFXfmGl", name: "DPP7" }, 
+		{ id: "1RBSVUKDl3rUPfSITcv4_f_8kcKvk7zL3", name: "DPP8" },
+		{ id: "1RBSVUKDl3rUPfSITcv4_f_8kcKvk7zL3", name: "DPP9" }, 		
+		{ id: "1XM9SmeJ9tgz4G-CtF6Xbyejhe37vQuXX", name: "DPP10" }]
+      },
+      "Chapter 8: MECHANICAL PROPERTIES OF SOLIDS": {
+        "Answer Key": [{ id: "1cIAA82mQ8mygA34hHc7boBxRkPdOHLs9", name: "DPP1" }],
+        "Solution": [{ id: "1XW6DzaZiDBm4XupDcfXlRviVkdpflDgl", name: "DPP1" }, 
+		{ id: "1jI4dyivB8MMcngZbzIh_kCGRptPiNjdT", name: "DPP2" }, 
+		{ id: "1BYS3pX0gjIog7mPGbeQmxSxVwoNxWKp1", name: "DPP3" }, 
+		{ id: "1gzO8bB-K9dhvEh4CECVm-g93vkD2ceSR", name: "DPP4" }, 
+		{ id: "15nOiNJpzKlD2eyXAp9aCCZSf6txum-_-", name: "DPP5" }, 
+		{ id: "1uF5rewmFgrLVRmO-nnaaoXhB5PNJ0NQ_", name: "DPP6" }, 
+		{ id: "1_nOt-ub-oaC5jRAiY1z5ATklGx1_aaMT", name: "DPP7" }, 
+		{ id: "1GP3lSH-HGdev0LUXocUs_6nBKgtGXMTL", name: "DPP8" }, 
+		{ id: "1L_3okY5Q-MlbLcWtwU9RfPT_dB2s3Vyi", name: "DPP9" }, 
+		{ id: "1uALbNA4rP-lp98ujI0moI-S_rVvQtDiA", name: "DPP10" }]
+      },
+      "Chapter 9: MECHANICAL PROPERTIES OF FLUIDS": {
+        "Answer Key": [{ id: "1FeeXyJ9OYm8Lm_PiYPrd8uyUj9HTi4RF", name: "DPP1" }],
+        "Solution": [{ id: "1hTGHOgeeKkqTmWyuio9K6zC0zRasyTY_", name: "DPP1" }, 
+		{ id: "1l0jbxsptIw4Hv49WzGD5JpeF2YuNjxn-", name: "DPP2" }, 
+		{ id: "1rBE2lwcrANj1eon9d30YByfnT7Txz_IE", name: "DPP3" }, 
+		{ id: "14U2DKPp0P_lSetppspgF5zwHreQWzI6f", name: "DPP4" }, 
+		{ id: "1knA23T7b3tHRt0r-CALUEpZDQhjz7YTl", name: "DPP5" }, 
+		{ id: "1nQhwYdt36LCdU8FPZCsoxT8hEqv4_3pV", name: "DPP6" }, 
+		{ id: "1FmmuFkGpgZaYpCehK8wsI7tQf1Ml80F3", name: "DPP7" }, 
+		{ id: "13uTAN2yqVNX-nCjkJFljC--vnFrqimt4", name: "DPP8" }, 
+		{ id: "1UUF8AckpqTKEV87Xj1lI-LQ47VHj0DE4", name: "DPP9" }, 
+		{ id: "1e4q4D59kBgp8J8M5ZtHlh_f9TuaPb6ns", name: "DPP10" }]
+      },
+      "Chapter 10: ELECTRIC FIELDS & CHARGES": {
+        "Answer Key": [{ id: "1lyCA1sxx_rEO99r9xABOdKgLMYk6zI3j", name: "DPP1" }],
+	 "Solution": [{ id: "19tp_mLrvqUmZMRw0Q7YL8WS1x6eEJsL5", name: "DPP1" }, 
+	 { id: "1aq4J4XMyT43eXUWqt-KYxyE_IAzOEisx", name: "DPP2" }, 
+	 { id: "1kngCt3XukF2EUULDUd3MC7ZDR3sv_kZ8", name: "DPP3" }, 
+	 { id: "1Skd3Xn2Mzos00Ths8_MaUOEMV-yzc64N", name: "DPP4" }, 
+	 { id: "1GsdT9Um3Q5AtrhIbAUZ7VHvsyGHJWOYP", name: "DPP5" }, 
+	 { id: "17e7Gbi6hy_76yggoeqGUXuRcH2Ze301W", name: "DPP6" }, 
+	 { id: "1DGpg9kdRugtE6fTSt0xyJUIG4TxHK9Hm", name: "DPP7" }, 
+	 { id: "1JaGuTp2bdbZIHCpKUkLG-WKwVMLssi0D", name: "DPP8" }, 
+	 { id: "1sfNz0dJdg1-nNPZMnMJp3bOhZ3aq6-Jz", name: "DPP9" }, 
+	 { id: "1pBjXLpS5Rf50oN2WmpHarYHw6I84PSL1", name: "DPP10" }]
+ },
+  "Chapter 11: MOVING CHARGES AND MAGNETISM": {
+        "Answer Key": [{ id: "1p0fDBsnkDeBSEXX_YEKG8n88rFHTAjpN", name: "DPP1" }],
+	 "Solution": [{ id: "1V6kVK5NY3M7_8maW1oBtfVPRK20Fsqh_", name: "DPP1" }, 
+	 { id: "1PzwWUHOmLWf0tXU6D91m46ZDibUkE6eq", name: "DPP2" }, 
+	 { id: "1ZvBWOA2me-ERugujWzoFNFn7rf_TIcNa", name: "DPP3" }, 
+	 { id: "1TmKhifxpSWPJDEJq9sTFZQGeFj652wsw", name: "DPP4" }, 
+	 { id: "1SnbD5i-1Or8j6901x_Ehqizd-iu8x0Hd", name: "DPP5" }, 
+	 { id: "1yRlhB63MNXk-Qs9MuDJd2OoJUkc_EQ4N", name: "DPP6" }, 
+	 { id: "1uFcOHCvVcNu0d7zdnFjof2c6vkwbaOtG", name: "DPP7" }, 
+	 { id: "1e5jldXp8satTJXnQWy0fnPwFNWhdA-oK", name: "DPP8" }, 
+	 { id: "1phd-TsELaXA0EBVF4Sa4t8RZkwPkZpg2", name: "DPP9" }, 
+	 { id: "1Wq5mA9xy91kLkGnTYqj4PVwxldUW51df", name: "DPP10" }]
+      },
+	   "Chapter 12: CURRENT ELECTRICITY": {
+        "Answer Key": [{ id: "1GFSZ3-jgqbpOhwbE9lCaF9pGi1Rydwdc", name: "DPP1" }],
+	 "Solution": [{ id: "1brkiYSaNqMewL2OnU4awMgCYrGpYeBKR", name: "DPP1" }, 
+	 { id: "1UhhC2sQrpDwgkcXXZcR3Bh4VbCBIY23W", name: "DPP2" }, 
+	 { id: "1MM58eOwPOuIfpyDldTgFg8Otev8_s4KE", name: "DPP3" }, 
+	 { id: "1VDEuOBNvMV82DHZZvyDcfBv6RUg3X7b_", name: "DPP4" }, 
+	 { id: "1kAfn_Q2WOJlxO5GCNNNfnWVvyvISagAT", name: "DPP5" }, 
+	 { id: "1W1jzSI5lcFQnGJpZy4kMdYH7ik3virUQ", name: "DPP6" }, 
+	 { id: "1ug62PoovcHEd1gRD5GE91N4a9n1ZG-gl", name: "DPP7" }, 
+	 { id: "1UEd3Em8y6DjvP3EMmHv-ZeQUIvTTEz8U", name: "DPP8" }, 
+	 { id: "1yg-tIeJN_Czpf1yu7F5xl0WqBbi9-baR", name: "DPP9" }, 
+	 { id: "1BSF4_W043B4L75nY-i2He9Na8HVSNfET", name: "DPP10" }]
+      },
+	   "Chapter 5: Coming soon": {
+        "Answer Key": [{ id: "fileID7", name: "DPP1" }],
+	 "Solution": [{ id: "", name: "DPP1" }, 
+	 { id: "", name: "DPP2" }, 
+	 { id: "", name: "DPP3" }, 
+	 { id: "", name: "DPP4" }, 
+	 { id: "", name: "DPP5" }, 
+	 { id: "", name: "DPP6" }, 
+	 { id: "", name: "DPP7" }, 
+	 { id: "", name: "DPP8" }, 
+	 { id: "", name: "DPP9" }, 
+	 { id: "", name: "DPP10" }]
+      },
+      "Chapter 13: Coming soon": {
+        "Answer Key": [{ id: "fileID7", name: "DPP1" }],
+	 "Solution": [{ id: "", name: "DPP1" }, 
+	 { id: "", name: "DPP2" }, 
+	 { id: "", name: "DPP3" }, 
+	 { id: "", name: "DPP4" }, 
+	 { id: "", name: "DPP5" }, 
+	 { id: "", name: "DPP6" }, 
+	 { id: "", name: "DPP7" }, 
+	 { id: "", name: "DPP8" }, 
+	 { id: "", name: "DPP9" }, 
+	 { id: "", name: "DPP10" }]
+      }
+    },
+    Chemistry: {
+      "Chapter 1: SOME BASIC CONCEPT OF CHEMSITRY": {
+        "Answer Key": [{ id: "1V1mnuDmusQyALWFoBE6uhZmQx-CUy_I5", name: "DPP1to10" }, 
+		{ id: "fileID10", name: "DPP2" }],
+        "Solution": [{ id: "14ilgwLEOn8lSUnJ82CkriTQHBDFfiQI1", name: "DPP1" }, 
+		{ id: "1VaWdrjqY-wz_ABlMBqmx1NWy4N5Nt5Fo", name: "DPP2" }, 
+		{ id: "1yWMu98ijT7PzCU6z8KWjW_ofsOk9W-uu", name: "DPP3" },
+		{ id: "1a5I2pelTR3ox22menPPjEOgJtNX7NOPq", name: "DPP4" },
+		{ id: "1FNJhbI4LBQ-EGTfk3ZdsQLVcB_pdkdK9", name: "DPP5" },
+		{ id: "1zxX8UMFyFw84df80QHGuceEJsVfZ-mva", name: "DPP6" },
+		{ id: "1phge6MTcBtrETN7CrD9Bt11JYg1MOK9n", name: "DPP7" },
+		{ id: "1hTzZlYXNmz6bnpSlluGyDnl9FDY2IgVE", name: "DPP8" },
+		{ id: "1t9Lq8r3VSIHE8mo1PiHnWoEOBBgyTJz4", name: "DPP9" },		
+		{ id: "1Rb6SodK7y0Z7yXXdNeSOD0cA-vjwaO2t", name: "DPP10" }]
+      },
+      "Chapter 2: ATOMIC STRUCTURE": {
+        "Answer Key": [{ id: "1Vf7WM1y2_KshDH1kRTLYR4ukL-jgbZTS", name: "DPP1to10" }],
+        "Solution": [{ id: "1mpFSkB2YcCCgT0TfkRnQpeXLvfPvaisF", name: "DPP1" }, 
+		{ id: "1yrrXVIWPnvHVX7RRdWkX3cvxjU846xQj", name: "DPP2" }, 
+		{ id: "1ejVw7vL6-V-m_QX-pKOxpUhtjLukya11", name: "DPP3" }, 
+		{ id: "1MMXeOcYaVW04G8ZTUaGYWNZ3tggFaKE1", name: "DPP4" }, 
+		{ id: "1X4HBdEu-4i_rNayaGYGCfE7HhDSKzfBu", name: "DPP5" }, 
+		{ id: "1_HI0q9PgZXU-2EaT05IOL-GNZAbxCpEQ", name: "DPP6" }, 
+		{ id: "1scXrD3sCEzxoyIAYvZiJiWnt75hSeSZF", name: "DPP7" },
+		{ id: "1Q-G8Z7CoEeX3vCPtQ-wamGJeO3LR7DjB", name: "DPP8" },
+		{ id: "1ytIqbox2Hc4f4aB0m3arQ5wWHGe3vyph", name: "DPP8" },		
+		{ id: "15NylkzY-NzJ5WjozdfoR0zlJcbsp3K25", name: "DPP10" }]
+      },
+      "Chapter 3: CHEMICAL BONDING  (MOLECULAR STRUCTURE)": {
+        "Answer Key": [{ id: "1W8zzpitLl3xO0UuOWmss4_CXQW-vbZRZ", name: "DPP1to10" }],
+        "Solution": [{ id: "14VkQXIa9PHajeS5BWyffXX5XqTa6tN6O", name: "DPP1" }, 
+		{ id: "1ddqIQOfDteoCW7Eghspu3d_dTTt2lB2d", name: "DPP2" }, 
+		{ id: "13iHkxHbrMmFQ7KgHXlMChaSkmGJ13vjC", name: "DPP3" }, 
+		{ id: "1wGJnDIZlLxiQdkVM_jQetimhn3bs2-ke", name: "DPP4" }, 
+		{ id: "1e3DRjrq8PgEP5QtLhyAbjugFx7UtZq-T", name: "DPP5" }, 
+		{ id: "1hIW8WANKRHY2TtOWTIBETQjnhObu-Kru", name: "DPP6" }, 
+		{ id: "1t_YFEuxKGGHHj50u-C6bwz5I_UwCBm6b", name: "DPP7" }, 
+		{ id: "1LxksFOJTvzAN-odkEdinsRYCzwfdC35e", name: "DPP8" }, 
+		{ id: "1rvZ180jSBi6BoAPTwGZifblx_zGUOJ9F", name: "DPP9" }, 
+		{ id: "1dAcorHCfC4J3Rm_dLlqgvJyqBpaTkwxI", name: "DPP10" }]
+      },
+      "Chapter 4: CLASSIFICATION OF ELEMENTS ( PERIODICITY)": {
+        "Answer Key": [{ id: "1AZMij_RdL3ai-QQHhJJhymGWdxlTYePy", name: "DPP1to10" }],
+        "Solution": [{ id: "1X7wMse-p8QQfEUQkYUruz214iSVkVWxs", name: "DPP1" }, 
+		{ id: "1uC72n205yXNVuigYRxI-Oj9AAtxVu_bV", name: "DPP2" }, 
+		{ id: "1tmbH_AvjDkDMsk3JACbHEPzBHTVB0sBp", name: "DPP3" }, 
+		{ id: "1aYK6piCeQrBh-MT4GZucyDNuGvSqAKR0", name: "DPP4" }, 
+		{ id: "1hWe9Mt70qdtkDKEbkREi4yuBFCfzw2eI", name: "DPP5" }, 
+		{ id: "1LQ9RHbzMhJFY2F9glTleR5mu-q9glvlh", name: "DPP6" }, 
+		{ id: "1gpp3OsXVMN1k-xjXvm6qLxRRqVRigbue", name: "DPP7" }, 
+		{ id: "1GM_rgEr3NhmMiEZA_5t6o3ElEUqwsZ3b", name: "DPP8" }, 
+		{ id: "1027jiVN9nORrcws0chxlFQlnVxSXvzh-", name: "DPP9" }, 
+		{ id: "16zyMnA_4qF7nawU23E6wiju7ilLihj9L", name: "DPP10" }]
+      },
+      "Chapter 5: REDOX REACTION": {
+        "Answer Key": [{ id: "1dnXNtUWajmsC-weQW3ZXuK13rpDVsk7s", name: "DPP1to10" }],
+        "Solution": [{ id: "1WZeJF8u3qsZs9OgHAVodSDEJVo31RJjy", name: "DPP1" }, 
+		{ id: "1whAVEXKGn_E47DQlkAiVOpMlvqgNTI6s", name: "DPP2" }, 
+		{ id: "1DWBdMgKuHL_069ceHJ8y3yYOSTwKVMb5", name: "DPP3" }, 
+		{ id: "1fefgqLVhbtQ3rDPepylvdtTb8ANAU6xm", name: "DPP4" }, 
+		{ id: "1ey_oNPIjrCT8m5YwdPi7vus5ZDz28Y1j", name: "DPP5" }, 
+		{ id: "1SGGEbDLj6oqwkItv344pIWmZGnLg3UsI", name: "DPP6" }, 
+		{ id: "16pj99sYtZys6gwP4viA16X_pNunoxtws", name: "DPP7" }, 
+		{ id: "1h2EkhpwxA4J9cXhC0p1GbMddtB6Jp8qag", name: "DPP8" }, 
+		{ id: "1ZpvtKO2m1NNNaaVYXyXXytQqkNvw7UpQ", name: "DPP9" }, 
+		{ id: "1m9fM7jN-2DtqBWvEcg5O2vS0nRQn07yw", name: "DPP10" }]
+      },
+      "Chapter 6: THERMODYNAMIC": {
+        "Answer Key": [{ id: "1U9q3RAn7hlfdhUa86GuqzbPya5tMRLlY", name: "DPP1to10" }],
+        "Solution": [{ id: "1-dDr5ZRq-GcFVilGEt-S9VthYwRz62Mh", name: "DPP1" }, 
+		{ id: "1f9kKH9F44NtCBusavRNKFFb6EIjw9tId", name: "DPP2" }, 
+		{ id: "162pjugIzQPM-ZTZfWBS_r6vFpL-E4D11", name: "DPP3" }, 
+		{ id: "1UekDxV52UXlgLJsTVMMxT2bioSBIN_8g", name: "DPP4" }, 
+		{ id: "15TIiMJfXSBMSM4byeN21jypCilvWWw1f", name: "DPP5" }, 
+		{ id: "1k4PPFisnk_gGIYbAMPrQ6zykgGz7FdUl", name: "DPP6" }, 
+		{ id: "1pVu6RR2amb7AR_U3MfN62Dpc_2pLyArR", name: "DPP7" }, 
+		{ id: "1fp9fg6wclbftiWFcPAJQ3zmTWxfFD03H", name: "DPP8" }, 
+		{ id: "1wVXLhfz3Op0sZ-U6mquCxS9sBNbmYmWQ", name: "DPP9" }, 
+		{ id: "1PWV3UZliED4zp7cm1ez5SobScJfE4KaD", name: "DPP10" }]
+      },
+      "Chapter 7: EQUILIBRIUM": {
+        "Answer Key": [{ id: "1_qR5ipGYiBlSB7Qso2waFkJlvW7Eay7_", name: "DPP1to10" }],
+        "Solution": [{ id: "13k51-UbM7lwTsBBsmIfW56uWEAHvVCKb", name: "DPP1" }, 
+		{ id: "1i47W4yOb6cXu71ho3kwH1KWVGzrQKRy7", name: "DPP2" }, 
+		{ id: "188JPBZnLscBRzW1XxTBJ_S_wzNn5jdIz", name: "DPP3" }, 
+		{ id: "1Vf7y6fTBkWBaGgEOPAngUAVQi81HcIdN", name: "DPP4" }, 
+		{ id: "11J9enGjp9qwobng_BlMFKGdDOgGJjO1Q", name: "DPP5" }, 
+		{ id: "1_GcVhWltwRSEItINrDsoIoZ7CZrpsJkC", name: "DPP6" }, 
+		{ id: "16eT8QF1yxt1QnLdgnsceo8Y7aYIXmQ5R", name: "DPP7" }, 
+		{ id: "1amLpQTMkLtZ1eFZcm64h7j7A-cm0KrCs", name: "DPP8" }, 
+		{ id: "1v-ZBCe6zLJePyA-S8OkOceig-DIbp5en", name: "DPP9" }, 
+		{ id: "1UPHvDGQd_KOOdPqJf-7yEdyO8_M1Rin3", name: "DPP10" }]
+      },
+      "Chapter 8: SOME BASIC CONCEPT OF ORGANIC CHEMISTRY (GOC)": {
+        "Answer Key": [{ id: "1lny1RV9hTlTmjwlN120jOARMsI3fynkS", name: "DPP1" }],
+        "Solution": [{ id: "16qmG0yzv6isALuARwoHjKTbfqYhEg_W7", name: "DPP1" }, 
+		{ id: "1kSXbSjF9OCPRK14CfPXwtF-qL3cwwiIF", name: "DPP2" }, 
+		{ id: "1UJohXBGGZ8JpWwHeKBIxqURh_jqFJirN", name: "DPP3" }, 
+		{ id: "1RaqhDc04EbvN7Z9f0UuqzVduUqmaVGbu", name: "DPP4" }, 
+		{ id: "1Yhe-q8-vd9wBqXFlQRfEwKm9lfwU5d5J", name: "DPP5" }, 
+		{ id: "1U551GmVstfGkKdu-HBSXMZjKno9blPJe", name: "DPP6" }, 
+		{ id: "1bu70iUn0ggVal8bfATF-rrSY5FMA9bNd", name: "DPP7" }, 
+		{ id: "1Y0MP486xiJKCkc9S7rD2eCbNjsAvdWpK", name: "DPP8" }, 
+		{ id: "1T5xAGEkf4ucxHvF9jBP8bV8tKPQ49GQo", name: "DPP9" }, 
+		{ id: "1k4mZyPKBI_LXogKLC1sCzatZDTBL1F0k", name: "DPP10" }]
+      },
+      "Chapter 9: HYDROCARBON": {
+        "Answer Key": [{ id: "1feWQGqrVpoC9g2nWZjP2rW06mi1IoTGL", name: "DPP1" }],
+        "Solution": [{ id: "11s8ir9sbi1zI-D8u6JjN98XwMW9btrJB", name: "DPP1" }, 
+		{ id: "1yFYbhTHpqowKVg5ZQMjzM4_PWWzLvgW0", name: "DPP2" }, 
+		{ id: "17RcPI97tBuMsxrdsGuBqfd9dTQ6Ltz9Q", name: "DPP3" }, 
+		{ id: "1XRYOlv_uNe5CifNTcAmFDnvAyXP71y80", name: "DPP4" }, 
+		{ id: "1jmWGBYqLUchWXRFVV77MukC1bF_1edMq", name: "DPP5" }, 
+		{ id: "1NIB_KtwtNir4BNtash_vhSxtgdCdjbNk", name: "DPP6" }, 
+		{ id: "1tCvU2pp1CHgrQWDy_xKBkPgmseKOQ7FZ", name: "DPP7" }, 
+		{ id: "1VNVYd3gvSWFxD-JnU199MVdd114rUhyt", name: "DPP8" }, 
+		{ id: "1XUlkLu8Kt_v4eQU7EzsX_Nb7m80OejcG", name: "DPP9" }, 
+		{ id: "1sPQOxX0K_4XTBjwIdHS3au4wI3xd-Q-s", name: "DPP10" }]
+      },
+      "Chapter 10: SOLUTION": {
+        "Answer Key": [{ id: "1-hEbSaTJlI5MvlZUetOGC4J01hVb53iO", name: "DPP1" }],
+        "Solution": [{ id: "1wlFZ2ivPQOgaqLxZoI0x2oxq5_TFGzES", name: "DPP1" }, 
+		{ id: "1vXVCWX8uRKRzOAAICwX9DhMB75u738OF", name: "DPP2" }, 
+		{ id: "1nAkg9m_CD7qtAaUM6lT5i-eylH_rpJZV", name: "DPP3" }, 
+		{ id: "1nZEjuZXuGx_ylpUO7FwNA3xcWo6wgKAt", name: "DPP4" }, 
+		{ id: "1rB-QZi1PDoQrc1TgDGFub9EEq_WJGFsk", name: "DPP5" }, 
+		{ id: "1vALBThXj-Qs1I0GtI6vGtZMIlCxl_OcD", name: "DPP6" }, 
+		{ id: "1lDPGGq5wHdEWzGZz_0P5zkEEJ4wbe6DO", name: "DPP7" }, 
+		{ id: "1RmnjRtF0f8ulo6ZmZ4GUL6pCi2LNwjb-", name: "DPP8" }, 
+		{ id: "10KnpK82Soj7FQ1vTF5yrjnoJ3qEFcAy_", name: "DPP9" }, 
+		{ id: "10uyJaTtnZFZEtWjj8R4L7giC6xDWuSvO", name: "DPP10" }]
+ },
+      "Chapter 10: COMING SOON": {
+        "Answer Key": [{ id: "fileID5", name: "DPP1" }],
+        "Solution": [{ id: "", name: "DPP1" }, 
+		{ id: "", name: "DPP2" }, 
+		{ id: "", name: "DPP3" }, 
+		{ id: "", name: "DPP4" }, 
+		{ id: "", name: "DPP5" }, 
+		{ id: "", name: "DPP6" }, 
+		{ id: "", name: "DPP7" }, 
+		{ id: "", name: "DPP8" }, 
+		{ id: "", name: "DPP9" }, 
+		{ id: "", name: "DPP10" }]
+      },
+      "Chapter 11: Coming soon": {
+        "Answer Key": [{ id: "fileID12", name: "DPP1" }],
+        "Solution": [{ id: "fileID13", name: "DPP1" }]
+      },
+      "Chapter 12: Coming soon": {
+        "Answer Key": [{ id: "fileID14", name: "DPP1" }],
+        "Solution": [{ id: "fileID15", name: "DPP1" }]
+      }
+    },
+    Math: {
+      "Chapter 1: SETS": {
+        "Answer Key": [{ id: "1RiTmqDzk-k3uAyZvQmsV9p7y5NuPLORe", name: "DPP1TO10" }],
+        "Solution": [{ id: "18yo8KU9Tj0DLhSLJfp5RqyDzV89-jUUV", name: "DPP1" }, 
+		{ id: "1n9e0tEUOlwJPXGS2_ZmCTUwExifPJZIu", name: "DPP2" }, 
+		{ id: "1QygGeVM8JvLtTW9DmrDOuR7Es5bNi-fc", name: "DPP3" }, 
+		{ id: "1LbQH1Aegq8OkF3Tfj7u4j48EjGvBBGEf", name: "DPP4" }, 
+		{ id: "14oGdHuQTeikhR7U-tHE2RDyHKPG77aw1", name: "DPP5" }, 
+		{ id: "1KR82mCDIjwMvrGgCZFzftWXqTaQznLuO", name: "DPP6" }, 
+		{ id: "1qDjj9AkLVCW_9-gNo0u8Ill885PzrDzp", name: "DPP7" }, 
+		{ id: "1CDEOnLeetwTh4EI4N_eu_9KMguYQROTt", name: "DPP8" }, 
+		{ id: "", name: "DPP9 X" }, 
+		{ id: "", name: "DPP10 X" }]
+      },
+      "Chapter 2: RELATION AND FUNCTION": {
+        "Answer Key": [{ id: "1wiRBQtbb_GRL4JsjeSjYiNPEBCZ7U-fd", name: "DPP1TO10" }],
+        "Solution": [{ id: "1lmsM2uq9yvEMSW-W09GRCMe6xYXcWjED", name: "DPP1" }, 
+		{ id: "1EMVHX0U4uBcmQlsDuEtUDve53DYysaoO", name: "DPP2" }, 
+		{ id: "1cKGolRtxYZaBvr-AzdhLtzxX12TsUbLH", name: "DPP3" }, 
+		{ id: "189bCmix_Ujx829YR_O8B5tls3UvI8M6O", name: "DPP4" }, 
+		{ id: "1LYrKwKIafzwECWjogsLDb0Im7e14HGBr", name: "DPP5" }, 
+		{ id: "19Y69Nhvu-T3pMoZtaadqwAl5khgzB_mC", name: "DPP6" }, 
+		{ id: "15moisvPyyOfrYl1v_DxiNY_6hfA16mSq", name: "DPP7" }, 
+		{ id: "1i2PCu01DtLvYoQYI-a2S00sh9sRkDJ9u", name: "DPP8" }, 
+		{ id: "1_CjtIxyb668-wXNRsXX6ocv0pqP6d8R6", name: "DPP9" }, 
+		{ id: "17fuKKY6PUxKSg_eMzhqGoxe_cdDIyY7M", name: "DPP10" }]
+      },
+      "Chapter 3: TRIGONOMETRIC FUNCTIONS": {
+        "Answer Key": [{ id: "1gw3_s17Kw0HKHRKdi7ieGTNeRw4yDLOv", name: "DPP1TO10" }],
+        "Solution": [{ id: "18xAtnR_f9nZgpvNsATOrlh0YyfCfn1DC", name: "DPP1" }, 
+		{ id: "1iG-mONhiuiPZ_4V2k0hbSF1Uh2majq1G", name: "DPP2" }, 
+		{ id: "1WF7D0BAYEy4OZmv31QYv-vvDpOxU3wbo", name: "DPP3" }, 
+		{ id: "1Rpj5sQYcOPdM8hTjao2AQL1irM0-KnqP", name: "DPP4" }, 
+		{ id: "12YeSZ0yoxs_j4aaq4_-CsQZFsLys1-C_", name: "DPP5" }, 
+		{ id: "1n7_yARYvrWTGpRv7YVqBUnw-9b3aFw2U", name: "DPP6" }, 
+		{ id: "1EK537pCQ8d_57UFmCCAa137N_5I43h0m", name: "DPP7" }, 
+		{ id: "1LCtHa3t_fMU56FGjsOXNpMJE-lJLjz7q", name: "DPP8" }, 
+		{ id: "1yUFZCc47tV2kwNtsKcDaKa5kvYpy88lL", name: "DPP9" }, 
+		{ id: "1q7IAvk1t1zEW6B8KcOmpNWTFm_hCe4yy", name: "DPP10" }]
+      },
+      "Chapter 4: COMPLEX NUMBERS AND QUADRATIC EQUATIONS": {
+        "Answer Key": [{ id: "1T3sA4Z1-0n4ONuUpwVvU6Zp8bmkIMyPB", name: "DPP1TO10" }],
+        "Solution": [{ id: "1TTelk4_u_tfJQZCsOkR_xAyvg8v8VvTS", name: "DPP1" }, 
+		{ id: "1L8zimScyvFshRA1tHT9weR3WSv8KE9cr", name: "DPP2" }, 
+		{ id: "1JQ3iBNJdB5Ir7XiVTKokT4Klr_mpll-0", name: "DPP3" }, 
+		{ id: "1KdlUCS0JKEDAy9-ZmpxSJv9ZJmeNrXMy", name: "DPP4" }, 
+		{ id: "1rL8GarhNWk4owzhdmyQi_gSwKJAOd03D", name: "DPP5" }, 
+		{ id: "1Vn8n9CcDT4OI5D9I3KD3xpA02PBdMthk", name: "DPP6" }, 
+		{ id: "1m5Urji-JAb1NUNvxROWWfJ-9dCuXXxuG", name: "DPP7" }, 
+		{ id: "1T0YtIHcO8x2S9FpZkxJKhscVnQRRVmUi", name: "DPP8" }, 
+		{ id: "1-dy2Oslb4gix-FxydEef0BSJZjZmZkXK", name: "DPP9" }, 
+		{ id: "1qhVcRtPq4UNo2eMCsvDzsSzVvdWAMzD4", name: "DPP10" }]
+      },
+      "Chapter 5: LINEAR INEQULITIES": {
+        "Answer Key": [{ id: "1yN5AhDtYtfqwRMsVQzHwrqEKszt6SMdO", name: "DPP1TO10" }],
+        "Solution": [{ id: "17ADphkGsdMi8CV_3-TFqkGlYrMHxdU5J", name: "DPP1" }, 
+		{ id: "1dIxiFaXLVcvHX765xPFTAKqr0qjN1GXz", name: "DPP2" }, 
+		{ id: "1wbXdBT5r1oT2EcA6CKjbj3u7QQw7NXI0", name: "DPP3" }, 
+		{ id: "1-l-Rh5efguNyYcCj7jOMm1KWr6bvWyQI", name: "DPP4" }, 
+		{ id: "1awU7UCv7NMWu_5ZvlNQ1vC0mSoH8ErpE", name: "DPP5" }, 
+		{ id: "1M8NBIyZZqGeLKeFOKG2sZuQugDNxuOl9", name: "DPP6" }, 
+		{ id: "1Bx2or0mxpfLpmgC-q9DAk5qS7-StHGt-", name: "DPP7" }, 
+		{ id: "1VtI6hA3DlJmyNsT4f8xz81KKwUrCYiBM", name: "DPP8" }, 
+		{ id: "", name: "DPP9 x" }, 
+		{ id: "", name: "DPP10 x" }]
+      },
+      "Chapter 6: PERMUTATION AND COMBINATION": {
+        "Answer Key": [{ id: "1Ixchz85W49zPDzA8F9We5vuCT6Jd_VA4", name: "DPP1TO10" }],
+        "Solution": [{ id: "1g5QvqPSZhocIuSBAUEPWb6h8mkhQZBB_", name: "DPP1" }, 
+		{ id: "1xjlkbdqByVvc8-lT_GO2-we1u81HnSLl", name: "DPP2" }, 
+		{ id: "1dvZZ_qmHBEVpC0xSexKRO-X_Gbe5FqfM", name: "DPP3" }, 
+		{ id: "1D5taShaAt_1AytfCYuXkQwdg8i5625yD", name: "DPP4" }, 
+		{ id: "1_KAy5vVcikJYjvlK2URmKb848a0o8Ojf", name: "DPP5" }, 
+		{ id: "1I4YzYX_3HbpOeDmRMI5pbkEn5d2OYdhv", name: "DPP6" }, 
+		{ id: "1gPhvwi0-QV07sInOBx9YQi3jxBUch9wx", name: "DPP7" }, 
+		{ id: "1iCVnXuEfVPSSgECmuv13CRfe2k4glL7o", name: "DPP8" }, 
+		{ id: "18crES822G5jPgC3ecG9AJu6ocRnjIfp6", name: "DPP9" }, 
+		{ id: "1J53QPIsZVvx99NZj09xct2ZJW1JtQoMN", name: "DPP10" }]
+      },
+      "Chapter 7: BINOMIAL THEOREM": {
+        "Answer Key": [{ id: "1JQtiTf90V75VmRp5iNLwrT2acCuO8PlW", name: "DPP1TO10" }],
+        "Solution": [{ id: "1UeQQJcj6KXv7jc0JWwWEAUKfb9KIdX4x", name: "DPP1" }, 
+		{ id: "10RnpDZVIeO-yMFddTP_5_nQKg7DSOBLQ", name: "DPP2" }, 
+		{ id: "19fKpddlvKgfjbH0fDwIPmOklNh7s2X82", name: "DPP3" }, 
+		{ id: "1E-Y90JbUPBmPgW1VEtVB2oa9P9005Buh", name: "DPP4" }, 
+		{ id: "1H6kPuKrQHtJ2QpZ3obYOk2ejqhxLnoLT", name: "DPP5" }, 
+		{ id: "1V3p_z7XqVwp4ZYdTmw_BMWq_oJ_E7yHg", name: "DPP6" }, 
+		{ id: "1XtjSUKGdnprraRW8nVzn-bQP886DMrOm", name: "DPP7" }, 
+		{ id: "1faQlA7ARxIt-l-RAOee1qoQKa9gXkrU5", name: "DPP8" }, 
+		{ id: "1g8mUxfN5eZHBfKZ5g1o0LsmBZl9WVG5M", name: "DPP9" }, 
+		{ id: "13zJbehRGMLk1R6XnN9EsYetyTrirFTxG", name: "DPP10" }]
+      },
+      "Chapter 8: SEQUENCES AND SERIES": {
+        "Answer Key": [{ id: "1-PUUb0y6EIOczbM6xuUH67PqsKsGqB0O", name: "DPP1" }],
+        "Solution": [{ id: "1vOqsUTAs5e7jGno4aDC4_DJz5p2K4GGP", name: "DPP1" }, 
+		{ id: "1ND4Fj8doL7REc-YG1XTJvBzn3LTCeAho", name: "DPP2" }, 
+		{ id: "1IvW7OMdr001YK60f2Z5fxOX-vnB6w84V", name: "DPP3" }, 
+		{ id: "1MkJdiqp2mZoV8rlnN31WmUTabbl2PmHi", name: "DPP4" }, 
+		{ id: "130msYNCmz800RC1zYrlOfaGuM0bfXEQG", name: "DPP5" }, 
+		{ id: "1bqkw-g_q0n0_78D6QBBkS6FpsYsQLGTe", name: "DPP6" }, 
+		{ id: "12xbWA4cctv-zMNcSFyZ8BnxqffbAX6qm", name: "DPP7" }, 
+		{ id: "1q-3QggNNQII_8PPqGu6Rwhz8RrkZ443-", name: "DPP8" }, 
+		{ id: "1gIw59xKJ3ISbJKJKeOuEakio8JOD1_U0", name: "DPP9" }, 
+		{ id: "13oNr5L83cvLZkJqp9Xa1nvsOoSHW1FSF", name: "DPP10" }]
+      },
+      "Chapter 9: STRAIGHT LINES": {
+        "Answer Key": [{ id: "1YL6e5Ku2jyIJqtr59JHh7eaZr5gsz1xm", name: "DPP1" }],
+        "Solution": [{ id: "1l8NX6je9GCT0mW88qzIRmQSUpzBnPhDr", name: "DPP1" },
+		{ id: "1kVpdvVmgsYP7p9l3K3FsmSdc11FEwMQd", name: "DPP2" }, 
+		{ id: "1AhbC9kHhYGZd5M923UQU6-_U41RM169L", name: "DPP3" }, 
+		{ id: "1lht4AnLQyEGB1m9CfH_xTLMzD0bsHkGi", name: "DPP4" }, 
+		{ id: "1mGnvtwUrUUR1o2TObyndHdPvgg2_1ypO", name: "DPP5" }, 
+		{ id: "191bfY7xhGMcCpf72Zulb73AkH9KD9o9z", name: "DPP6" }, 
+		{ id: "1cgreTSnXfJd_9u8ZV4jtDLkO-jaHK_JF", name: "DPP7" }, 
+		{ id: "1bYCo9CqZhxaNKF-W3c9tYHHT9vFr9pAS", name: "DPP8" }, 
+		{ id: "1xPifMb3odU3PWCWsNPGqERzal8-VLiy4", name: "DPP9" }, 
+		{ id: "1o-zHsXJefgXaeZ9KqUx7IYK55WbXF-8E", name: "DPP10" }]
+      },
+      "Chapter 10: CONIC SECTIONS": {
+        "Answer Key": [{ id: "1bHJepvd4LVQ7TLlse_Wh4WLfbsyZmFhM", name: "DPP1" }],
+        "Solution": [{ id: "1kuqgYB4QjTfb5XGPHWTd1leD-6t8ZdYF", name: "DPP1" }, 
+		{ id: "11WfyMwH0ax59OwvmPe1fHO0eo0IyGCJz", name: "DPP2" }, 
+		{ id: "1cyCYMzuhWNiacjYNibkLvZB98kXRw7uQ", name: "DPP3" }, 
+		{ id: "1gY2LXycNzJcpbgq1ocfhG0RCRApTrp3i", name: "DPP4" }, 
+		{ id: "1-z2GW1HcD0FiWvsveynthbZZKRT2myaV", name: "DPP5" }, 
+		{ id: "1SF9KpyVerPYyGzHjCqmuP4KCQmvFkktX", name: "DPP6" }, 
+		{ id: "1uuaiktnmcWKX0chJKWAF8b0zSrkXc_BE", name: "DPP7" }, 
+		{ id: "1v-6aqZ1mUFLtLbfOhA1pSbgTsYUVsu3i", name: "DPP8" }, 
+		{ id: "15AuIY9ix_hEJSftaWfTz_zPYe63CGd3B", name: "DPP9" }, 
+		{ id: "1_cmOXl8k4bpuomesl_ABIKj6rJ-5TYPJ", name: "DPP10" }]
+      },
+ "Chapter 11: DETERMINANTS ": {
+        "Answer Key": [{ id: "1rszSs7I11cvxC6TRmGKsWcjXUVJCh2D4", name: "DPP1" }],
+        "Solution": [{ id: "1yFPayvschLZdCVTz-AH4ClfFsA7NTN2O", name: "DPP1" }, 
+		{ id: "1COM6598GZspnVUkFSLs3egzX5DBWq0Dw", name: "DPP2" }, 
+		{ id: "1XYeU3VsbozO-p3mejC05QiGC-YVQYGet", name: "DPP3" }, 
+		{ id: "1-KKXaUlzOgq5DYeCL6LapdDcmasrk86p", name: "DPP4" }, 
+		{ id: "1i7z2kRzzRIXIkdls_5uBUZPAQhAasTE-", name: "DPP5" }, 
+		{ id: "1zNieeG9qg2YuVUpK9mICwO1OHnJsR1oN", name: "DPP6" }, 
+		{ id: "1xcmsE4j4zy2FROGxbhwOgIYjL9eDO1RK", name: "DPP7" }, 
+		{ id: "1s4Wg1gkWZhdBp7CnYLzCWxlR8DSbKEt-", name: "DPP8" }, 
+		{ id: "1WKpznizB_sbNJ3-Qhk3ToOjHl6iaXHMn", name: "DPP9" }, 
+		{ id: "1EMCYlZTX0XXKREGUWoHfAH_TKnh6Vz8P", name: "DPP10" }]
+      },
+ "Chapter 12: DETERMINANTS ": {
+        "Answer Key": [{ id: "fileID5", name: "DPP1" }],
+        "Solution": [{ id: "", name: "DPP1" }, 
+		{ id: "", name: "DPP2" }, 
+		{ id: "", name: "DPP3" }, 
+		{ id: "", name: "DPP4" }, 
+		{ id: "", name: "DPP5" }, 
+		{ id: "", name: "DPP6" }, 
+		{ id: "", name: "DPP7" }, 
+		{ id: "", name: "DPP8" }, 
+		{ id: "", name: "DPP9" }, 
+		{ id: "", name: "DPP10" }]
+      },
+      "Chapter 11: COMING SOONN": {
+        "Answer Key": [{ id: "fileID19", name: "DPP1" }],
+        "Solution": [{ id: "fileID20", name: "DPP1" }]
+      },
+      "Chapter 2: COMING SOONN": {
+        "Answer Key": [{ id: "fileID21", name: "DPP1" }],
+        "Solution": [{ id: "fileID22", name: "DPP1" }]
+      }
+    }
+  };
+
+  const subjectsContainer = document.getElementById('subjects');
+  const viewer = document.getElementById('viewer');
+  const backButton = document.getElementById('backButton');
+  const pdfFrame = document.getElementById('pdfFrame');
+  const dppButtons = document.getElementById('dppButtons');
+  const subjectButtons = document.getElementById('subjectButtons');
+
+  for (const subject in googleDriveLinks) {
+    // Row 1: External Link Button
+    const extBtn = document.createElement('button');
+    extBtn.className = "dropbtn";
+    extBtn.innerHTML = `<img src="https://img.icons8.com/fluency/48/000000/external-link.png"> ${subject} DPP Question`;
+    extBtn.onclick = () => window.open(externalLinks[subject], "_blank");
+    dppButtons.appendChild(extBtn);
+
+    // Row 2: Subject Button
+    const mainBtn = document.createElement('button');
+    mainBtn.className = 'main-button';
+    mainBtn.innerText = subject;
+    
+mainBtn.addEventListener('click', () => {
+  // First collapse all other subject panels
+  document.querySelectorAll('[id$="-panel"]').forEach(p => {
+    if (p.id !== subject + '-panel') {
+      p.style.display = 'none';
+    }
+  });
+
+  // Then toggle only the clicked subject panel
+  const panel = document.getElementById(subject + '-panel');
+  panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+});
+
+    subjectButtons.appendChild(mainBtn);
+
+    // Subject Panel (hidden by default)
+    const panelDiv = document.createElement('div');
+    panelDiv.id = subject + '-panel';
+    panelDiv.style.display = 'none';
+
+    for (const chapter in googleDriveLinks[subject]) {
+      const chapBtn = document.createElement('button');
+      chapBtn.className = 'chapter-button';
+      chapBtn.innerText = chapter;
+     
+	 chapBtn.addEventListener('click', () => {
+  // Collapse all chapters inside this subject first
+  document.querySelectorAll(`#${subject}-panel > div`).forEach(div => {
+    if (div.id !== subject + '-' + chapter + '-panel') {
+      div.style.display = 'none';
+    }
+  });
+
+  // Then toggle the clicked chapter
+  const chapterPanel = document.getElementById(subject + '-' + chapter + '-panel');
+  chapterPanel.style.display = chapterPanel.style.display === 'block' ? 'none' : 'block';
+});
+
+      panelDiv.appendChild(chapBtn);
+
+      const chapterDiv = document.createElement('div');
+      chapterDiv.id = subject + '-' + chapter + '-panel';
+      chapterDiv.style.display = 'none';
+
+      for (const category in googleDriveLinks[subject][chapter]) {
+        const catBtn = document.createElement('button');
+        catBtn.className = 'category-button';
+        catBtn.innerText = category;
+        const catId = `${subject}-${chapter}-${category.replace(/ /g, '-')}`;
+      
+
+	  catBtn.addEventListener('click', () => {
+          const list = document.getElementById(catId);
+          list.style.display = list.style.display === 'block' ? 'none' : 'block';
+        });
+        chapterDiv.appendChild(catBtn);
+
+        const pdfList = document.createElement('div');
+        pdfList.className = 'pdf-links';
+        pdfList.id = catId;
+
+        googleDriveLinks[subject][chapter][category].forEach((pdf) => {
+          const link = document.createElement('a');
+          link.href = "#";
+          link.innerText = pdf.name;
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPDF(pdf.id);
+          });
+          pdfList.appendChild(link);
+        });
+
+        chapterDiv.appendChild(pdfList);
+      }
+
+      panelDiv.appendChild(chapterDiv);
+    }
+
+    subjectsContainer.appendChild(panelDiv);
+  }
+
+  function showPDF(fileId) {
+    const url = `https://drive.google.com/file/d/${fileId}/preview`;
+    pdfFrame.src = url;
+
+    // Hide all button sections
+    dppButtons.style.display = 'none';
+    subjectButtons.style.display = 'none';
+    subjectsContainer.style.display = 'none';
+
+    // Show PDF viewer and Back button
+    viewer.style.display = 'block';
+    backButton.style.display = 'inline-block';
+  }
+
+  function goBack() {
+    pdfFrame.src = "";
+
+    // Show all buttons again
+    dppButtons.style.display = 'grid';
+    subjectButtons.style.display = 'grid';
+    subjectsContainer.style.display = 'block';
+
+    // Hide viewer and Back button
+    viewer.style.display = 'none';
+    backButton.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
