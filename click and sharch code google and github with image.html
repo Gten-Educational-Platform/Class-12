@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Question Solver</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 15px; background: #f4f6f9; margin: 0; }
+    h2 { color: #2c3e50; font-size: 1.4rem; }
+    .mode-toggle { margin: 15px 0; }
+    .toggle-label { margin: 0 10px; font-weight: bold; cursor: pointer; }
+    .hidden { display: none; }
+    input[type="file"], textarea {
+      font-size: 1rem; padding: 10px; margin: 10px 0; width: 100%; max-width: 400px;
+    }
+    textarea { height: 100px; resize: vertical; }
+    button { margin-top: 10px; padding: 12px 20px; background: #3498db; color: white; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #2c80b9; }
+    .solution-box {
+      background: #fff; border-radius: 10px; padding: 15px; margin-top: 15px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2); text-align: left; font-size: 1rem; line-height: 1.4;
+    }
+    .solution-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+    .suggestion { margin-top: 10px; padding: 10px; border-left: 4px solid #3498db; background: #ecf6ff; border-radius: 6px; font-size: 0.95rem; }
+    
+    /* Crop modal improvements */
+    #cropModal {
+      display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column;
+      padding: 15px; box-sizing: border-box;
+    }
+    #cropImage {
+      max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 6px;
+    }
+    /* Floating buttons at bottom corners */
+    .modal-btn {
+      position: absolute;
+      bottom: 20px;
+      padding: 12px 20px;
+      background: #3498db;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .modal-btn:hover { background: #2c80b9; }
+    #cancelCrop { left: 20px; background: #e74c3c; }
+    #confirmCrop { right: 20px; }
+  </style>
+</head>
+<body>
+  <h2>📚 AI Question Solver<br>(Physics | Chemistry | Math | Biology)</h2>
+
+  <!-- Toggle Switch -->
+  <div class="mode-toggle">
+    <label class="toggle-label">
+      <input type="radio" name="mode" value="image" checked> 📷 Upload Image
+    </label>
+    <label class="toggle-label">
+      <input type="radio" name="mode" value="text"> ✍️ Type Question
+    </label>
+  </div>
+
+  <!-- Upload Image Mode (default visible) -->
+  <div id="imageMode">
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+  </div>
+
+  <!-- Type Question Mode (hidden initially) -->
+  <div id="textMode" class="hidden">
+    <textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea><br>
+    <button id="solveManual">🔍 Solve</button>
+  </div>
+
+  <!-- Crop Modal -->
+  <div id="cropModal">
+    <img id="cropImage" alt="To Crop">
+    <button id="cancelCrop" class="modal-btn">❌ Cancel</button>
+    <button id="confirmCrop" class="modal-btn">✂️ Crop & Solve</button>
+  </div>
+
+  <div class="solution-box" id="result">
+    Select a mode and provide your question to see the solution.
+  </div>
+
+  <script>
+    let questionBank = [];
+    let fuse = null;
+    let cropper = null;
+
+    // Load question bank
+    fetch("https://raw.githubusercontent.com/your-username/question-solver-data/main/questions.json")
+      .then(r => r.json())
+      .then(data => {
+        questionBank = data;
+        fuse = new Fuse(questionBank, { keys: ["question"], threshold: 0.4, includeScore: true });
+      });
+
+    // Render text or image solution
+    function renderSolution(sol) {
+      if (typeof sol === "string" && sol.match(/\.(jpeg|jpg|png|gif|svg)$/i)) {
+        return `<img src="${sol}" alt="Solution Image">`;
+      }
+      return sol;
+    }
+
+    function searchSolution(text) {
+      if (!fuse) {
+        window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
+        return "⚠️ Question bank not loaded yet. 🔍 Searching on Google...";
+      }
+
+      const results = fuse.search(text);
+      if (results.length > 0) {
+        const best = results[0].item;
+        if (results[0].score <= 0.4) {
+          return `<b>Subject:</b> ${best.subject}<br><b>Solution:</b> ${renderSolution(best.solution)}`;
+        }
+        let s = "<b>❌ Not exact. Suggestions:</b><br>";
+        results.slice(0, 3).forEach(r => {
+          s += `<div class="suggestion"><b>Q:</b> ${r.item.question}<br><b>A:</b> ${renderSolution(r.item.solution)}</div>`;
+        });
+        return s;
+      }
+
+      window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
+      return "❌ No solution in library. 🔍 Searching on Google...";
+    }
+
+    // Mode toggle
+    document.querySelectorAll("input[name='mode']").forEach(radio => {
+      radio.addEventListener("change", e => {
+        document.getElementById("imageMode").classList.toggle("hidden", e.target.value !== "image");
+        document.getElementById("textMode").classList.toggle("hidden", e.target.value !== "text");
+      });
+    });
+
+    // Elements
+    const fileInput = document.getElementById("fileInput");
+    const cropModal = document.getElementById("cropModal");
+    const cropImage = document.getElementById("cropImage");
+    const confirmCrop = document.getElementById("confirmCrop");
+    const cancelCrop = document.getElementById("cancelCrop");
+    const result = document.getElementById("result");
+    const solveManual = document.getElementById("solveManual");
+    const manualQuestion = document.getElementById("manualQuestion");
+
+    // Upload & crop
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (file) {
+        cropImage.src = URL.createObjectURL(file);
+        cropModal.style.display = "flex";
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(cropImage, { viewMode: 1, autoCropArea: 1 });
+      }
+    });
+
+    confirmCrop.addEventListener("click", () => {
+      if (!cropper) return;
+      result.innerHTML = "⏳ Processing cropped image...";
+      cropper.getCroppedCanvas().toBlob(blob => {
+        Tesseract.recognize(blob, 'eng').then(({ data: { text } }) => {
+          result.innerHTML = `<b>Extracted:</b><br>${text}<br><br>${searchSolution(text)}`;
+          cropModal.style.display = "none";
+          cropper.destroy(); cropper = null;
+        });
+      });
+    });
+
+    cancelCrop.addEventListener("click", () => {
+      cropModal.style.display = "none";
+      if (cropper) { cropper.destroy(); cropper = null; }
+    });
+
+    // Manual Solve
+    solveManual.addEventListener("click", () => {
+      const text = manualQuestion.value.trim();
+      if (text) {
+        result.innerHTML = `<b>Question:</b><br>${text}<br><br>${searchSolution(text)}`;
+      } else {
+        result.innerHTML = "⚠️ Please type a question first.";
+      }
+    });
+
+    // Default mode = Image Upload
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelector("input[name='mode'][value='image']").checked = true;
+      document.getElementById("imageMode").classList.remove("hidden");
+      document.getElementById("textMode").classList.add("hidden");
+    });
+  </script>
+</body>
+</html>
