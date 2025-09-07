@@ -35,8 +35,9 @@
     }
     #cropImage {
       max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 6px;
+      touch-action: none; /* Allow pinch zoom and drag */
     }
-    /* Floating buttons at bottom corners */
+    /* Floating buttons */
     .modal-btn {
       position: absolute;
       bottom: 20px;
@@ -57,7 +58,7 @@
       width: 100%; max-width: 400px; margin: 20px auto; display: none;
     }
     #progressBar {
-      width: 0%; height: 18px; background: #3498db; border-radius: 10px; transition: width 0.3s;
+      width: 0%; height: 18px; background: #3498db; border-radius: 10px; transition: width 0.2s linear;
     }
     #progressWrapper {
       width: 100%; background: #ddd; border-radius: 10px; overflow: hidden;
@@ -67,7 +68,7 @@
 <body>
   <h2>📚 AI Question Solver<br>(Physics | Chemistry | Math | Biology)</h2>
 
-  <!-- Toggle Switch -->
+  <!-- Toggle -->
   <div class="mode-toggle">
     <label class="toggle-label">
       <input type="radio" name="mode" value="image" checked> 📷 Upload Image
@@ -77,25 +78,25 @@
     </label>
   </div>
 
-  <!-- Upload Image Mode -->
+  <!-- Image mode -->
   <div id="imageMode">
     <input type="file" id="fileInput" accept="image/*" capture="environment">
   </div>
 
-  <!-- Type Question Mode -->
+  <!-- Text mode -->
   <div id="textMode" class="hidden">
     <textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea><br>
     <button id="solveManual">🔍 Solve</button>
   </div>
 
-  <!-- Crop Modal -->
+  <!-- Crop modal -->
   <div id="cropModal">
     <img id="cropImage" alt="To Crop">
     <button id="cancelCrop" class="modal-btn">❌ Cancel</button>
     <button id="confirmCrop" class="modal-btn">✂️ Crop & Solve</button>
   </div>
 
-  <!-- Progress Bar -->
+  <!-- Progress -->
   <div id="progressContainer">
     <div id="progressWrapper">
       <div id="progressBar"></div>
@@ -109,11 +110,8 @@
   </div>
 
   <script>
-    let questionBank = [];
-    let fuse = null;
-    let cropper = null;
+    let questionBank = [], fuse = null, cropper = null;
 
-    // Load question bank
     fetch("https://raw.githubusercontent.com/your-username/question-solver-data/main/questions.json")
       .then(r => r.json())
       .then(data => {
@@ -121,7 +119,6 @@
         fuse = new Fuse(questionBank, { keys: ["question"], threshold: 0.4, includeScore: true });
       });
 
-    // Render text or image solution
     function renderSolution(sol) {
       if (typeof sol === "string" && sol.match(/\.(jpeg|jpg|png|gif|svg)$/i)) {
         return `<img src="${sol}" alt="Solution Image">`;
@@ -134,7 +131,6 @@
         window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
         return "⚠️ Question bank not loaded yet. 🔍 Searching on Google...";
       }
-
       const results = fuse.search(text);
       if (results.length > 0) {
         const best = results[0].item;
@@ -147,12 +143,10 @@
         });
         return s;
       }
-
       window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
       return "❌ No solution in library. 🔍 Searching on Google...";
     }
 
-    // Mode toggle
     document.querySelectorAll("input[name='mode']").forEach(radio => {
       radio.addEventListener("change", e => {
         document.getElementById("imageMode").classList.toggle("hidden", e.target.value !== "image");
@@ -160,7 +154,6 @@
       });
     });
 
-    // Elements
     const fileInput = document.getElementById("fileInput");
     const cropModal = document.getElementById("cropModal");
     const cropImage = document.getElementById("cropImage");
@@ -173,7 +166,6 @@
     const progressBar = document.getElementById("progressBar");
     const progressText = document.getElementById("progressText");
 
-    // Upload & crop
     fileInput.addEventListener("change", () => {
       const file = fileInput.files[0];
       if (file) {
@@ -181,12 +173,18 @@
         cropModal.style.display = "flex";
         if (cropper) cropper.destroy();
         cropper = new Cropper(cropImage, { 
-          viewMode: 1, 
-          autoCropArea: 1, 
-          movable: true, 
-          zoomable: true, 
-          scalable: true, 
-          rotatable: true 
+          viewMode: 1,
+          autoCropArea: 1,
+          responsive: true,
+          background: false,
+          movable: true,
+          zoomable: true,
+          scalable: false,
+          rotatable: false,
+          dragMode: 'move',
+          minCropBoxWidth: 50,
+          minCropBoxHeight: 50,
+          touchDragZoom: true
         });
       }
     });
@@ -221,7 +219,6 @@
       if (cropper) { cropper.destroy(); cropper = null; }
     });
 
-    // Manual Solve
     solveManual.addEventListener("click", () => {
       const text = manualQuestion.value.trim();
       if (text) {
@@ -231,7 +228,6 @@
       }
     });
 
-    // Default mode = Image Upload
     window.addEventListener("DOMContentLoaded", () => {
       document.querySelector("input[name='mode'][value='image']").checked = true;
       document.getElementById("imageMode").classList.remove("hidden");
