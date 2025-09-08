@@ -8,13 +8,18 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
   <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+  <!-- MathJax for LaTeX -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$', '$']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <style>
     body { font-family: Arial, sans-serif; text-align: center; padding: 15px; background: #f4f6f9; margin: 0; }
     h2 { color: #2c3e50; font-size: 1.4rem; }
     .mode-toggle { margin: 15px 0; }
     .toggle-label { margin: 0 10px; font-weight: bold; cursor: pointer; }
     .hidden { display: none; }
-    input[type="file"], textarea {
+    input[type="file"], textarea, input[type="text"] {
       font-size: 1rem; padding: 10px; margin: 10px 0; width: 100%; max-width: 400px;
     }
     textarea { height: 100px; resize: vertical; }
@@ -22,170 +27,153 @@
     button:hover { background: #2c80b9; }
     .solution-box {
       background: #fff; border-radius: 10px; padding: 15px; margin-top: 15px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2); text-align: left; font-size: 1rem; line-height: 1.4;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2); text-align: left; font-size: 1rem; line-height: 1.5;
     }
     .solution-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
     .suggestion { margin-top: 10px; padding: 10px; border-left: 4px solid #3498db; background: #ecf6ff; border-radius: 6px; font-size: 0.95rem; }
 
-    /* Crop modal */
     #cropModal {
       display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column;
       padding: 15px; box-sizing: border-box;
     }
-    #cropImage {
-      max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 6px;
-      touch-action: none; /* Allow pinch zoom and drag */
-    }
-    /* Floating buttons */
+    #cropImage { max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 6px; touch-action: none; }
     .modal-btn {
-      position: absolute;
-      bottom: 20px;
-      padding: 12px 20px;
-      background: #3498db;
-      color: white;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      position: absolute; bottom: 20px; padding: 12px 20px;
+      background: #3498db; color: white; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer;
     }
     .modal-btn:hover { background: #2c80b9; }
     #cancelCrop { left: 20px; background: #e74c3c; }
     #confirmCrop { right: 20px; }
 
-    /* Progress bar */
-    #progressContainer {
-      width: 100%; max-width: 400px; margin: 20px auto; display: none;
-    }
-    #progressBar {
-      width: 0%; height: 18px; background: #3498db; border-radius: 10px; transition: width 0.2s linear;
-    }
-    #progressWrapper {
-      width: 100%; background: #ddd; border-radius: 10px; overflow: hidden;
-    }
+    #progressContainer { width: 100%; max-width: 400px; margin: 20px auto; display: none; }
+    #progressBar { width: 0%; height: 18px; background: #3498db; border-radius: 10px; transition: width 0.2s linear; }
+    #progressWrapper { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; }
   </style>
 </head>
 <body>
   <h2>📚 AI Question Solver<br>(Physics | Chemistry | Math | Biology)</h2>
 
-  <!-- Toggle -->
   <div class="mode-toggle">
-    <label class="toggle-label">
-      <input type="radio" name="mode" value="image" checked> 📷 Upload Image
-    </label>
-    <label class="toggle-label">
-      <input type="radio" name="mode" value="text"> ✍️ Type Question
-    </label>
+    <label class="toggle-label"><input type="radio" name="mode" value="image" checked> 📷 Upload Image</label>
+    <label class="toggle-label"><input type="radio" name="mode" value="text"> ✍️ Type Question</label>
+    <label class="toggle-label"><input type="radio" name="mode" value="code"> 🔢 Enter Question Code</label>
   </div>
 
-  <!-- Image mode -->
-  <div id="imageMode">
-    <input type="file" id="fileInput" accept="image/*" capture="environment">
-  </div>
+  <div id="imageMode"><input type="file" id="fileInput" accept="image/*" capture="environment"></div>
+  <div id="textMode" class="hidden"><textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea><br><button id="solveManual">🔍 Solve</button></div>
+  <div id="codeMode" class="hidden"><input type="text" id="questionCode" placeholder="Enter question code..."><br><button id="solveCode">🔍 Get Answer</button></div>
 
-  <!-- Text mode -->
-  <div id="textMode" class="hidden">
-    <textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea><br>
-    <button id="solveManual">🔍 Solve</button>
-  </div>
+  <div id="cropModal"><img id="cropImage" alt="To Crop"><button id="cancelCrop" class="modal-btn">❌ Cancel</button><button id="confirmCrop" class="modal-btn">✂️ Crop & Solve</button></div>
+  <div id="progressContainer"><div id="progressWrapper"><div id="progressBar"></div></div><p id="progressText">Processing...</p></div>
 
-  <!-- Crop modal -->
-  <div id="cropModal">
-    <img id="cropImage" alt="To Crop">
-    <button id="cancelCrop" class="modal-btn">❌ Cancel</button>
-    <button id="confirmCrop" class="modal-btn">✂️ Crop & Solve</button>
-  </div>
-
-  <!-- Progress -->
-  <div id="progressContainer">
-    <div id="progressWrapper">
-      <div id="progressBar"></div>
-    </div>
-    <p id="progressText">Processing...</p>
-  </div>
-
-  <!-- Results -->
-  <div class="solution-box" id="result">
-    Select a mode and provide your question to see the solution.
-  </div>
+  <div class="solution-box" id="result">Select a mode and provide your question to see the solution.</div>
 
   <script>
-    let questionBank = [], fuse = null, cropper = null;
+    let questionBanks = {}, fuseBanks = {}, cropper = null;
 
-    fetch("https://raw.githubusercontent.com/your-username/question-solver-data/main/questions.json")
-      .then(r => r.json())
-      .then(data => {
-        questionBank = data;
-        fuse = new Fuse(questionBank, { keys: ["question"], threshold: 0.4, includeScore: true });
-      });
+    const subjectUrls = {
+      chemistry: "https://gten-educational-platform.github.io/Class-12/chemistry question.html",
+      physics: "https://gten-educational-platform.github.io/Class-12/physics.json",
+      math: "https://gten-educational-platform.github.io/Class-12/math.json",
+	  science: "",
+      biology: "https://gten-educational-platform.github.io/Class-12/biology.json"
+    };
 
-    function renderSolution(sol) {
-      if (typeof sol === "string" && sol.match(/\.(jpeg|jpg|png|gif|svg)$/i)) {
-        return `<img src="${sol}" alt="Solution Image">`;
+    // Load all subjects at startup
+    for (let subj in subjectUrls) {
+      fetch(subjectUrls[subj])
+        .then(r => r.json())
+        .then(data => {
+          questionBanks[subj] = data;
+          fuseBanks[subj] = new Fuse(data, { keys: ["question"], threshold: 0.4, includeScore: true });
+        });
+    }
+
+    // --- NEW flexible renderer ---
+    function renderContent(content, label) {
+      if (!content) return "";
+      let html = "";
+      if (typeof content === "string") {
+        if (content.match(/\.(jpeg|jpg|png|gif|svg|png)$/i)) {
+          html += `<p><b>${label}:</b></p><img src="${content}" alt="${label} Image">`;
+        } else {
+          html += `<p><b>${label}:</b> <span class="mathjax">${content}</span></p>`;
+        }
+      } else if (typeof content === "object") {
+        if (content.text) {
+          html += `<p><b>${label}:</b> <span class="mathjax">${content.text}</span></p>`;
+        }
+        if (content.image) {
+          html += `<img src="${content.image}" alt="${label} Image">`;
+        }
       }
-      return sol;
+      return html;
+    }
+
+    function renderQA(item, subj) {
+      setTimeout(() => MathJax.typeset(), 50);
+      return `<b>Subject:</b> ${subj}<br>` +
+             renderContent(item.question, "Question") +
+             renderContent(item.solution, "Solution");
     }
 
     function searchSolution(text) {
-      if (!fuse) {
-        window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
-        return "⚠️ Question bank not loaded yet. 🔍 Searching on Google...";
-      }
-      const results = fuse.search(text);
-      if (results.length > 0) {
-        const best = results[0].item;
-        if (results[0].score <= 0.4) {
-          return `<b>Subject:</b> ${best.subject}<br><b>Solution:</b> ${renderSolution(best.solution)}`;
+      let bestMatch = null, bestScore = 1, bestSubject = "";
+      for (let subj in fuseBanks) {
+        const results = fuseBanks[subj].search(text);
+        if (results.length > 0 && results[0].score < bestScore) {
+          bestMatch = results[0].item;
+          bestScore = results[0].score;
+          bestSubject = subj;
         }
-        let s = "<b>❌ Not exact. Suggestions:</b><br>";
-        results.slice(0, 3).forEach(r => {
-          s += `<div class="suggestion"><b>Q:</b> ${r.item.question}<br><b>A:</b> ${renderSolution(r.item.solution)}</div>`;
-        });
-        return s;
+      }
+      if (bestMatch) {
+        return renderQA(bestMatch, bestSubject);
       }
       window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
       return "❌ No solution in library. 🔍 Searching on Google...";
     }
 
+    function searchByCode(code) {
+      for (let subj in questionBanks) {
+        const bank = questionBanks[subj];
+        if (!bank) continue;
+        const match = bank.find(q => String(q.code).toUpperCase() === code.toUpperCase());
+        if (match) {
+          return renderQA(match, subj);
+        }
+      }
+      return "❌ No question found with this code.";
+    }
+
+    // Mode switch
     document.querySelectorAll("input[name='mode']").forEach(radio => {
       radio.addEventListener("change", e => {
         document.getElementById("imageMode").classList.toggle("hidden", e.target.value !== "image");
         document.getElementById("textMode").classList.toggle("hidden", e.target.value !== "text");
+        document.getElementById("codeMode").classList.toggle("hidden", e.target.value !== "code");
       });
     });
 
-    const fileInput = document.getElementById("fileInput");
-    const cropModal = document.getElementById("cropModal");
-    const cropImage = document.getElementById("cropImage");
-    const confirmCrop = document.getElementById("confirmCrop");
-    const cancelCrop = document.getElementById("cancelCrop");
-    const result = document.getElementById("result");
-    const solveManual = document.getElementById("solveManual");
-    const manualQuestion = document.getElementById("manualQuestion");
-    const progressContainer = document.getElementById("progressContainer");
-    const progressBar = document.getElementById("progressBar");
-    const progressText = document.getElementById("progressText");
+    const fileInput = document.getElementById("fileInput"), cropModal = document.getElementById("cropModal"),
+          cropImage = document.getElementById("cropImage"), confirmCrop = document.getElementById("confirmCrop"),
+          cancelCrop = document.getElementById("cancelCrop"), result = document.getElementById("result"),
+          solveManual = document.getElementById("solveManual"), manualQuestion = document.getElementById("manualQuestion"),
+          solveCode = document.getElementById("solveCode"), questionCode = document.getElementById("questionCode"),
+          progressContainer = document.getElementById("progressContainer"), progressBar = document.getElementById("progressBar"),
+          progressText = document.getElementById("progressText");
 
+    // Image OCR
     fileInput.addEventListener("change", () => {
       const file = fileInput.files[0];
       if (file) {
         cropImage.src = URL.createObjectURL(file);
         cropModal.style.display = "flex";
         if (cropper) cropper.destroy();
-        cropper = new Cropper(cropImage, { 
-          viewMode: 1,
-          autoCropArea: 1,
-          responsive: true,
-          background: false,
-          movable: true,
-          zoomable: true,
-          scalable: false,
-          rotatable: false,
-          dragMode: 'move',
-          minCropBoxWidth: 50,
-          minCropBoxHeight: 50,
-          touchDragZoom: true
-        });
+        cropper = new Cropper(cropImage, { viewMode: 1, autoCropArea: 1, responsive: true, background: false,
+          movable: true, zoomable: true, scalable: false, rotatable: false, dragMode: 'move',
+          minCropBoxWidth: 50, minCropBoxHeight: 50, touchDragZoom: true });
       }
     });
 
@@ -209,6 +197,7 @@
         }).then(({ data: { text } }) => {
           progressContainer.style.display = "none";
           result.innerHTML = `<b>Extracted:</b><br>${text}<br><br>${searchSolution(text)}`;
+          MathJax.typeset();
           cropper.destroy(); cropper = null;
         });
       });
@@ -219,19 +208,35 @@
       if (cropper) { cropper.destroy(); cropper = null; }
     });
 
+    // Manual solve
     solveManual.addEventListener("click", () => {
-      const text = manualQuestion.value.trim();
-      if (text) {
-        result.innerHTML = `<b>Question:</b><br>${text}<br><br>${searchSolution(text)}`;
+      let text = manualQuestion.value.trim();
+      if (!text) { result.innerHTML = "⚠️ Please type a question first."; return; }
+      if (/^[A-Za-z0-9]+$/.test(text)) {
+        result.innerHTML = searchByCode(text.toUpperCase());
       } else {
-        result.innerHTML = "⚠️ Please type a question first.";
+        result.innerHTML = `<b>Question:</b> ${text}<br><br>${searchSolution(text)}`;
+      }
+      MathJax.typeset();
+    });
+
+    // Code solve
+    solveCode.addEventListener("click", () => {
+      const code = questionCode.value.trim().toUpperCase();
+      if (code) {
+        result.innerHTML = searchByCode(code);
+        MathJax.typeset();
+      } else {
+        result.innerHTML = "⚠️ Please enter a question code.";
       }
     });
 
+    // Default mode
     window.addEventListener("DOMContentLoaded", () => {
       document.querySelector("input[name='mode'][value='image']").checked = true;
       document.getElementById("imageMode").classList.remove("hidden");
       document.getElementById("textMode").classList.add("hidden");
+      document.getElementById("codeMode").classList.add("hidden");
     });
   </script>
 </body>
