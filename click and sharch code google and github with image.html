@@ -73,8 +73,8 @@
     let questionBanks = {}, fuseBanks = {}, cropper = null;
 
     const subjectUrls = {
-      chemistry: "https://gten-educational-platform.github.io/Class-12/chemistry question.html",
-      physics: "https://gten-educational-platform.github.io/Class-12/physics.json",
+      chemistry: "https://gten-educational-platform.github.io/Class-12/question.html",
+      physics: "https://gten-educational-platform.github.io/Class-12/chemistry question.html.html",
       math: "https://gten-educational-platform.github.io/Class-12/math.json",
 	  science: "",
       biology: "https://gten-educational-platform.github.io/Class-12/biology.json"
@@ -111,12 +111,25 @@
       return html;
     }
 
-    function renderQA(item, subj) {
-      setTimeout(() => MathJax.typeset(), 50);
-      return `<b>Subject:</b> ${subj}<br>` +
-             renderContent(item.question, "Question") +
-             renderContent(item.solution, "Solution");
-    }
+  function renderQA(item, subj) {
+  setTimeout(() => MathJax.typeset(), 50);
+
+  let html = `<b>Subject:</b> ${subj}<br>`;
+  html += renderContent(item.question, "Question");
+  html += renderContent(item.solution, "Solution");
+
+  // ✅ Render structured solution steps if available
+  if (item.solution_steps && Array.isArray(item.solution_steps)) {
+    html += `<p><b>Solution Steps:</b></p><ol>`;
+    item.solution_steps.forEach(step => {
+      html += `<li><span class="mathjax">${step}</span></li>`;
+    });
+    html += `</ol>`;
+  }
+
+  return html;
+}
+
 
     function searchSolution(text) {
       let bestMatch = null, bestScore = 1, bestSubject = "";
