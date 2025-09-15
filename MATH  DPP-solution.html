@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>G10 Subject PDFs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    /* Keep grid for subject buttons */
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Make DPP row inline (Chemistry DPP + Contact Us side by side) */
+#dppButtons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+#dppButtons button {
+  flex: 1; /* makes both buttons equal width */
+}
+
+    .main-button, .chapter-button, .category-button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      text-align: center;
+    }
+    .chapter-button {
+      background-color: #3399FF;
+      margin: 5px 0 0 15px;
+      text-align: left;
+    }
+    .category-button {
+      background-color: #66B2FF;
+      margin: 5px 0 0 30px;
+      text-align: left;
+    }
+    .pdf-links {
+      margin-left: 45px;
+      display: none;
+      background-color: #e6f7ff;
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid #3399ff;
+      color: #003366;
+    }
+    .pdf-links a {
+      display: block;
+      margin: 4px 0;
+      text-decoration: none;
+      color: #003366;
+      font-weight: bold;
+      font-size: 15px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .pdf-links a:hover {
+      background-color: #FF474C;
+      color: #000;
+      padding-left: 5px;
+    }
+    #viewer {
+      display: none;
+    }
+    #pdfFrame {
+      width: 100%;
+      height: 90vh;
+      border: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      #pdfFrame {
+        height: 80vh;
+      }
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    #backButton {
+      display: none;
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .dropbtn {
+      background-color: #FFC107;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      font-weight: bold;
+      text-align: center;
+    }
+    .dropbtn img {
+      width: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    /* Contact Form Popup */
+    #contactForm {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 2px solid #007BFF;
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    #contactForm h3 {
+      margin-top: 0;
+    }
+    #contactForm input, #contactForm textarea {
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #contactForm button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<h2>MATH DPP-IIT-JEE WITH ANSWERKEY AND SOLUTION</h2>
+
+<button id="backButton" onclick="goBack()">Back</button>
+
+<!-- First Row: DPP Question + Contact Us -->
+<div class="button-grid" id="dppButtons"></div>
+
+<!-- Second Row: Subject buttons -->
+<div class="button-grid" id="subjectButtons"></div>
+
+<div id="subjects"></div>
+
+<div id="viewer">
+  <iframe id="pdfFrame"></iframe>
+</div>
+
+<!-- Contact Form Popup -->
+<div id="overlay"></div>
+<div id="contactForm">
+  <h3>Contact Us</h3>
+  <input type="text" id="studentName" placeholder="Your Name" />
+  <textarea id="studentMessage" rows="4" placeholder="Your Message / Demand / Report"></textarea>
+  <button onclick="sendWhatsApp()">Send via WhatsApp</button>
+</div>
+
+<script>
+  const externalLinks = {
+    Math: "https://www.g10educationalplatformindia.co.in/courses/DPP-MATH-ANSWER-KEY-AND-SOLUTION-INCLUDED-648495a9e4b075073b612868-648495a9e4b075073b612868"
+  };
+
+  const googleDriveLinks = {
+   Math: {
+      "Chapter 1: SETS": {
+        "Answer Key": [{ id: "1RiTmqDzk-k3uAyZvQmsV9p7y5NuPLORe", name: "DPP1TO10" }],
+        "Solution": [{ id: "18yo8KU9Tj0DLhSLJfp5RqyDzV89-jUUV", name: "DPP1" }, 
+		{ id: "1n9e0tEUOlwJPXGS2_ZmCTUwExifPJZIu", name: "DPP2" }, 
+		{ id: "1QygGeVM8JvLtTW9DmrDOuR7Es5bNi-fc", name: "DPP3" }, 
+		{ id: "1LbQH1Aegq8OkF3Tfj7u4j48EjGvBBGEf", name: "DPP4" }, 
+		{ id: "14oGdHuQTeikhR7U-tHE2RDyHKPG77aw1", name: "DPP5" }, 
+		{ id: "1KR82mCDIjwMvrGgCZFzftWXqTaQznLuO", name: "DPP6" }, 
+		{ id: "1qDjj9AkLVCW_9-gNo0u8Ill885PzrDzp", name: "DPP7" }, 
+		{ id: "1CDEOnLeetwTh4EI4N_eu_9KMguYQROTt", name: "DPP8" }, 
+		{ id: "", name: "DPP9 X" }, 
+		{ id: "", name: "DPP10 X" }]
+      },
+      "Chapter 2: RELATION AND FUNCTION": {
+        "Answer Key": [{ id: "1wiRBQtbb_GRL4JsjeSjYiNPEBCZ7U-fd", name: "DPP1TO10" }],
+        "Solution": [{ id: "1lmsM2uq9yvEMSW-W09GRCMe6xYXcWjED", name: "DPP1" }, 
+		{ id: "1EMVHX0U4uBcmQlsDuEtUDve53DYysaoO", name: "DPP2" }, 
+		{ id: "1cKGolRtxYZaBvr-AzdhLtzxX12TsUbLH", name: "DPP3" }, 
+		{ id: "189bCmix_Ujx829YR_O8B5tls3UvI8M6O", name: "DPP4" }, 
+		{ id: "1LYrKwKIafzwECWjogsLDb0Im7e14HGBr", name: "DPP5" }, 
+		{ id: "19Y69Nhvu-T3pMoZtaadqwAl5khgzB_mC", name: "DPP6" }, 
+		{ id: "15moisvPyyOfrYl1v_DxiNY_6hfA16mSq", name: "DPP7" }, 
+		{ id: "1i2PCu01DtLvYoQYI-a2S00sh9sRkDJ9u", name: "DPP8" }, 
+		{ id: "1_CjtIxyb668-wXNRsXX6ocv0pqP6d8R6", name: "DPP9" }, 
+		{ id: "17fuKKY6PUxKSg_eMzhqGoxe_cdDIyY7M", name: "DPP10" }]
+      },
+      "Chapter 3: TRIGONOMETRIC FUNCTIONS": {
+        "Answer Key": [{ id: "1gw3_s17Kw0HKHRKdi7ieGTNeRw4yDLOv", name: "DPP1TO10" }],
+        "Solution": [{ id: "18xAtnR_f9nZgpvNsATOrlh0YyfCfn1DC", name: "DPP1" }, 
+		{ id: "1iG-mONhiuiPZ_4V2k0hbSF1Uh2majq1G", name: "DPP2" }, 
+		{ id: "1WF7D0BAYEy4OZmv31QYv-vvDpOxU3wbo", name: "DPP3" }, 
+		{ id: "1Rpj5sQYcOPdM8hTjao2AQL1irM0-KnqP", name: "DPP4" }, 
+		{ id: "12YeSZ0yoxs_j4aaq4_-CsQZFsLys1-C_", name: "DPP5" }, 
+		{ id: "1n7_yARYvrWTGpRv7YVqBUnw-9b3aFw2U", name: "DPP6" }, 
+		{ id: "1EK537pCQ8d_57UFmCCAa137N_5I43h0m", name: "DPP7" }, 
+		{ id: "1LCtHa3t_fMU56FGjsOXNpMJE-lJLjz7q", name: "DPP8" }, 
+		{ id: "1yUFZCc47tV2kwNtsKcDaKa5kvYpy88lL", name: "DPP9" }, 
+		{ id: "1q7IAvk1t1zEW6B8KcOmpNWTFm_hCe4yy", name: "DPP10" }]
+      },
+      "Chapter 4: COMPLEX NUMBERS AND QUADRATIC EQUATIONS": {
+        "Answer Key": [{ id: "1T3sA4Z1-0n4ONuUpwVvU6Zp8bmkIMyPB", name: "DPP1TO10" }],
+        "Solution": [{ id: "1TTelk4_u_tfJQZCsOkR_xAyvg8v8VvTS", name: "DPP1" }, 
+		{ id: "1L8zimScyvFshRA1tHT9weR3WSv8KE9cr", name: "DPP2" }, 
+		{ id: "1JQ3iBNJdB5Ir7XiVTKokT4Klr_mpll-0", name: "DPP3" }, 
+		{ id: "1KdlUCS0JKEDAy9-ZmpxSJv9ZJmeNrXMy", name: "DPP4" }, 
+		{ id: "1rL8GarhNWk4owzhdmyQi_gSwKJAOd03D", name: "DPP5" }, 
+		{ id: "1Vn8n9CcDT4OI5D9I3KD3xpA02PBdMthk", name: "DPP6" }, 
+		{ id: "1m5Urji-JAb1NUNvxROWWfJ-9dCuXXxuG", name: "DPP7" }, 
+		{ id: "1T0YtIHcO8x2S9FpZkxJKhscVnQRRVmUi", name: "DPP8" }, 
+		{ id: "1-dy2Oslb4gix-FxydEef0BSJZjZmZkXK", name: "DPP9" }, 
+		{ id: "1qhVcRtPq4UNo2eMCsvDzsSzVvdWAMzD4", name: "DPP10" }]
+      },
+      "Chapter 5: LINEAR INEQULITIES": {
+        "Answer Key": [{ id: "1yN5AhDtYtfqwRMsVQzHwrqEKszt6SMdO", name: "DPP1TO10" }],
+        "Solution": [{ id: "17ADphkGsdMi8CV_3-TFqkGlYrMHxdU5J", name: "DPP1" }, 
+		{ id: "1dIxiFaXLVcvHX765xPFTAKqr0qjN1GXz", name: "DPP2" }, 
+		{ id: "1wbXdBT5r1oT2EcA6CKjbj3u7QQw7NXI0", name: "DPP3" }, 
+		{ id: "1-l-Rh5efguNyYcCj7jOMm1KWr6bvWyQI", name: "DPP4" }, 
+		{ id: "1awU7UCv7NMWu_5ZvlNQ1vC0mSoH8ErpE", name: "DPP5" }, 
+		{ id: "1M8NBIyZZqGeLKeFOKG2sZuQugDNxuOl9", name: "DPP6" }, 
+		{ id: "1Bx2or0mxpfLpmgC-q9DAk5qS7-StHGt-", name: "DPP7" }, 
+		{ id: "1VtI6hA3DlJmyNsT4f8xz81KKwUrCYiBM", name: "DPP8" }, 
+		{ id: "", name: "DPP9 x" }, 
+		{ id: "", name: "DPP10 x" }]
+      },
+      "Chapter 6: PERMUTATION AND COMBINATION": {
+        "Answer Key": [{ id: "1Ixchz85W49zPDzA8F9We5vuCT6Jd_VA4", name: "DPP1TO10" }],
+        "Solution": [{ id: "1g5QvqPSZhocIuSBAUEPWb6h8mkhQZBB_", name: "DPP1" }, 
+		{ id: "1xjlkbdqByVvc8-lT_GO2-we1u81HnSLl", name: "DPP2" }, 
+		{ id: "1dvZZ_qmHBEVpC0xSexKRO-X_Gbe5FqfM", name: "DPP3" }, 
+		{ id: "1D5taShaAt_1AytfCYuXkQwdg8i5625yD", name: "DPP4" }, 
+		{ id: "1_KAy5vVcikJYjvlK2URmKb848a0o8Ojf", name: "DPP5" }, 
+		{ id: "1I4YzYX_3HbpOeDmRMI5pbkEn5d2OYdhv", name: "DPP6" }, 
+		{ id: "1gPhvwi0-QV07sInOBx9YQi3jxBUch9wx", name: "DPP7" }, 
+		{ id: "1iCVnXuEfVPSSgECmuv13CRfe2k4glL7o", name: "DPP8" }, 
+		{ id: "18crES822G5jPgC3ecG9AJu6ocRnjIfp6", name: "DPP9" }, 
+		{ id: "1J53QPIsZVvx99NZj09xct2ZJW1JtQoMN", name: "DPP10" }]
+      },
+      "Chapter 7: BINOMIAL THEOREM": {
+        "Answer Key": [{ id: "1JQtiTf90V75VmRp5iNLwrT2acCuO8PlW", name: "DPP1TO10" }],
+        "Solution": [{ id: "1UeQQJcj6KXv7jc0JWwWEAUKfb9KIdX4x", name: "DPP1" }, 
+		{ id: "10RnpDZVIeO-yMFddTP_5_nQKg7DSOBLQ", name: "DPP2" }, 
+		{ id: "19fKpddlvKgfjbH0fDwIPmOklNh7s2X82", name: "DPP3" }, 
+		{ id: "1E-Y90JbUPBmPgW1VEtVB2oa9P9005Buh", name: "DPP4" }, 
+		{ id: "1H6kPuKrQHtJ2QpZ3obYOk2ejqhxLnoLT", name: "DPP5" }, 
+		{ id: "1V3p_z7XqVwp4ZYdTmw_BMWq_oJ_E7yHg", name: "DPP6" }, 
+		{ id: "1XtjSUKGdnprraRW8nVzn-bQP886DMrOm", name: "DPP7" }, 
+		{ id: "1faQlA7ARxIt-l-RAOee1qoQKa9gXkrU5", name: "DPP8" }, 
+		{ id: "1g8mUxfN5eZHBfKZ5g1o0LsmBZl9WVG5M", name: "DPP9" }, 
+		{ id: "13zJbehRGMLk1R6XnN9EsYetyTrirFTxG", name: "DPP10" }]
+      },
+      "Chapter 8: SEQUENCES AND SERIES": {
+        "Answer Key": [{ id: "1-PUUb0y6EIOczbM6xuUH67PqsKsGqB0O", name: "DPP1" }],
+        "Solution": [{ id: "1vOqsUTAs5e7jGno4aDC4_DJz5p2K4GGP", name: "DPP1" }, 
+		{ id: "1ND4Fj8doL7REc-YG1XTJvBzn3LTCeAho", name: "DPP2" }, 
+		{ id: "1IvW7OMdr001YK60f2Z5fxOX-vnB6w84V", name: "DPP3" }, 
+		{ id: "1MkJdiqp2mZoV8rlnN31WmUTabbl2PmHi", name: "DPP4" }, 
+		{ id: "130msYNCmz800RC1zYrlOfaGuM0bfXEQG", name: "DPP5" }, 
+		{ id: "1bqkw-g_q0n0_78D6QBBkS6FpsYsQLGTe", name: "DPP6" }, 
+		{ id: "12xbWA4cctv-zMNcSFyZ8BnxqffbAX6qm", name: "DPP7" }, 
+		{ id: "1q-3QggNNQII_8PPqGu6Rwhz8RrkZ443-", name: "DPP8" }, 
+		{ id: "1gIw59xKJ3ISbJKJKeOuEakio8JOD1_U0", name: "DPP9" }, 
+		{ id: "13oNr5L83cvLZkJqp9Xa1nvsOoSHW1FSF", name: "DPP10" }]
+      },
+      "Chapter 9: STRAIGHT LINES": {
+        "Answer Key": [{ id: "1YL6e5Ku2jyIJqtr59JHh7eaZr5gsz1xm", name: "DPP1" }],
+        "Solution": [{ id: "1l8NX6je9GCT0mW88qzIRmQSUpzBnPhDr", name: "DPP1" },
+		{ id: "1kVpdvVmgsYP7p9l3K3FsmSdc11FEwMQd", name: "DPP2" }, 
+		{ id: "1AhbC9kHhYGZd5M923UQU6-_U41RM169L", name: "DPP3" }, 
+		{ id: "1lht4AnLQyEGB1m9CfH_xTLMzD0bsHkGi", name: "DPP4" }, 
+		{ id: "1mGnvtwUrUUR1o2TObyndHdPvgg2_1ypO", name: "DPP5" }, 
+		{ id: "191bfY7xhGMcCpf72Zulb73AkH9KD9o9z", name: "DPP6" }, 
+		{ id: "1cgreTSnXfJd_9u8ZV4jtDLkO-jaHK_JF", name: "DPP7" }, 
+		{ id: "1bYCo9CqZhxaNKF-W3c9tYHHT9vFr9pAS", name: "DPP8" }, 
+		{ id: "1xPifMb3odU3PWCWsNPGqERzal8-VLiy4", name: "DPP9" }, 
+		{ id: "1o-zHsXJefgXaeZ9KqUx7IYK55WbXF-8E", name: "DPP10" }]
+      },
+      "Chapter 10: CONIC SECTIONS": {
+        "Answer Key": [{ id: "1bHJepvd4LVQ7TLlse_Wh4WLfbsyZmFhM", name: "DPP1" }],
+        "Solution": [{ id: "1kuqgYB4QjTfb5XGPHWTd1leD-6t8ZdYF", name: "DPP1" }, 
+		{ id: "11WfyMwH0ax59OwvmPe1fHO0eo0IyGCJz", name: "DPP2" }, 
+		{ id: "1cyCYMzuhWNiacjYNibkLvZB98kXRw7uQ", name: "DPP3" }, 
+		{ id: "1gY2LXycNzJcpbgq1ocfhG0RCRApTrp3i", name: "DPP4" }, 
+		{ id: "1-z2GW1HcD0FiWvsveynthbZZKRT2myaV", name: "DPP5" }, 
+		{ id: "1SF9KpyVerPYyGzHjCqmuP4KCQmvFkktX", name: "DPP6" }, 
+		{ id: "1uuaiktnmcWKX0chJKWAF8b0zSrkXc_BE", name: "DPP7" }, 
+		{ id: "1v-6aqZ1mUFLtLbfOhA1pSbgTsYUVsu3i", name: "DPP8" }, 
+		{ id: "15AuIY9ix_hEJSftaWfTz_zPYe63CGd3B", name: "DPP9" }, 
+		{ id: "1_cmOXl8k4bpuomesl_ABIKj6rJ-5TYPJ", name: "DPP10" }]
+      },
+ "Chapter 11: DETERMINANTS ": {
+        "Answer Key": [{ id: "1rszSs7I11cvxC6TRmGKsWcjXUVJCh2D4", name: "DPP1" }],
+        "Solution": [{ id: "1yFPayvschLZdCVTz-AH4ClfFsA7NTN2O", name: "DPP1" }, 
+		{ id: "1COM6598GZspnVUkFSLs3egzX5DBWq0Dw", name: "DPP2" }, 
+		{ id: "1XYeU3VsbozO-p3mejC05QiGC-YVQYGet", name: "DPP3" }, 
+		{ id: "1-KKXaUlzOgq5DYeCL6LapdDcmasrk86p", name: "DPP4" }, 
+		{ id: "1i7z2kRzzRIXIkdls_5uBUZPAQhAasTE-", name: "DPP5" }, 
+		{ id: "1zNieeG9qg2YuVUpK9mICwO1OHnJsR1oN", name: "DPP6" }, 
+		{ id: "1xcmsE4j4zy2FROGxbhwOgIYjL9eDO1RK", name: "DPP7" }, 
+		{ id: "1s4Wg1gkWZhdBp7CnYLzCWxlR8DSbKEt-", name: "DPP8" }, 
+		{ id: "1WKpznizB_sbNJ3-Qhk3ToOjHl6iaXHMn", name: "DPP9" }, 
+		{ id: "1EMCYlZTX0XXKREGUWoHfAH_TKnh6Vz8P", name: "DPP10" }]
+      },
+ "Chapter 12: DETERMINANTS ": {
+        "Answer Key": [{ id: "fileID5", name: "DPP1" }],
+        "Solution": [{ id: "", name: "DPP1" }, 
+		{ id: "", name: "DPP2" }, 
+		{ id: "", name: "DPP3" }, 
+		{ id: "", name: "DPP4" }, 
+		{ id: "", name: "DPP5" }, 
+		{ id: "", name: "DPP6" }, 
+		{ id: "", name: "DPP7" }, 
+		{ id: "", name: "DPP8" }, 
+		{ id: "", name: "DPP9" }, 
+		{ id: "", name: "DPP10" }]
+      },
+      "Chapter 11: COMING SOONN": {
+        "Answer Key": [{ id: "fileID19", name: "DPP1" }],
+        "Solution": [{ id: "fileID20", name: "DPP1" }]
+      },
+      "Chapter 2: COMING SOONN": {
+        "Answer Key": [{ id: "fileID21", name: "DPP1" }],
+        "Solution": [{ id: "fileID22", name: "DPP1" }]
+      }
+    }
+  };
+
+  const subjectsContainer = document.getElementById('subjects');
+  const viewer = document.getElementById('viewer');
+  const backButton = document.getElementById('backButton');
+  const pdfFrame = document.getElementById('pdfFrame');
+  const dppButtons = document.getElementById('dppButtons');
+  const subjectButtons = document.getElementById('subjectButtons');
+
+  for (const subject in googleDriveLinks) {
+    // Row 1: External Link Button
+    const extBtn = document.createElement('button');
+    extBtn.className = "dropbtn";
+    extBtn.innerHTML = `<img src="https://img.icons8.com/fluency/48/000000/external-link.png"> Math DPP Question`;
+    extBtn.onclick = () => window.open(externalLinks[subject], "_blank");
+    dppButtons.appendChild(extBtn);
+
+    // Row 1: Contact Us Button
+    const contactBtn = document.createElement('button');
+    contactBtn.className = "dropbtn";
+    contactBtn.style.backgroundColor = "#28a745";
+    contactBtn.innerHTML = `📞 Contact Us`;
+    contactBtn.onclick = () => {
+      document.getElementById("overlay").style.display = "block";
+      document.getElementById("contactForm").style.display = "block";
+    };
+    dppButtons.appendChild(contactBtn);
+
+    // Row 2: Subject Button
+    const mainBtn = document.createElement('button');
+    mainBtn.className = 'main-button';
+    mainBtn.innerText = subject;
+    mainBtn.addEventListener('click', () => {
+      document.querySelectorAll('[id$="-panel"]').forEach(p => {
+        if (p.id !== subject + '-panel') p.style.display = 'none';
+      });
+      const panel = document.getElementById(subject + '-panel');
+      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    });
+    subjectButtons.appendChild(mainBtn);
+
+    // Subject Panel
+    const panelDiv = document.createElement('div');
+    panelDiv.id = subject + '-panel';
+    panelDiv.style.display = 'none';
+
+    for (const chapter in googleDriveLinks[subject]) {
+      const chapBtn = document.createElement('button');
+      chapBtn.className = 'chapter-button';
+      chapBtn.innerText = chapter;
+      chapBtn.addEventListener('click', () => {
+        document.querySelectorAll('.pdf-links').forEach(l => l.style.display = 'none');
+        const linksDiv = document.getElementById(subject + '-' + chapter + '-links');
+        linksDiv.style.display = (linksDiv.style.display === 'block') ? 'none' : 'block';
+      });
+      panelDiv.appendChild(chapBtn);
+
+      const linksDiv = document.createElement('div');
+      linksDiv.id = subject + '-' + chapter + '-links';
+      linksDiv.className = 'pdf-links';
+
+      for (const category in googleDriveLinks[subject][chapter]) {
+        const catBtn = document.createElement('button');
+        catBtn.className = 'category-button';
+        catBtn.innerText = category;
+        linksDiv.appendChild(catBtn);
+
+        const files = googleDriveLinks[subject][chapter][category];
+        files.forEach(file => {
+          const a = document.createElement('a');
+          a.href = "https://drive.google.com/file/d/" + file.id + "/preview";
+          a.target = "pdfFrame";
+          a.innerText = file.name;
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            pdfFrame.src = a.href;
+            viewer.style.display = 'block';
+            backButton.style.display = 'block';
+            subjectsContainer.style.display = 'none';
+            dppButtons.style.display = 'none';
+            subjectButtons.style.display = 'none';
+          });
+          linksDiv.appendChild(a);
+        });
+      }
+      panelDiv.appendChild(linksDiv);
+    }
+    subjectsContainer.appendChild(panelDiv);
+  }
+
+  function goBack() {
+    viewer.style.display = 'none';
+    backButton.style.display = 'none';
+    subjectsContainer.style.display = 'block';
+    dppButtons.style.display = 'grid';
+    subjectButtons.style.display = 'grid';
+    pdfFrame.src = "";
+  }
+
+  function sendWhatsApp() {
+    const name = document.getElementById("studentName").value;
+    const msg = document.getElementById("studentMessage").value;
+    const phone = "918069409455"; // with country code
+    const text = `Name: ${name}%0ARequest: ${msg}`;
+    window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
+    closeForm();
+  }
+
+  function closeForm() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("contactForm").style.display = "none";
+    document.getElementById("studentName").value = "";
+    document.getElementById("studentMessage").value = "";
+  }
+
+  document.getElementById("overlay").onclick = closeForm;
+</script>
+</body>
+</html>
