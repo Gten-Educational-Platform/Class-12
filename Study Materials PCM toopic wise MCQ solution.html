@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Material</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      background: linear-gradient(135deg, #f9f9f9, #e0f7fa);
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #006064;
+    }
+
+    label {
+      font-weight: bold;
+      color: #00796B;
+    }
+
+    select, button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: 2px solid #00796B;
+      border-radius: 5px;
+      background-color: #e0f2f1;
+      color: #004D40;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    select:hover, button:hover {
+      background-color: #b2dfdb;
+    }
+
+    button.load-btn {
+      background-color: #00796B;
+      color: white;
+    }
+
+    button.load-btn:hover {
+      background-color: #004D40;
+    }
+
+    button.back-btn {
+      background-color: #b71c1c;
+      color: white;
+    }
+
+    button.back-btn:hover {
+      background-color: #7f0000;
+    }
+
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: 3px solid #004D40;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 600px) {
+      select, button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>TOPIC WISE MCQ ANSWERKEY AND SOLUTION</h1>
+
+  <label for="subject">Subject:</label>
+  <select id="subject">
+    <option value="">Select Subject</option>
+    <option value="physics">Physics</option>
+    <option value="chemistry">Chemistry</option>
+    <option value="math">Math</option>
+  </select>
+
+  <label for="class">Class:</label>
+  <select id="class">
+    <option value="">Select Class</option>
+  </select>
+
+  <label for="chapter">Chapter:</label>
+  <select id="chapter">
+    <option value="">Select Chapter</option>
+  </select>
+
+  <label for="pdfType">PDF Type:</label>
+  <select id="pdfType">
+    <option value="">Select Type</option>
+  </select>
+
+  <button class="load-btn" onclick="loadPDF()">Load PDF</button>
+  <button class="back-btn" onclick="resetAll()">Back</button>
+
+  <iframe id="pdfViewer" src=""></iframe>
+
+  <script>
+    const data = {
+      physics: {
+        "Class 11": {
+          "Chapter 1 - Unts an measerment": {
+            "Answer Key": "https://drive.google.com/file/d/1EiPDDRzPjXlsB3deBzb2YcbBom5uFPmp/view",
+            "Solution": "https://drive.google.com/file/d/1HHSzeq54QEdWuiu1AuqjHIZf7WD7jmBU/view"
+          },
+          "Chapter 2 - MOTION IN ONE D": {
+            "Answer Key": "https://drive.google.com/file/d/1EiPDDRzPjXlsB3deBzb2YcbBom5uFPmp/view",
+            "Solution": "https://drive.google.com/file/d/1f3xXLHnG1HkHOT92LegfhaDsk2BW4c7A/view"
+          },
+          "Chapter 3 - MOTION IN PLAIN (2D)": {
+            "Answer Key": "https://drive.google.com/file/d/1l5YMleylbUiY9TdAjrTuGWw5WnKufKO7/view",
+            "Solution": "https://drive.google.com/file/d/17Tzj1LVcpnE40_dBGpzjjk0pDw56KLHU/view"
+          },
+          "Chapter 4 - Newtons Law of Motion": {
+            "Answer Key": "https://drive.google.com/file/d/1BmEbQuA-PehQ2ipSIGnHib7n2TdJGPmy/view",
+            "Solution": "https://drive.google.com/file/d/1HSiG5PZpF81M4K5rFnDTTZNB8EZkKFn7/view"
+          },
+          "Chapter 5 - FRICTION": {
+            "Answer Key": "https://drive.google.com/file/d/1ts_qNgpm0VrS2oLk0CBSVY7Xw06GYttD/view",
+            "Solution": "https://drive.google.com/file/d/1f6NZgTAJNF_lIdtVCBrOPS1KlDJiRj2q/view"
+          },
+          "Chapter 6 - wORK ENERGY AND POWER": {
+            "Answer Key": "https://drive.google.com/file/d//view",
+            "Solution": "https://drive.google.com/file/d//view"
+          },
+          "Chapter 7 - coming soon": {
+            "Answer Key": "https://drive.google.com/file/d//view",
+            "Solution": "https://drive.google.com/file/d//view"
+          },
+          "Chapter 8 - coming soon": {
+            "Answer Key": "https://drive.google.com/file/d/1ghi789/view",
+            "Solution": "https://drive.google.com/file/d/1jkl012/view"
+          }
+        },
+        "Class 12": {
+          "Chapter 1 - Electrostatics": {
+            "Answer Key": "https://drive.google.com/file/d/1YLEueHKCYci8gXNK0XiSWIgaJqSoZClS/view",
+            "Solution": "https://drive.google.com/file/d/1xd5bcvxrTIZXaFyDv6d7CF_vcwijxZfi/view"
+          },
+          "Chapter 2 - Magnetism": {
+            "Answer Key": "https://drive.google.com/file/d/1stu901/view",
+            "Solution": "https://drive.google.com/file/d/1vwx234/view"
+          }
+        }
+      },
+      chemistry: {
+        "Class 11": {
+          "Chapter 1 - CHEMICAL ARITHMETIC (MOLE CONCEPT)": {
+            "Answer Key": "https://drive.google.com/file/d/1g-v1mJzGVPIrRgqX3suCdRMlmAvcjQrV/view",
+            "Solution": "https://drive.google.com/file/d/1RGOUsl6U9ZTTJ9ibNyM6Q1ZHZmYGWBoD/view"
+          },
+          "Chapter 2 - Atomic Structure": {
+            "Answer Key": "https://drive.google.com/file/d/1xJ76Hyvj6aWmtMA9XW9yJb6b4gO_GzTD/view",
+            "Solution": "https://drive.google.com/file/d/1BXe12vVyHsp-nn2WhBzBo2xMnIOkqWQv/view"
+},
+          "Chapter 3 - Periodic Classification of Elements": {
+            "Answer Key": "https://drive.google.com/file/d/1O1MWgBF5uTnnXOOYMK6mY4YqakZl1b1D/view",
+            "Solution": "https://drive.google.com/file/d/1xCUg_NBQAuajQTTmUrmoSC0v-28yidJ3/view"
+          },
+          "Chapter 4 - Chemical Bonding": {
+            "Answer Key": "https://drive.google.com/file/d/1GaAYw7tvAQ5kHadGiqq-K-ycKUysuRa7/view",
+            "Solution": "https://drive.google.com/file/d/1fwBMvFQ9kemy2Db4J2NHor21XdnMUsBt/view"
+          }
+		  
+        },
+        "Class 12": {
+          "Chapter 1 - Solution": {
+            "Answer Key": "https://drive.google.com/file/d/1jq38I6fyYSZ_q7F4pi7GTehob7ZVf0Ei/view",
+            "Solution": "https://drive.google.com/file/d/10tzvSLn2i1I6dRNsg3mX5OHrFL1eh6Sm/view"
+          },
+          "Chapter 2 - coming soon": {
+            "Answer Key": "https://drive.google.com/file/d//view",
+            "Solution": "https://drive.google.com/file/d/1stuv012/view"
+          },
+          "Chapter 3 - Halogen Containing Compounds HALOGEN": {
+            "Answer Key": "https://drive.google.com/file/d/1o0ZLpcHE0-KyWOyfpRJgBOHdAokBfMZq/view",
+            "Solution": "https://drive.google.com/file/d/1HEzdklqTguZ0wHBCTFPYM915mTjDDRWn/view"
+          }
+        }
+      },
+      Math: {
+        "Class 11": {
+          "Chapter 1 - Sets": {
+            "Answer Key": "https://drive.google.com/file/d/1ms4euLLW-esnq4t4kycjKIoVengXgoXx/view",
+            "Solution": "https://drive.google.com/file/d/1CFqOGI9dqyiw1tHJG8_nxcxjeN-tXEEu/view"
+          },
+          "Chapter 2 - Relations": {
+            "Answer Key": "https://drive.google.com/file/d/1math113/view",
+            "Solution": "https://drive.google.com/file/d/1math114/view"
+          }
+        },
+        "Class 12": {
+          "Chapter 1 - Matrices": {
+            "Answer Key": "https://drive.google.com/file/d/1math211/view",
+            "Solution": "https://drive.google.com/file/d/1math212/view"
+          },
+          "Chapter 2 - Determinants": {
+            "Answer Key": "https://drive.google.com/file/d/1math213/view",
+            "Solution": "https://drive.google.com/file/d/1math214/view"
+          }
+        }
+      }
+    };
+
+    const subjectSelect = document.getElementById("subject");
+    const classSelect = document.getElementById("class");
+    const chapterSelect = document.getElementById("chapter");
+    const pdfTypeSelect = document.getElementById("pdfType");
+    const pdfViewer = document.getElementById("pdfViewer");
+
+    subjectSelect.addEventListener("change", () => {
+      classSelect.innerHTML = '<option value="">Select Class</option>';
+      chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+      pdfTypeSelect.innerHTML = '<option value="">Select Type</option>';
+      pdfViewer.src = "";
+      if (subjectSelect.value && data[subjectSelect.value]) {
+        Object.keys(data[subjectSelect.value]).forEach(cls => {
+          classSelect.innerHTML += `<option value="${cls}">${cls}</option>`;
+        });
+      }
+    });
+
+    classSelect.addEventListener("change", () => {
+      chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+      pdfTypeSelect.innerHTML = '<option value="">Select Type</option>';
+      pdfViewer.src = "";
+      if (subjectSelect.value && classSelect.value) {
+        const chapters = data[subjectSelect.value][classSelect.value];
+        Object.keys(chapters).forEach(chap => {
+          chapterSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
+        });
+      }
+    });
+
+    chapterSelect.addEventListener("change", () => {
+      pdfTypeSelect.innerHTML = '<option value="">Select Type</option>';
+      pdfViewer.src = "";
+      if (subjectSelect.value && classSelect.value && chapterSelect.value) {
+        const types = data[subjectSelect.value][classSelect.value][chapterSelect.value];
+        Object.keys(types).forEach(type => {
+          pdfTypeSelect.innerHTML += `<option value="${type}">${type}</option>`;
+        });
+      }
+    });
+
+    function loadPDF() {
+      const subj = subjectSelect.value;
+      const cls = classSelect.value;
+      const chap = chapterSelect.value;
+      const type = pdfTypeSelect.value;
+      if (subj && cls && chap && type) {
+        const link = data[subj][cls][chap][type];
+        const fileId = link.split("/d/")[1].split("/")[0];
+        pdfViewer.src = `https://drive.google.com/file/d/${fileId}/preview`;
+      } else {
+        alert("Please select all options!");
+      }
+    }
+
+    function resetAll() {
+      subjectSelect.value = "";
+      classSelect.innerHTML = '<option value="">Select Class</option>';
+      chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+      pdfTypeSelect.innerHTML = '<option value="">Select Type</option>';
+      pdfViewer.src = "";
+    }
+  </script>
+</body>
+</html>
