@@ -60,19 +60,6 @@ td .total-input {
   margin: 0;
   line-height: 1;
 }
-@media (max-width: 480px) {
-  #passwordInput {
-    width: 95%;
-    font-size: 18px;
-    padding: 14px;
-  }
-
-  #passwordScreen button {
-    width: 95%;
-    font-size: 16px;
-    padding: 12px;
-  }
-
 
 @media print {
   .no-print { display: none !important; }
@@ -91,10 +78,8 @@ td .total-input {
   <div class="container">
     <div id="passwordScreen" style="text-align: center; margin-top: 100px;">
       <h2>Please enter password to access the invoice</h2>
-      <input type="password" id="passwordInput" placeholder="Enter password" 
-       style="padding: 12px; font-size: 16px; width: 90%; max-width: 300px;">
-
-      <button onclick="checkPassword()" style="padding: 10px 16px; font-size: 12px;">Submit</button>
+      <input type="password" id="passwordInput" placeholder="Enter password" style="padding: 8px; font-size: 12px;">
+      <button onclick="checkPassword()" style="padding: 8px 16px; font-size: 12px;">Submit</button>
     </div>
 
     <div id="protectedContent" style="display:none;">
@@ -281,73 +266,83 @@ td .total-input {
     }
 
     // ---------- save/load invoices ----------
-function saveInvoice() {
-  const name = document.getElementById("studentName").value.trim();
-  if (!name) return alert("Enter student name.");
+    function saveInvoice() {
+      const name = document.getElementById("studentName").value.trim();
+      if (!name) return alert("Enter student name.");
 
-  let invoiceNo = document.getElementById("invoiceNo").textContent;
-  if (invoiceNo === "-" || !invoiceNo) {
-    invoiceNo = generateInvoiceNo();
-    document.getElementById("invoiceNo").textContent = invoiceNo;
-  }
+      let invoiceNo = document.getElementById("invoiceNo").textContent;
+      if (invoiceNo === "-" || !invoiceNo) {
+        invoiceNo = generateInvoiceNo();
+        document.getElementById("invoiceNo").textContent = invoiceNo;
+      }
 
-  const rows = Array.from(document.querySelectorAll("#billBody tr")).map(row => {
-    const from = row.children[0].querySelector("input")?.value || "";
-    const to = row.children[1].querySelector("input")?.value || "";
-    const type = row.children[2].querySelector("select")?.value || "";
+      const rows = Array.from(document.querySelectorAll("#billBody tr")).map(row => {
+        const from = row.children[0].querySelector("input")?.value || "";
+        const to = row.children[1].querySelector("input")?.value || "";
+const type = row.children[2].querySelector("select")?.value || "";
 
-    let subject = "";
-    if (type === "Prev. balance") {
-      subject = row.children[3].querySelector("input")?.value || "";
-    } else {
-      let subjectEl = row.children[3].querySelector("select") || row.children[3].querySelector("input");
-      subject = subjectEl ? subjectEl.value : "";
-    }
-
-    const qtyEl = row.children[4].querySelector("input");
-    const rateEl = row.children[5].querySelector("input");
-    const totalEl = row.children[6].querySelector("input");
-
-    const qty = qtyEl ? qtyEl.value : (row.children[4].textContent.trim() || "");
-    const rate = rateEl ? rateEl.value : (row.children[5].textContent.trim() || "");
-    const total = totalEl ? totalEl.value : (row.children[6].textContent.trim() || "0");
-
-    return { from, to, type, subject, qty, rate, total };
-  });
-
-  // 🔹 compute balance here
-  let grandTotal = 0;
-  rows.forEach(r => { grandTotal += parseFloat(r.total) || 0; });
-  const paid = parseFloat(document.getElementById("amountPaid").value) || 0;
-  const balance = grandTotal - paid;
-
-  const invoice = {
-    name,
-    phone: document.getElementById("phone").value,
-    email: document.getElementById("email").value,
-    address: document.getElementById("address").value,
-    class: document.getElementById("studentClass").value,
-    date: invoiceDateInput.value,
-    amountPaid: paid,
-    rows,
-    balance  // 🔹 store balance explicitly
-  };
-
-  const invoices = JSON.parse(localStorage.getItem("invoices") || "{}");
-  invoices[invoiceNo] = invoice;
-  localStorage.setItem("invoices", JSON.stringify(invoices));
-
-  const students = JSON.parse(localStorage.getItem("students") || "{}");
-  students[name] = { phone: invoice.phone, email: invoice.email, address: invoice.address, class: invoice.class };
-  localStorage.setItem("students", JSON.stringify(students));
-
-  populateDropdowns();
-  document.getElementById("invoiceSelect").value = invoiceNo;
-  document.getElementById("printBtn").style.display = "inline-block";
-
-  alert("Invoice Saved!");
+let subject = "";
+if (type === "Prev. balance") {
+  // For Prev. balance we always use <input>
+  subject = row.children[3].querySelector("input")?.value || "";
+} else {
+  let subjectEl = row.children[3].querySelector("select") || row.children[3].querySelector("input");
+  subject = subjectEl ? subjectEl.value : "";
 }
 
+
+
+        const qtyEl = row.children[4].querySelector("input");
+        const rateEl = row.children[5].querySelector("input");
+        const totalEl = row.children[6].querySelector("input");
+
+        const qty = qtyEl ? qtyEl.value : (row.children[4].textContent.trim() || "");
+        const rate = rateEl ? rateEl.value : (row.children[5].textContent.trim() || "");
+        const total = totalEl ? totalEl.value : (row.children[6].textContent.trim() || "0");
+
+        return { from, to, type, subject, qty, rate, total };
+      });
+
+      // ----- NEW: compute grand total & balance so we can save it (used by Prev. balance) -----
+      let grandTotalCalc = 0;
+      rows.forEach(r => {
+        const rowTotal = (r.total !== undefined && r.total !== "") 
+          ? (parseFloat(r.total) || 0)
+          : ((parseFloat(r.qty) || 0) * (parseFloat(r.rate) || 0));
+        grandTotalCalc += rowTotal;
+      });
+      const amountPaidNumeric = parseFloat(document.getElementById("amountPaid").value) || 0;
+      const balanceToSave = parseFloat((grandTotalCalc - amountPaidNumeric).toFixed(2));
+      // -----------------------------------------------------------------------------------------
+
+      const invoice = {
+        name,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        class: document.getElementById("studentClass").value,
+        date: invoiceDateInput.value,
+        amountPaid: document.getElementById("amountPaid").value,
+        rows,
+        // store totals & balance (NEW) so Prev. balance lookup works
+        total: grandTotalCalc,
+        balance: balanceToSave
+      };
+
+      const invoices = JSON.parse(localStorage.getItem("invoices") || "{}");
+      invoices[invoiceNo] = invoice;
+      localStorage.setItem("invoices", JSON.stringify(invoices));
+
+      const students = JSON.parse(localStorage.getItem("students") || "{}");
+      students[name] = { phone: invoice.phone, email: invoice.email, address: invoice.address, class: invoice.class };
+      localStorage.setItem("students", JSON.stringify(students));
+
+      populateDropdowns();
+      document.getElementById("invoiceSelect").value = invoiceNo;
+      document.getElementById("printBtn").style.display = "inline-block";
+
+      alert("Invoice Saved!");
+    }
 
 function loadInvoiceByNumber(invoiceNoParam) {
   const invoiceNo = invoiceNoParam || document.getElementById("invoiceSelect").value;
@@ -460,6 +455,7 @@ if (delBtn) delBtn.textContent = "×";
             <option>Individual Coaching</option>
             <option>Home Tuition</option>
             <option>Group Coaching</option>
+			<option>Online Coaching</option>
             <option>Dual Coaching</option>
             <option>Super Group Coaching</option>
             <option>Demo Class Reg. Fee</option>
@@ -569,7 +565,7 @@ function handleServiceTypeChange(selectEl) {
       </select>
     `;
   }
-  else if (["Individual Coaching", "Home Tuition", "Dual Coaching", "Demo Class Reg. Fee"].includes(val)) {
+  else if (["Individual Coaching", "Online Coaching", "Home Tuition", "Dual Coaching", "Demo Class Reg. Fee"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="8 Class" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="1000" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
     fromInput.disabled = false;
@@ -634,75 +630,61 @@ function handleServiceTypeChange(selectEl) {
 
 
     // ---------- calculations & QR ----------
-function calculateTotal() {
-  let grandTotal = 0;
+    function calculateTotal() {
+      let grandTotal = 0;
+      document.querySelectorAll("#billBody tr").forEach(row => {
+        const serviceType = (row.children[2].querySelector("select")?.value) || "";
+        if (serviceType === "Prev. balance" || serviceType === "Fee Concession") {
+          const totalInput = row.children[6].querySelector("input");
+          const totalVal = parseFloat(totalInput ? totalInput.value : (row.children[6].textContent || 0)) || 0;
+          grandTotal += totalVal;
+        } else {
+          // qty might be in an input or text like "8 Class"
+          const qtyInput = row.children[4].querySelector("input");
+          const rateInput = row.children[5].querySelector("input");
+          const qty = qtyInput ? (parseFloat(qtyInput.value) || 0) : (parseFloat(row.children[4].textContent) || 0);
+          const rate = rateInput ? (parseFloat(rateInput.value) || 0) : (parseFloat(row.children[5].textContent) || 0);
+          const total = qty * rate;
 
-  document.querySelectorAll("#billBody tr").forEach(row => {
-    const serviceType = (row.children[2].querySelector("select")?.value) || "";
+          // set total cell (respecting whether it's an input)
+          const totalCellInput = row.children[6].querySelector("input");
+          if (totalCellInput) {
+            totalCellInput.value = total.toFixed(2);
+          } else {
+            row.children[6].textContent = total.toFixed(2);
+          }
 
-    if (serviceType === "Prev. balance" || serviceType === "Fee Concession") {
-      const totalInput = row.children[6].querySelector("input");
-      const totalVal = parseFloat(totalInput ? totalInput.value : (row.children[6].textContent || 0)) || 0;
-      grandTotal += totalVal;
-    } else {
-      const qtyInput = row.children[4].querySelector("input");
-      const rateInput = row.children[5].querySelector("input");
-      const totalCell = row.children[6];
+          grandTotal += total;
+        }
+      });
 
-      const qty = qtyInput ? (parseFloat(qtyInput.value) || 0) : (parseFloat(row.children[4].textContent) || 0);
-      const rate = rateInput ? (parseFloat(rateInput.value) || 0) : (parseFloat(row.children[5].textContent) || 0);
-      const total = qty * rate;
-
-      grandTotal += total;
-
-      // Update total cell
-      if (totalCell.querySelector("input")) {
-        totalCell.querySelector("input").value = total.toFixed(2);
-      } else {
-        totalCell.textContent = total.toFixed(2);
-      }
+      document.getElementById("grandTotal").textContent = `Total Amount: ₹${grandTotal.toFixed(2)}`;
+      document.getElementById("amountInWords").textContent = `Total (in words): ${convertNumberToWords(grandTotal)} Only`;
+      const paid = parseFloat(document.getElementById("amountPaid").value) || 0;
+      const balance = grandTotal - paid;
+      document.getElementById("dueBalance").textContent = `Due Balance: ₹${balance.toFixed(2)}`;
+      updateQRCode(balance);
     }
-  });
 
-  // Display grand total
-  document.getElementById("grandTotal").textContent = "Total Amount: ₹" + grandTotal.toFixed(2);
+    function convertNumberToWords(num) {
+      if (!num || isNaN(num) || Number(num) === 0) return 'Zero Rupees';
+      const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+                 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen',
+                 'Eighteen', 'Nineteen'];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-  // Amount in words
-  document.getElementById("amountInWords").textContent = "Total (in words): " + numberToWords(grandTotal) + " Only";
-
-  // Due balance
-  const paid = parseFloat(document.getElementById("amountPaid").value) || 0;
-  const due = grandTotal - paid;
-  document.getElementById("dueBalance").textContent = "Due Balance: ₹" + due.toFixed(2);
-
-  // Update QR code
-  document.getElementById("qrCanvas").innerHTML = "";
-  new QRCode(document.getElementById("qrCanvas"), {
-    text: `upi://pay?pa=9706380357@upi&pn=G10%20Educational%20Platform&am=${due.toFixed(2)}&cu=INR`,
-    width: 120,
-    height: 120
-  });
-}
-
-// Helper function: Convert number to words
-function numberToWords(num) {
-  const a = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-             "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
-             "Seventeen", "Eighteen", "Nineteen"];
-  const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-
-  if ((num = num.toString()).length > 9) return "Overflow";
-  const n = ("000000000" + num).substr(-9).match(/.{1,2}/g).map(x => parseInt(x, 10));
-
-  let str = "";
-  str += (n[0] ? a[n[0]] + " Crore " : "");
-  str += (n[1] ? a[n[1]] + " Lakh " : "");
-  str += (n[2] ? a[n[2]] + " Thousand " : "");
-  str += (n[3] ? a[n[3]] + " Hundred " : "");
-  str += (n[4] ? (str !== "" ? "and " : "") + (a[n[4]] || b[n[4][0]] + " " + a[n[4][1]]) : "");
-  return str.trim() || "Zero";
-}
-
+      const nnum = Math.floor(Math.abs(Number(num)));
+      if (nnum.toString().length > 9) return 'Amount too high';
+      const n = ('000000000' + nnum).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+      if (!n) return '';
+      let str = '';
+      str += (n[1] != 0) ? (a[Number(n[1])] || (b[n[1][0]] + ' ' + a[n[1][1]])) + ' Crore ' : '';
+      str += (n[2] != 0) ? (a[Number(n[2])] || (b[n[2][0]] + ' ' + a[n[2][1]])) + ' Lakh ' : '';
+      str += (n[3] != 0) ? (a[Number(n[3])] || (b[n[3][0]] + ' ' + a[n[3][1]])) + ' Thousand ' : '';
+      str += (n[4] != 0) ? (a[Number(n[4])] || (b[n[4][0]] + ' ' + a[n[4][1]])) + ' Hundred ' : '';
+      str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || (b[n[5][0]] + ' ' + a[n[5][1]])) + ' ' : '';
+      return (str.trim() + ' Rupees');
+    }
 
     function updateQRCode(amount) {
       const upiID = "9706380357@ucobank";
