@@ -367,39 +367,41 @@ function loadInvoiceByNumber(invoiceNoParam) {
     const tr = document.createElement("tr");
 
     // default row layout
-    tr.innerHTML = `
-      <td><input type="date" value="${escapeHTML(row.from || '')}"></td>
-      <td><input type="date" value="${escapeHTML(row.to || '')}"></td>
-      <td>
-        <select onchange="handleServiceTypeChange(this)">
-          <option>Individual Coaching</option>
-          <option>Home Tuition</option>
-          <option>Group Coaching</option>
-          <option>Dual Coaching</option>
-          <option>Super Group Coaching</option>
-          <option>Demo Class Reg. Fee</option>
-          <option>Admission Fee</option>
-          <option>Study Material</option>
-          <option>Prev. balance</option>
-          <option>Fee Concession</option>
-        </select>
-      </td>
-      <td>
-        <select>
-          <option>Physics</option>
-          <option>Chemistry</option>
-          <option>Math</option>
-          <option>Biology</option>
-          <option>Science</option>
-          <option>NA</option>
-          <option>Qlfd. Scholarship</option>
-        </select>
-      </td>
-      <td><input type="text" value="${escapeHTML(row.qty || '')}" style="width:60px;" oninput="calculateTotal()"></td>
-      <td><input type="number" value="${escapeHTML(row.rate || 0)}" min="0" class="rate" style="width:60px;" oninput="calculateTotal()"></td>
-      <td><input type="number" step="0.01" value="${escapeHTML(row.total || 0)}" class="total-input" style="text-align:center;" oninput="calculateTotal()"></td>
-<td class="no-print"><button class="delete-btn" onclick="this.closest('tr').remove();calculateTotal()">×</button></td>
-    `;
+ tr.innerHTML = `
+  <td><input type="date" value="${escapeHTML(row.from || '')}"></td>
+  <td><input type="date" value="${escapeHTML(row.to || '')}"></td>
+  <td>
+    <select onchange="handleServiceTypeChange(this)">
+      <option>Individual Coaching</option>
+      <option>Home Tuition</option>
+	  
+      <option>Group Coaching</option>
+      <option>Dual Coaching</option>
+      <option>Super Group Coaching</option>
+      <option>Demo Class Reg. Fee</option>
+      <option>Admission Fee</option>
+      <option>Study Material</option>
+      <option>Prev. balance</option>
+      <option>Fee Concession</option>
+    </select>
+  </td>
+  <td>
+    <select>
+      <option value="Physics" ${row.subject === "Physics" ? "selected" : ""}>Physics</option>
+      <option value="Chemistry" ${row.subject === "Chemistry" ? "selected" : ""}>Chemistry</option>
+      <option value="Math" ${row.subject === "Math" ? "selected" : ""}>Math</option>
+      <option value="Biology" ${row.subject === "Biology" ? "selected" : ""}>Biology</option>
+      <option value="Science" ${row.subject === "Science" ? "selected" : ""}>Science</option>
+      <option value="NA" ${row.subject === "NA" ? "selected" : ""}>NA</option>
+      <option value="Qlfd. Scholarship" ${row.subject === "Qlfd. Scholarship" ? "selected" : ""}>Qlfd. Scholarship</option>
+    </select>
+  </td>
+  <td><input type="text" value="${escapeHTML(row.qty || '')}" style="width:60px;" oninput="calculateTotal()"></td>
+  <td><input type="number" value="${escapeHTML(row.rate || 0)}" min="0" class="rate" style="width:60px;" oninput="calculateTotal()"></td>
+  <td><input type="number" step="0.01" value="${escapeHTML(row.total || 0)}" class="total-input" style="text-align:center;" oninput="calculateTotal()"></td>
+  <td class="no-print"><button class="delete-btn" onclick="this.closest('tr').remove();calculateTotal()">×</button></td>
+`;
+
 // force the delete button text to ×
 const delBtn = tr.querySelector(".delete-btn");
 if (delBtn) delBtn.textContent = "×";
@@ -447,7 +449,9 @@ if (delBtn) delBtn.textContent = "×";
     function addItem() {
       document.getElementById("invoiceTable").style.display = "table";
       const row = document.createElement("tr");
-      row.innerHTML = `
+     
+
+	 row.innerHTML = `
         <td><input type="date"></td>
         <td><input type="date"></td>
         <td>
@@ -514,7 +518,7 @@ function handleServiceTypeChange(selectEl) {
       `;
       totalCell.innerHTML = `<input type="number" step="0.01" value="0.00" class="total-input" style="text-align:center;" oninput="calculateTotal()">`;
     } 
-    else {  // 🔹 Prev. balance
+    else {  // Prev. balance
       fromInput.disabled = false;
       toInput.disabled = false;
 
@@ -532,14 +536,14 @@ function handleServiceTypeChange(selectEl) {
             if (!latestDate || invDate > latestDate) {
               latestDate = invDate;
               lastInvoiceNo = invNo;
-              lastDueBalance = parseFloat(inv.balance || 0); // 🔹 fetch last balance
+              lastDueBalance = parseFloat(inv.balance || 0);
             }
           }
         });
       }
 
       if (lastInvoiceNo) {
-        subjectCell.innerHTML = `<input type="text" value="${lastInvoiceNo}" style="width:120px;">`;
+        subjectCell.innerHTML = `<input type="text" value="${escapeHTML(lastInvoiceNo)}" style="width:120px;">`;
         totalCell.innerHTML = `<input type="number" step="0.01" value="${lastDueBalance.toFixed(2)}" class="total-input" style="text-align:center;" oninput="calculateTotal()">`;
       } else {
         subjectCell.innerHTML = `<input type="text" placeholder="Enter Invoice No." style="width:120px;">`;
@@ -554,16 +558,20 @@ function handleServiceTypeChange(selectEl) {
     toInput.disabled = false;
     if (!fromInput.value) fromInput.value = invoiceDateInput.value || '';
     totalCell.innerHTML = `0.00`;
-    subjectCell.innerHTML = `
-      <select>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Science</option>
-        <option>NA</option>
-      </select>
-    `;
+
+    // ✅ Only set subject dropdown if empty
+    if (!subjectCell.querySelector("select")) {
+      subjectCell.innerHTML = `
+        <select>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Math</option>
+          <option>Biology</option>
+          <option>Science</option>
+          <option>NA</option>
+        </select>
+      `;
+    }
   }
   else if (["Individual Coaching", "Online Coaching", "Home Tuition", "Dual Coaching", "Demo Class Reg. Fee"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="8 Class" style="width:60px;" oninput="calculateTotal()">`;
@@ -572,16 +580,20 @@ function handleServiceTypeChange(selectEl) {
     toInput.disabled = false;
     if (!fromInput.value) fromInput.value = invoiceDateInput.value || '';
     totalCell.innerHTML = (8 * 1000).toFixed(2);
-    subjectCell.innerHTML = `
-      <select>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Science</option>
-        <option>NA</option>
-      </select>
-    `;
+
+    // ✅ Only set subject dropdown if empty
+    if (!subjectCell.querySelector("select")) {
+      subjectCell.innerHTML = `
+        <select>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Math</option>
+          <option>Biology</option>
+          <option>Science</option>
+          <option>NA</option>
+        </select>
+      `;
+    }
   }
   else if (["Group Coaching", "Super Group Coaching"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="1 Month" style="width:60px;" oninput="calculateTotal()">`;
@@ -590,16 +602,20 @@ function handleServiceTypeChange(selectEl) {
     toInput.disabled = false;
     if (!fromInput.value) fromInput.value = invoiceDateInput.value || '';
     totalCell.innerHTML = "0.00";
-    subjectCell.innerHTML = `
-      <select>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Science</option>
-        <option>NA</option>
-      </select>
-    `;
+
+    // ✅ Only set subject dropdown if empty
+    if (!subjectCell.querySelector("select")) {
+      subjectCell.innerHTML = `
+        <select>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Math</option>
+          <option>Biology</option>
+          <option>Science</option>
+          <option>NA</option>
+        </select>
+      `;
+    }
   }
   else {
     const qtyVal = (qtyCell.querySelector("input") && !qtyCell.querySelector("input").disabled) ? qtyCell.querySelector("input").value : 1;
@@ -612,20 +628,25 @@ function handleServiceTypeChange(selectEl) {
     const qtyNum = parseFloat(qtyVal) || 0;
     const rateNum = parseFloat(rateVal) || 0;
     totalCell.innerHTML = (qtyNum * rateNum).toFixed(2);
-    subjectCell.innerHTML = `
-      <select>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Science</option>
-        <option>NA</option>
-      </select>
-    `;
+
+    // ✅ Only set subject dropdown if empty
+    if (!subjectCell.querySelector("select")) {
+      subjectCell.innerHTML = `
+        <select>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Math</option>
+          <option>Biology</option>
+          <option>Science</option>
+          <option>NA</option>
+        </select>
+      `;
+    }
   }
 
   calculateTotal();
 }
+
 
 
 
