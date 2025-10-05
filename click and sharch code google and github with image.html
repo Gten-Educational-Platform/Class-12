@@ -1,256 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Question Solver</title>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
-  <!-- MathJax for LaTeX -->
-  <script>
-    window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$', '$']] }, svg: { fontCache: 'global' } };
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 15px; background: #f4f6f9; margin: 0; }
-    h2 { color: #2c3e50; font-size: 1.4rem; }
-    .mode-toggle { margin: 15px 0; }
-    .toggle-label { margin: 0 10px; font-weight: bold; cursor: pointer; }
-    .hidden { display: none; }
-    input[type="file"], textarea, input[type="text"] {
-      font-size: 1rem; padding: 10px; margin: 10px 0; width: 100%; max-width: 400px;
-    }
-    textarea { height: 100px; resize: vertical; }
-    button { margin-top: 10px; padding: 12px 20px; background: #3498db; color: white; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; }
-    button:hover { background: #2c80b9; }
-    .solution-box {
-      background: #fff; border-radius: 10px; padding: 15px; margin-top: 15px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2); text-align: left; font-size: 1rem; line-height: 1.5;
-    }
-    .solution-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-    .suggestion { margin-top: 10px; padding: 10px; border-left: 4px solid #3498db; background: #ecf6ff; border-radius: 6px; font-size: 0.95rem; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Question Solver — All-in-One</title>
 
-    #cropModal {
-      display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column;
-      padding: 15px; box-sizing: border-box;
-    }
-    #cropImage { max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 6px; touch-action: none; }
-    .modal-btn {
-      position: absolute; bottom: 20px; padding: 12px 20px;
-      background: #3498db; color: white; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer;
-    }
-    .modal-btn:hover { background: #2c80b9; }
-    #cancelCrop { left: 20px; background: #e74c3c; }
-    #confirmCrop { right: 20px; }
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
 
-    #progressContainer { width: 100%; max-width: 400px; margin: 20px auto; display: none; }
-    #progressBar { width: 0%; height: 18px; background: #3498db; border-radius: 10px; transition: width 0.2s linear; }
-    #progressWrapper { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; }
-  </style>
+<!-- MathJax -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'], ['$', '$']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+body { font-family: Arial, Helvetica, sans-serif; background:#f4f6f9; margin:0; padding:18px; color:#222; }
+h2{margin:6px 0 18px;font-weight:600;color:#2c3e50;text-align:center}
+.mode-toggle{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.toggle-label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;background:#fff;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+input[type="file"], textarea, input[type="text"]{font-size:1rem;padding:10px;margin:10px 0;width:100%;max-width:420px;border-radius:8px;border:1px solid #d9e2ec;box-sizing:border-box}
+textarea{min-height:110px;resize:vertical}
+button{padding:10px 16px;border-radius:8px;border:0;background:#3498db;color:#fff;font-weight:600;cursor:pointer}
+button:hover{background:#2c80b9}
+.solution-box{background:#fff;border-radius:10px;padding:14px;margin-top:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);text-align:left}
+.solution-box img{max-width:100%;border-radius:8px}
+.small{font-size:0.92rem;color:#555}
+.hidden{display:none}
+#cropModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:18px}
+#cropInner{max-width:100%;width:100%;max-width:900px;position:relative}
+#cropImage{max-width:100%;max-height:75vh;border-radius:6px}
+.modal-action{position:absolute;left:16px;bottom:18px;padding:10px 14px;border-radius:8px;background:#e74c3c;color:#fff;border:0;cursor:pointer}
+.modal-action.confirm{right:16px;left:auto;background:#3498db}
+#progressContainer{max-width:420px;margin:12px auto;display:none}
+#progressWrapper{background:#e6eef8;border-radius:12px;overflow:hidden;height:18px}
+#progressBar{height:18px;width:0%;transition:width .2s linear;background:#3498db}
+.meta{margin-top:10px;font-size:0.95rem;color:#444}
+.subject-label{display:inline-block;padding:6px 8px;background:#eef5fb;border-radius:6px;margin-bottom:8px}
+ol{padding-left:20px}
+</style>
 </head>
 <body>
-  <h2>📚 AI Question Solver<br>(Physics | Chemistry | Math | Biology)</h2>
+<div class="container">
+<h2>📚 AI Question Solver — (Physics | Chemistry | Math | Biology)</h2>
 
-  <div class="mode-toggle">
-    <label class="toggle-label"><input type="radio" name="mode" value="image" checked> 📷 Upload Image</label>
-    <label class="toggle-label"><input type="radio" name="mode" value="text"> ✍️ Type Question</label>
-    <label class="toggle-label"><input type="radio" name="mode" value="code"> 🔢 Enter Question Code</label>
+<div class="mode-toggle" role="tablist" aria-label="modes">
+  <label class="toggle-label"><input type="radio" name="mode" value="image" checked> 📷 Upload Image</label>
+  <label class="toggle-label"><input type="radio" name="mode" value="text"> ✍️ Type Question</label>
+  <label class="toggle-label"><input type="radio" name="mode" value="code"> 🔢 Enter Question Code</label>
+</div>
+
+<div id="imageMode"><input type="file" id="fileInput" accept="image/*" capture="environment"></div>
+<div id="textMode" class="hidden">
+  <textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea>
+  <br><button id="solveManual">🔍 Solve</button>
+</div>
+<div id="codeMode" class="hidden">
+  <input type="text" id="questionCode" placeholder="Enter question code (eg. C101)">
+  <br><button id="solveCode">🔍 Get Answer</button>
+</div>
+
+<div id="cropModal" aria-hidden="true">
+  <div id="cropInner">
+    <img id="cropImage" alt="Crop preview">
+    <button id="cancelCrop" class="modal-action">❌ Cancel</button>
+    <button id="confirmCrop" class="modal-action confirm">✂️ Crop & Solve</button>
   </div>
+</div>
 
-  <div id="imageMode"><input type="file" id="fileInput" accept="image/*" capture="environment"></div>
-  <div id="textMode" class="hidden"><textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea><br><button id="solveManual">🔍 Solve</button></div>
-  <div id="codeMode" class="hidden"><input type="text" id="questionCode" placeholder="Enter question code..."><br><button id="solveCode">🔍 Get Answer</button></div>
+<div id="progressContainer">
+  <div id="progressWrapper"><div id="progressBar"></div></div>
+  <p id="progressText" class="small">Processing...</p>
+</div>
 
-  <div id="cropModal"><img id="cropImage" alt="To Crop"><button id="cancelCrop" class="modal-btn">❌ Cancel</button><button id="confirmCrop" class="modal-btn">✂️ Crop & Solve</button></div>
-  <div id="progressContainer"><div id="progressWrapper"><div id="progressBar"></div></div><p id="progressText">Processing...</p></div>
+<div class="solution-box" id="result">
+  <div class="small">Select a mode and provide your question to see the solution.</div>
+</div>
+</div>
 
-  <div class="solution-box" id="result">Select a mode and provide your question to see the solution.</div>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
 
-  <script>
-    let questionBanks = {}, fuseBanks = {}, cropper = null;
+// ------------------- Fuse.js Question Banks -------------------
+const subjectUrls = {
+  chemistry: "https://gten-educational-platform.github.io/Class-12/question.html",
+  physics:   "https://gten-educational-platform.github.io/Class-12/physics.json",
+  math:      "https://gten-educational-platform.github.io/Class-12/math.json",
+  biology:   "https://gten-educational-platform.github.io/Class-12/biology.json"
+};
 
-    const subjectUrls = {
-      chemistry: "https://gten-educational-platform.github.io/Class-12/question.html",
-      physics: "https://gten-educational-platform.github.io/Class-12/chemistry question.html.html",
-      math: "https://gten-educational-platform.github.io/Class-12/math.json",
-	  science: "",
-      biology: "https://gten-educational-platform.github.io/Class-12/biology.json"
-    };
+let questionBanks={}, fuseBanks={}, cropper=null;
 
-    // Load all subjects at startup
-    for (let subj in subjectUrls) {
-      fetch(subjectUrls[subj])
-        .then(r => r.json())
-        .then(data => {
-          questionBanks[subj] = data;
-          fuseBanks[subj] = new Fuse(data, { keys: ["question"], threshold: 0.4, includeScore: true });
-        });
-    }
+function cleanText(t){return t?String(t).replace(/\r\n/g,' ').replace(/\n/g,' ').replace(/\s+/g,' ').trim().toLowerCase():"";}
+function removeNums(s){return String(s).replace(/\b\d+(\.\d+)?\b/g,'').replace(/\s+/g,' ').trim();}
+function extractQText(q){if(!q)return""; if(typeof q==="string") return q; if(typeof q==="object"&&q.text) return q.text; return JSON.stringify(q);}
+function buildFuse(subj,data){
+  data.forEach(item=>{
+    const qtxt=cleanText(extractQText(item.question));
+    const stxt=(item.solution && item.solution.text)? cleanText(item.solution.text):"";
+    const combined=`${qtxt} ${stxt} ${item.code?String(item.code).toLowerCase():''}`.trim();
+    item._searchable=combined;
+    item._searchable_no_nums=removeNums(combined);
+  });
+  fuseBanks[subj]=new Fuse(data,{keys:['_searchable_no_nums'],threshold:0.45,distance:200,includeScore:true,minMatchCharLength:3});
+  fuseBanks[subj+"_nums"]=new Fuse(data,{keys:['_searchable'],threshold:0.55,distance:200,includeScore:true,minMatchCharLength:3});
+  questionBanks[subj]=data;
+}
 
-    // --- NEW flexible renderer ---
-    function renderContent(content, label) {
-      if (!content) return "";
-      let html = "";
-      if (typeof content === "string") {
-        if (content.match(/\.(jpeg|jpg|png|gif|svg|png)$/i)) {
-          html += `<p><b>${label}:</b></p><img src="${content}" alt="${label} Image">`;
-        } else {
-          html += `<p><b>${label}:</b> <span class="mathjax">${content}</span></p>`;
-        }
-      } else if (typeof content === "object") {
-        if (content.text) {
-          html += `<p><b>${label}:</b> <span class="mathjax">${content.text}</span></p>`;
-        }
-        if (content.image) {
-          html += `<img src="${content.image}" alt="${label} Image">`;
-        }
-      }
-      return html;
-    }
-
-  function renderQA(item, subj) {
-  setTimeout(() => MathJax.typeset(), 50);
-
-  let html = `<b>Subject:</b> ${subj}<br>`;
-  html += renderContent(item.question, "Question");
-  html += renderContent(item.solution, "Solution");
-
-  // ✅ Render structured solution steps if available
-  if (item.solution_steps && Array.isArray(item.solution_steps)) {
-    html += `<p><b>Solution Steps:</b></p><ol>`;
-    item.solution_steps.forEach(step => {
-      html += `<li><span class="mathjax">${step}</span></li>`;
-    });
-    html += `</ol>`;
+async function loadSubjects(){
+  for(const [subj,url] of Object.entries(subjectUrls)){
+    if(!url) continue;
+    try{
+      const resp=await fetch(url);
+      if(!resp.ok) continue;
+      const data=await resp.json();
+      if(!Array.isArray(data)) continue;
+      buildFuse(subj,data);
+    }catch(e){console.warn(`Failed to load ${subj}`,e);}
   }
+}
+loadSubjects();
 
+// ------------------- Render Functions -------------------
+function htmlEscape(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderContent(content,label){
+  if(!content) return "";
+  let html="";
+  if(typeof content==="string"){
+    if(content.match(/\.(jpeg|jpg|png|gif|svg)$/i)) html+=`<p><b>${label}:</b></p><img src="${htmlEscape(content)}" alt="${label}">`;
+    else html+=`<p><b>${label}:</b> <span class="mathjax">${htmlEscape(content)}</span></p>`;
+  }else if(typeof content==="object"){
+    if(content.text) html+=`<p><b>${label}:</b> <span class="mathjax">${htmlEscape(content.text)}</span></p>`;
+    if(content.image) html+=`<img src="${htmlEscape(content.image)}" alt="${label} image">`;
+  }
   return html;
 }
 
+function renderQA(item,subj){
+  let html=`<div class="subject-label">${subj.toUpperCase()}</div>`;
+  if(item.code) html+=`<p><b>Code:</b> <span class="small">${htmlEscape(item.code)}</span></p>`;
+  html+=renderContent(item.question,"Question");
+  html+=renderContent(item.solution,"Solution");
+  if(item.solution_steps && Array.isArray(item.solution_steps)){
+    html+=`<p><b>Solution Steps:</b></p><ol>`;
+    item.solution_steps.forEach(step=>{html+=`<li><span class="mathjax">${htmlEscape(step)}</span></li>`;});
+    html+=`</ol>`;
+  }
+  setTimeout(()=>{if(window.MathJax && MathJax.typeset) MathJax.typeset();},60);
+  return html;
+}
 
-    function searchSolution(text) {
-      let bestMatch = null, bestScore = 1, bestSubject = "";
-      for (let subj in fuseBanks) {
-        const results = fuseBanks[subj].search(text);
-        if (results.length > 0 && results[0].score < bestScore) {
-          bestMatch = results[0].item;
-          bestScore = results[0].score;
-          bestSubject = subj;
+// ------------------- Search Functions -------------------
+function searchSolution(rawText){
+  const text=cleanText(rawText), textNoNums=removeNums(text);
+  let allMatches=[];
+
+  for(const subj in fuseBanks){
+    if(subj.endsWith("_nums")) continue;
+    try{
+      const r=fuseBanks[subj].search(textNoNums);
+      if(r.length){
+        r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj})});
+      }
+    }catch(e){}
+  }
+
+  for(const subj in fuseBanks){
+    if(!subj.endsWith("_nums")) continue;
+    try{
+      const r=fuseBanks[subj].search(text);
+      if(r.length){
+        r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj:subj.replace(/_nums$/,'')})});
+      }
+    }catch(e){}
+  }
+
+  if(allMatches.length){
+    allMatches.sort((a,b)=>a.score-b.score);
+    let html="";
+    allMatches.slice(0,5).forEach(m=>{ // show top 5 closest matches
+      html+=renderQA(m.item,m.subj)+"<hr>";
+    });
+    return html;
+  }
+
+  try{window.open("https://www.google.com/search?q="+encodeURIComponent(rawText),"_blank");}catch(e){}
+  return `❌ No match found. Searching Google...`;
+}
+
+function searchByCode(code){
+  if(!code) return "⚠️ Please enter a code.";
+  const lc=String(code).toLowerCase().trim();
+  for(const subj in questionBanks){
+    const bank=questionBanks[subj];
+    if(!Array.isArray(bank)) continue;
+    const match=bank.find(q=>q.code && String(q.code).toLowerCase()===lc);
+    if(match) return renderQA(match,subj);
+  }
+  return "❌ No question found with this code.";
+}
+
+// ------------------- Mode Switch -------------------
+document.querySelectorAll("input[name='mode']").forEach(radio=>{
+  radio.addEventListener('change',e=>{
+    document.getElementById('imageMode').classList.toggle('hidden',e.target.value!=='image');
+    document.getElementById('textMode').classList.toggle('hidden',e.target.value!=='text');
+    document.getElementById('codeMode').classList.toggle('hidden',e.target.value!=='code');
+  });
+});
+
+// ------------------- OCR (Tesseract v4) -------------------
+const fileInput=document.getElementById('fileInput'),
+cropModal=document.getElementById('cropModal'),
+cropImage=document.getElementById('cropImage'),
+confirmCrop=document.getElementById('confirmCrop'),
+cancelCrop=document.getElementById('cancelCrop'),
+result=document.getElementById('result'),
+progressContainer=document.getElementById('progressContainer'),
+progressBar=document.getElementById('progressBar'),
+progressText=document.getElementById('progressText'),
+solveManual=document.getElementById('solveManual'),
+manualQuestion=document.getElementById('manualQuestion'),
+solveCode=document.getElementById('solveCode'),
+questionCode=document.getElementById('questionCode');
+
+fileInput.addEventListener('change',()=>{
+  const file=fileInput.files[0];
+  if(!file) return;
+  cropImage.src=URL.createObjectURL(file);
+  cropModal.style.display='flex';
+  if(cropper) cropper.destroy();
+  cropper=new Cropper(cropImage,{viewMode:1,autoCropArea:1,background:false,movable:true,zoomable:true,scalable:false,rotatable:false,dragMode:'move',minCropBoxWidth:50,minCropBoxHeight:50});
+});
+
+confirmCrop.addEventListener('click',()=>{
+  if(!cropper) return;
+  cropModal.style.display='none';
+  progressContainer.style.display='block';
+  progressBar.style.width='0%';
+  progressText.textContent='Processing image...';
+  cropper.getCroppedCanvas().toBlob(blob=>{
+    Tesseract.recognize(blob,'eng',{
+      logger:m=>{
+        if(m.status==='recognizing text'){
+          const pct=Math.round(m.progress*100);
+          progressBar.style.width=pct+'%';
+          progressText.textContent=`Reading text... ${pct}%`;
         }
       }
-      if (bestMatch) {
-        return renderQA(bestMatch, bestSubject);
-      }
-      window.open("https://www.google.com/search?q=" + encodeURIComponent(text), "_blank");
-      return "❌ No solution in library. 🔍 Searching on Google...";
-    }
-
-    function searchByCode(code) {
-      for (let subj in questionBanks) {
-        const bank = questionBanks[subj];
-        if (!bank) continue;
-        const match = bank.find(q => String(q.code).toUpperCase() === code.toUpperCase());
-        if (match) {
-          return renderQA(match, subj);
-        }
-      }
-      return "❌ No question found with this code.";
-    }
-
-    // Mode switch
-    document.querySelectorAll("input[name='mode']").forEach(radio => {
-      radio.addEventListener("change", e => {
-        document.getElementById("imageMode").classList.toggle("hidden", e.target.value !== "image");
-        document.getElementById("textMode").classList.toggle("hidden", e.target.value !== "text");
-        document.getElementById("codeMode").classList.toggle("hidden", e.target.value !== "code");
-      });
-    });
-
-    const fileInput = document.getElementById("fileInput"), cropModal = document.getElementById("cropModal"),
-          cropImage = document.getElementById("cropImage"), confirmCrop = document.getElementById("confirmCrop"),
-          cancelCrop = document.getElementById("cancelCrop"), result = document.getElementById("result"),
-          solveManual = document.getElementById("solveManual"), manualQuestion = document.getElementById("manualQuestion"),
-          solveCode = document.getElementById("solveCode"), questionCode = document.getElementById("questionCode"),
-          progressContainer = document.getElementById("progressContainer"), progressBar = document.getElementById("progressBar"),
-          progressText = document.getElementById("progressText");
-
-    // Image OCR
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files[0];
-      if (file) {
-        cropImage.src = URL.createObjectURL(file);
-        cropModal.style.display = "flex";
-        if (cropper) cropper.destroy();
-        cropper = new Cropper(cropImage, { viewMode: 1, autoCropArea: 1, responsive: true, background: false,
-          movable: true, zoomable: true, scalable: false, rotatable: false, dragMode: 'move',
-          minCropBoxWidth: 50, minCropBoxHeight: 50, touchDragZoom: true });
-      }
-    });
-
-    confirmCrop.addEventListener("click", () => {
-      if (!cropper) return;
-      cropModal.style.display = "none";
-      result.innerHTML = "";
-      progressContainer.style.display = "block";
-      progressBar.style.width = "0%";
-      progressText.textContent = "Processing image...";
-
-      cropper.getCroppedCanvas().toBlob(blob => {
-        Tesseract.recognize(blob, 'eng', {
-          logger: m => {
-            if (m.status === "recognizing text") {
-              let percent = Math.round(m.progress * 100);
-              progressBar.style.width = percent + "%";
-              progressText.textContent = `Reading text... ${percent}%`;
-            }
-          }
-        }).then(({ data: { text } }) => {
-          progressContainer.style.display = "none";
-          result.innerHTML = `<b>Extracted:</b><br>${text}<br><br>${searchSolution(text)}`;
-          MathJax.typeset();
-          cropper.destroy(); cropper = null;
-        });
-      });
-    });
-
-    cancelCrop.addEventListener("click", () => {
-      cropModal.style.display = "none";
-      if (cropper) { cropper.destroy(); cropper = null; }
-    });
-
-    // Manual solve
-    solveManual.addEventListener("click", () => {
-      let text = manualQuestion.value.trim();
-      if (!text) { result.innerHTML = "⚠️ Please type a question first."; return; }
-      if (/^[A-Za-z0-9]+$/.test(text)) {
-        result.innerHTML = searchByCode(text.toUpperCase());
-      } else {
-        result.innerHTML = `<b>Question:</b> ${text}<br><br>${searchSolution(text)}`;
-      }
+    }).then(({data:{text}})=>{
+      progressContainer.style.display='none';
+      result.innerHTML=`<b>Extracted:</b><br>${text}<br><br>${searchSolution(text)}`;
       MathJax.typeset();
+      cropper.destroy(); cropper=null;
+      fileInput.value='';
+    }).catch(err=>{
+      progressContainer.style.display='none';
+      result.innerHTML=`⚠️ OCR failed. Try a clearer image or type the question. Error: ${err}`;
     });
+  });
+});
 
-    // Code solve
-    solveCode.addEventListener("click", () => {
-      const code = questionCode.value.trim().toUpperCase();
-      if (code) {
-        result.innerHTML = searchByCode(code);
-        MathJax.typeset();
-      } else {
-        result.innerHTML = "⚠️ Please enter a question code.";
-      }
-    });
+cancelCrop.addEventListener('click',()=>{
+  cropModal.style.display='none';
+  if(cropper){cropper.destroy();cropper=null;}
+});
 
-    // Default mode
-    window.addEventListener("DOMContentLoaded", () => {
-      document.querySelector("input[name='mode'][value='image']").checked = true;
-      document.getElementById("imageMode").classList.remove("hidden");
-      document.getElementById("textMode").classList.add("hidden");
-      document.getElementById("codeMode").classList.add("hidden");
-    });
-  </script>
+// ------------------- Manual / Code Solve -------------------
+solveManual.addEventListener('click',()=>{
+  const text=manualQuestion.value.trim();
+  if(!text){result.innerHTML="⚠️ Please type a question first.";return;}
+  if(/^[A-Za-z0-9_-]{2,20}$/.test(text)&&!text.includes(' ')){
+    result.innerHTML=searchByCode(text);
+  } else{
+    result.innerHTML=`<b>Question:</b> ${text}<br><br>${searchSolution(text)}`;
+  }
+  MathJax.typeset();
+});
+
+solveCode.addEventListener('click',()=>{
+  const code=questionCode.value.trim();
+  if(!code){result.innerHTML="⚠️ Please enter a question code.";return;}
+  result.innerHTML=searchByCode(code);
+  MathJax.typeset();
+});
+
+});
+</script>
 </body>
 </html>
