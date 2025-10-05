@@ -415,63 +415,91 @@
     "Final: Half-life of the reaction is **24.09 minutes**."
   ]
 },
-{
-  "code": "C123",
-  "question": { 
-    "text": "The rate of first-order reaction is $0.04\\ \\text{mol L}^{-1}\\text{ s}^{-1}$ at 10 minutes and $0.03\\ \\text{mol L}^{-1}\\text{ s}^{-1}$ at 22 minutes after initiation. Find the half-life of the reaction (in seconds, given $\\ln 2 = 0.7$, $\\ln 3 = 1.1$).", 
-    "image": null 
-  },
-  "solution": { 
-    "text": "Step 1: Determine the rate constant $k$.\\n$\\ln \\dfrac{[A]_1}{[A]_2} = k (t_2 - t_1) = \\ln \\dfrac{rate_1}{rate_2}$\\n$\\ln \\dfrac{0.04}{0.03} = k (22-10) = k(12)$\\n$\\ln \\dfrac{4}{3} = 12k$\\n$k = \\dfrac{2\\ln 2 - \\ln 3}{12} = \\dfrac{1.4 - 1.1}{12} = 0.025\\ \\text{min}^{-1}$\\n\\nStep 2: Calculate half-life $t_{1/2} = \\dfrac{\\ln 2}{k} = \\dfrac{0.7}{0.025} = 28\\ \\text{minutes}$\\n\\nStep 3: Convert to seconds: $t_{1/2} = 28 \\times 60 = 1680\\ \\text{seconds}$", 
-    "image": null 
-  },
-  "solution_steps": [
-    "Step 1: For a first-order reaction, $\\text{Rate} = k[A]$. The ratio of rates gives the ratio of concentrations: $\\dfrac{rate_1}{rate_2} = \\dfrac{[A]_1}{[A]_2}$.",
-    "Step 2: Use the integrated first-order law: $\\ln \\dfrac{[A]_1}{[A]_2} = k(t_2 - t_1)$.",
-    "Step 3: Substitute values: $\\ln \\dfrac{0.04}{0.03} = k (22 - 10) = 12k$.",
-    "Step 4: Simplify using logarithm properties: $\\ln \\dfrac{4}{3} = \\ln 4 - \\ln 3 = 2\\ln 2 - \\ln 3 = 1.4 - 1.1 = 0.3$.",
-    "Step 5: Solve for $k$: $k = 0.3 / 12 = 0.025\\ \\text{min}^{-1}$.",
-    "Step 6: Calculate half-life: $t_{1/2} = \\dfrac{\\ln 2}{k} = 0.7 / 0.025 = 28\\ \\text{minutes}$.",
-    "Step 7: Convert minutes to seconds: $t_{1/2} = 28 \\times 60 = 1680\\ \\text{seconds}$.",
-    "Final Answer: The half-life of the reaction is **1680 seconds**."
-  ]
-},
-  "image": null 
-  },
-  "solution": { 
-    "text": "The rate constant for the first-order reaction is $k = 0.0179\\ \\text{min}^{-1}$. Using the integrated rate law, the time for $\\frac{875}{9}\\%$ completion is $t' \\approx 200\\ \\text{minutes}$.", 
-    "image": null 
-  },
-  "solution_steps": [
-    "Step 1: Write the relationship between optical rotation and concentrations: $\\alpha_t = [A]_t\\alpha_A + [B]_t\\alpha_B + [C]_t\\alpha_C$.",
-    "Step 2: At $t=100$ min, solution is optically inactive ($\\alpha_{100}=0$). Solve: $0 = 50[A]_{100} - 20(C_0-[A]_{100}) + 10(C_0-[A]_{100}) \\implies [A]_{100} = C_0/6$.",
-    "Step 3: Calculate the first-order rate constant: $k = \\frac{1}{t}\\ln([A]_0/[A]_{100}) = \\frac{1}{100}\\ln(6) \\approx 0.0179\\ \\text{min}^{-1}$.",
-    "Step 4: Determine fraction reacted for $\\frac{875}{9}\\%$ completion: $\\frac{875}{900} = 35/36$, so remaining $[A]_{t'} = C_0/36$.",
-    "Step 5: Apply first-order integrated rate law: $t' = \\frac{1}{k}\\ln([A]_0/[A]_{t'}) = \\frac{1}{0.0179}\\ln(36) = \\frac{1}{0.0179} \\times 2\\ln(6) \\approx 200\\ \\text{minutes}$.",
-    "Final: Time required for $\\frac{875}{9}\\%$ completion of the reaction is **200 minutes**."
-  ]
-},
-
+[
   {
-    "code": "C130",
-    "question": { 
-      "text": "What happens when barium oxide reacts with nitric acid?", 
-      "image": null 
+    "code": "C123",
+    "question": {
+      "text": "The rate of a first-order reaction is $0.04\\ \\text{mol L}^{-1}\\text{ s}^{-1}$ at 10 minutes and $0.03\\ \\text{mol L}^{-1}\\text{ s}^{-1}$ at 20 minutes after initiation. Find the half-life of the reaction.",
+      "image": null
     },
-    "solution": { 
-      "text": "$BaO + 2HNO_{3} \\; \\rightarrow \\; Ba(NO_{3})_{2} + H_{2}O$", 
-      "image": null 
+    "solution": {
+      "text": "$t_{1/2} = \\dfrac{0.693}{0.02876} = 24.09\\ \\text{min}$",
+      "image": null
     },
     "solution_steps": [
-      "Step 1: Skeleton: $BaO + HNO_{3} \\; \\rightarrow \\; Ba(NO_{3})_{2} + H_{2}O$.",
-      "Step 2: Balance Ba — 1 each side.",
-      "Step 3: Balance nitrate — need 2 $HNO_{3}$.",
-      "Step 4: Balance H to give $H_{2}O$.",
-      "Final: $BaO + 2HNO_{3} \\; \\rightarrow \\; Ba(NO_{3})_{2} + H_{2}O$."
+      "Step 1: For a first-order reaction, $\\text{Rate} = k[A]$, so rate ratio = concentration ratio: $\\dfrac{[A]_{10}}{[A]_{20}} = \\dfrac{0.04}{0.03} = \\dfrac{4}{3} = 1.333$.",
+      "Step 2: Integrated first-order law (base 10): $k = \\dfrac{2.303}{t_2 - t_1}\\log_{10}\\dfrac{[A]_{t_1}}{[A]_{t_2}}$.",
+      "Step 3: Substitute: $k = \\dfrac{2.303}{10}\\log_{10}(1.333) = \\dfrac{2.303}{10} \\times 0.1249 = 0.02876\\ \\text{min}^{-1}$.",
+      "Step 4: Half-life formula: $t_{1/2} = \\dfrac{\\ln 2}{k}$, where $\\ln 2 = 0.693$.",
+      "Step 5: $t_{1/2} = \\dfrac{0.693}{0.02876} = 24.09\\ \\text{min}$.",
+      "Final: Half-life of the reaction is **24.09 minutes**."
+    ]
+  },
+  {
+    "code": "C124",
+    "question": {
+      "text": "The rate of first-order reaction is $0.04\\ \\text{mol L}^{-1}\\text{ s}^{-1}$ at 10 minutes and $0.03\\ \\text{mol L}^{-1}\\text{ s}^{-1}$ at 22 minutes after initiation. Find the half-life of the reaction (in seconds, given $\\ln 2 = 0.7$, $\\ln 3 = 1.1$).",
+      "image": null
+    },
+    "solution": {
+      "text": "Step 1: Determine the rate constant $k$.\\n$\\ln \\dfrac{[A]_1}{[A]_2} = k (t_2 - t_1) = \\ln \\dfrac{rate_1}{rate_2}$\\n$\\ln \\dfrac{0.04}{0.03} = k (22-10) = k(12)$\\n$\\ln \\dfrac{4}{3} = 12k$\\n$k = \\dfrac{2\\ln 2 - \\ln 3}{12} = \\dfrac{1.4 - 1.1}{12} = 0.025\\ \\text{min}^{-1}$\\n\\nStep 2: Calculate half-life $t_{1/2} = \\dfrac{\\ln 2}{k} = \\dfrac{0.7}{0.025} = 28\\ \\text{minutes}$\\n\\nStep 3: Convert to seconds: $t_{1/2} = 28 \\times 60 = 1680\\ \\text{seconds}$",
+      "image": null
+    },
+    "solution_steps": [
+      "Step 1: For a first-order reaction, $\\text{Rate} = k[A]$. The ratio of rates gives the ratio of concentrations: $\\dfrac{rate_1}{rate_2} = \\dfrac{[A]_1}{[A]_2}$.",
+      "Step 2: Use the integrated first-order law: $\\ln \\dfrac{[A]_1}{[A]_2} = k(t_2 - t_1)$.",
+      "Step 3: Substitute values: $\\ln \\dfrac{0.04}{0.03} = k (22 - 10) = 12k$.",
+      "Step 4: Simplify using logarithm properties: $\\ln \\dfrac{4}{3} = \\ln 4 - \\ln 3 = 2\\ln 2 - \\ln 3 = 1.4 - 1.1 = 0.3$.",
+      "Step 5: Solve for $k$: $k = 0.3 / 12 = 0.025\\ \\text{min}^{-1}$.",
+      "Step 6: Calculate half-life: $t_{1/2} = \\dfrac{\\ln 2}{k} = 0.7 / 0.025 = 28\\ \\text{minutes}$.",
+      "Step 7: Convert minutes to seconds: $t_{1/2} = 28 \\times 60 = 1680\\ \\text{seconds}$.",
+      "Final Answer: The half-life of the reaction is **1680 seconds**."
+    ]
+  },
+  {
+    "code": "C125",
+    "question": {
+      "text": "In the reaction $A \\rightarrow P$, the rate is doubled when the concentration of 'A' is quadrupled. If 50% of the reaction occurs in $8\\sqrt{2}$ hr, how long (in hours) would it take for the completion of the next 50% of the remaining reactant?",
+      "image": null
+    },
+    "solution": {
+      "text": "Step 1: Determine the order of reaction $n$.\\n$rate = k[A]^n$, and $rate_2 = k(4[A])^n = 2 rate_1$.\\n$4^n = 2 \\Rightarrow n = 1/2$ (half-order reaction).\\n\\nStep 2: Integrated rate law for half-order reaction: $[A]_0^{1/2} - [A]_t^{1/2} = \\frac{1}{2} k t$\\n\\nStep 3: Time for first 50% completion ($t_1 = 8\\sqrt{2}$ hr): $[A]_0^{1/2} - (0.5[A]_0)^{1/2} = \\frac{1}{2} k t_1 \\Rightarrow [A]_0^{1/2} = \\frac{8k}{\\sqrt{2}-1}$\\n\\nStep 4: Time for next 50% of remaining reactant (from 50% to 75% completion): $[A]'_0^{1/2} - [A]'_t^{1/2} = \\frac{1}{2} k t_2$ with $[A]'_0 = 0.5[A]_0$, $[A]'_t = 0.25[A]_0$\\n$[A]_0^{1/2}(1/\\sqrt{2} - 1/2) = \\frac{1}{2} k t_2$\\nSubstitute $[A]_0^{1/2}$ from step 3: $\\frac{8k}{\\sqrt{2}-1} (1/\\sqrt{2} - 1/2) = \\frac{1}{2} k t_2 \\Rightarrow t_2 = 8$ hr",
+      "image": null
+    },
+    "solution_steps": [
+      "Step 1: Rate law: $rate = k[A]^n$. Given $rate$ doubles when $[A]$ is quadrupled: $k(4[A])^n = 2 k[A]^n \\Rightarrow 4^n = 2 \\Rightarrow n = 1/2$.",
+      "Step 2: Integrated half-order law: $[A]_0^{1/2} - [A]_t^{1/2} = \\frac{1}{2} k t$.",
+      "Step 3: Time for first 50% completion: $[A]_0^{1/2} - (0.5[A]_0)^{1/2} = \\frac{1}{2} k t_1$, $t_1 = 8\\sqrt{2}$ hr, solve for $[A]_0^{1/2}$: $[A]_0^{1/2} = \\frac{8k}{\\sqrt{2}-1}$.",
+      "Step 4: Time for next 50% of remaining reactant: $[A]'_0^{1/2} - [A]'_t^{1/2} = \\frac{1}{2} k t_2$, $[A]'_0 = 0.5[A]_0$, $[A]'_t = 0.25[A]_0$.",
+      "Step 5: Substitute: $[A]_0^{1/2}(1/\\sqrt{2} - 1/2) = \\frac{1}{2} k t_2$.",
+      "Step 6: Replace $[A]_0^{1/2}$ from step 3: $\\frac{8k}{\\sqrt{2}-1} (1/\\sqrt{2} - 1/2) = \\frac{1}{2} k t_2$.",
+      "Step 7: Solve for $t_2$: $t_2 = 8$ hr.",
+      "Final Answer: Time for the next 50% of the remaining reactant is **8 hours**."
+    ]
+  },
+  {
+    "code": "C126",
+    "question": {
+      "text": "In the reaction A → P, the rate is doubled when the concentration of 'A' is quadrupled. If 50% of the reaction occurs in 8√2 hr, how long (in hours) would it take for the completion of the next 50% of the remaining reactant?",
+      "image": null
+    },
+    "solution": {
+      "text": "Step 1: Determine the order of reaction n. rate = k[A]^n, and rate2 = k(4[A])^n = 2 rate1. 4^n = 2 → n = 1/2 (half-order reaction). Step 2: Integrated rate law for half-order reaction: [A]_0^(1/2) - [A]_t^(1/2) = 1/2 k t. Step 3: Time for first 50% completion (t1 = 8√2 hr): [A]_0^(1/2) - (0.5[A]_0)^(1/2) = 1/2 k t1 → [A]_0^(1/2) = 8k / (√2 - 1). Step 4: Time for next 50% of remaining reactant (from 50% to 75% completion): [A]'_0^(1/2) - [A]'_t^(1/2) = 1/2 k t2 with [A]'_0 = 0.5[A]_0, [A]'_t = 0.25[A]_0. Substitute [A]_0^(1/2) from step 3: (8k / (√2 - 1)) (1/√2 - 1/2) = 1/2 k t2 → t2 = 8 hr.",
+      "image": null
+    },
+    "solution_steps": [
+      "Step 1: Rate law: rate = k[A]^n. Given rate doubles when [A] is quadrupled: k(4[A])^n = 2 k[A]^n → 4^n = 2 → n = 1/2.",
+      "Step 2: Integrated half-order law: [A]_0^(1/2) - [A]_t^(1/2) = 1/2 k t.",
+      "Step 3: Time for first 50% completion: [A]_0^(1/2) - (0.5[A]_0)^(1/2) = 1/2 k t1, t1 = 8√2 hr, solve for [A]_0^(1/2): [A]_0^(1/2) = 8k / (√2 - 1).",
+      "Step 4: Time for next 50% of remaining reactant: [A]'_0^(1/2) - [A]'_t^(1/2) = 1/2 k t2, [A]'_0 = 0.5[A]_0, [A]'_t = 0.25[A]_0.",
+      "Step 5: Substitute: [A]_0^(1/2)(1/√2 - 1/2) = 1/2 k t2.",
+      "Step 6: Replace [A]_0^(1/2) from step 3: (8k / (√2 - 1)) (1/√2 - 1/2) = 1/2 k t2.",
+      "Step 7: Solve for t2: t2 = 8 hr.",
+      "Final Answer: Time for the next 50% of the remaining reactant is **8 hours**."
     ]
   }
-
 ]
+
 
 
 
