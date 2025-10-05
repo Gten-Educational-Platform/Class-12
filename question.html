@@ -535,10 +535,29 @@
     "Step 5: Evaluate statements: Only statement (1) is correct — order of the reaction with respect to B is 2.",
     "Final: Correct statement is **(1) Order of the reaction with respect to B is 2**."
   ]
-}
+},
+{
+  "code": "C129",
+  "question": { 
+    "text": "The conversion of A into B and C follows first-order kinetics: $A(aq.) \\rightarrow B(aq.) + C(aq.)$. All species are optically active. Initially, A is present in 500 mL solution. After 100 minutes, the solution becomes optically inactive. The specific rotations are: $[\\alpha]_A = +50^\\circ$, $[\\alpha]_B = -20^\\circ$, $[\\alpha]_C = +10^\\circ$ per molar. Find the time (in minutes) for completion of $\\frac{875}{9}\\%$ of the reaction.", 
+    "image": null 
+  },
+  "solution": { 
+    "text": "The rate constant for the first-order reaction is $k = 0.0179\\ \\text{min}^{-1}$. Using the integrated rate law, the time for $\\frac{875}{9}\\%$ completion is $t' \\approx 200\\ \\text{minutes}$.", 
+    "image": null 
+  },
+  "solution_steps": [
+    "Step 1: Write the relationship between optical rotation and concentrations: $\\alpha_t = [A]_t\\alpha_A + [B]_t\\alpha_B + [C]_t\\alpha_C$.",
+    "Step 2: At $t=100$ min, solution is optically inactive ($\\alpha_{100}=0$). Solve: $0 = 50[A]_{100} - 20(C_0-[A]_{100}) + 10(C_0-[A]_{100}) \\implies [A]_{100} = C_0/6$.",
+    "Step 3: Calculate the first-order rate constant: $k = \\frac{1}{t}\\ln([A]_0/[A]_{100}) = \\frac{1}{100}\\ln(6) \\approx 0.0179\\ \\text{min}^{-1}$.",
+    "Step 4: Determine fraction reacted for $\\frac{875}{9}\\%$ completion: $\\frac{875}{900} = 35/36$, so remaining $[A]_{t'} = C_0/36$.",
+    "Step 5: Apply first-order integrated rate law: $t' = \\frac{1}{k}\\ln([A]_0/[A]_{t'}) = \\frac{1}{0.0179}\\ln(36) = \\frac{1}{0.0179} \\times 2\\ln(6) \\approx 200\\ \\text{minutes}$.",
+    "Final: Time required for $\\frac{875}{9}\\%$ completion of the reaction is **200 minutes**."
+  ]
+},
 
   {
-    "code": "C129",
+    "code": "C130",
     "question": { 
       "text": "What happens when barium oxide reacts with nitric acid?", 
       "image": null 
@@ -557,6 +576,7 @@
   }
 
 ]
+
 
 
 
