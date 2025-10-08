@@ -133,18 +133,51 @@ async function loadSubjects(){
 loadSubjects();
 
 function htmlEscape(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function renderContent(content,label){
-  if(!content) return "";
-  let html="";
-  if(typeof content==="string"){
-    if(content.match(/\.(jpeg|jpg|png|gif|svg)$/i)) html+=`<p><b>${label}:</b></p><img src="${htmlEscape(content)}" alt="${label}">`;
-    else html+=`<p><b>${label}:</b> <span class="mathjax">${htmlEscape(content)}</span></p>`;
-  }else if(typeof content==="object"){
-    if(content.text) html+=`<p><b>${label}:</b> <span class="mathjax">${htmlEscape(content.text)}</span></p>`;
-    if(content.image) html+=`<img src="${htmlEscape(content.image)}" alt="${label} image">`;
+function renderContent(content, label) {
+  if (!content) return "";
+  let html = "";
+
+  // If content is a string
+  if (typeof content === "string") {
+    const trimmed = content.trim();
+
+    // Check if content contains HTML tags
+    if (trimmed.match(/<[^>]+>/)) {
+      // Render HTML directly; LaTeX inside <span class="mathjax"> will still render
+      // Wrap non-table parts with mathjax
+      html += `<p><b>${label}:</b></p>${trimmed}`;
+    } 
+    // Check if content is an image URL
+    else if (trimmed.match(/\.(jpeg|jpg|png|gif|svg)$/i)) {
+      html += `<p><b>${label}:</b></p><img src="${htmlEscape(trimmed)}" alt="${label}">`;
+    } 
+    // Plain text (MathJax)
+    else {
+      html += `<p><b>${label}:</b> <span class="mathjax">${trimmed}</span></p>`;
+    }
+  } 
+  // If content is an object
+  else if (typeof content === "object") {
+    if (content.text) {
+      const text = content.text.trim();
+      if (text.match(/<[^>]+>/)) {
+        // Contains HTML (like a table) → render raw HTML
+        html += `<p><b>${label}:</b></p>${text}`;
+      } else {
+        // Plain text → wrap in MathJax span
+        html += `<p><b>${label}:</b> <span class="mathjax">${text}</span></p>`;
+      }
+    }
+    if (content.image) {
+      html += `<p><b>${label} Image:</b></p><img src="${htmlEscape(content.image)}" alt="${label} image">`;
+    }
   }
+
   return html;
 }
+
+
+
 
 function renderQA(item,subj){
   let html=`<div class="subject-label">${subj.toUpperCase()}</div>`;
