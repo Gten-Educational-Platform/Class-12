@@ -50,6 +50,30 @@
   }
 },
 
+{
+  "code": "CK0085",
+  "question": {
+    "text": "In the reaction $A \\rightarrow P$, the rate is doubled when the concentration of 'A' is quadrupled. If 50% of the reaction occurs in $8\\sqrt{2}$ hr, how long (in hours) would it take for the completion of next 50% of the reaction?"
+  },
+  "options": [
+    "(1) 4",
+    "(2) 8",
+    "(3) $8\\sqrt{2}$",
+    "(4) 16"
+  ],
+  "correct_answer": "(2) 8",
+  "solution": {
+    "text": "Step-by-step solution is as follows:",
+    "solution_steps": [
+      "Step 1: Determine the order of the reaction with respect to A. The rate law is given by:\n$\\text{Rate} = k[A]^n$",
+      "Step 2: From the problem statement:\nInitial rate: $\\text{Rate}_1 = k[A]_1^n$\nWhen concentration is quadrupled: $[A]_2 = 4[A]_1$, $\\text{Rate}_2 = 2 \\times \\text{Rate}_1$\nSubstitute into the rate law:\n$\\text{Rate}_2 = k[A]_2^n$\n$2 \\times \\text{Rate}_1 = k (4[A]_1)^n$\n$2 \\times k [A]_1^n = k (4[A]_1)^n$\n$2 = 4^n$\nTake logarithms on both sides:\n$\\log 2 = \\log 4^n$\n$\\log 2 = n \\log 4$\n$\\log 2 = n \\log 2^2$\n$\\log 2 = 2n \\log 2$\n$n = \\frac{1}{2}$\n✅ The reaction is half-order with respect to A.",
+      "Step 3: Understand the half-life for a half-order reaction. For reactions of order n, the half-life is proportional to:\n$t_{1/2} \\propto [A]_0^{1-n}$\nFor a half-order reaction, $n = 1/2$:\n$t_{1/2} \\propto [A]_0^{1-1/2} = [A]_0^{1/2} = \\sqrt{[A]_0}$\nSo the half-life is directly proportional to the square root of the initial concentration.",
+      "Step 4: Time for the next 50% of the reaction. First 50% completion: $[A]_0 \\rightarrow [A]_0/2$, $t_{1/2_1} = 8\\sqrt{2}$ hr.",
+      "Step 5: Next 50% completion: $[A]_0/2 \\rightarrow [A]_0/4$ (second half-life). For half-order reaction:\n$\\frac{t_{1/2_2}}{t_{1/2_1}} = \\frac{\\sqrt{[A]_{0_2}}}{\\sqrt{[A]_{0_1}}}$\n$[A]_{0_1} = [A]_0, \\ [A]_{0_2} = [A]_0/2$\n$\\frac{t_{1/2_2}}{t_{1/2_1}} = \\frac{\\sqrt{[A]_0/2}}{\\sqrt{[A]_0}} = \\frac{1}{\\sqrt{2}}$\n$t_{1/2_2} = t_{1/2_1} \\cdot \\frac{1}{\\sqrt{2}} = 8\\sqrt{2} \\cdot \\frac{1}{\\sqrt{2}} = 8$ hr",
+      "Final Answer: 8 hours"
+    ]
+  }
+},
 
   {
     "code": "C120",
@@ -242,6 +266,7 @@
     ]
   }
 ]
+
 
 
 
