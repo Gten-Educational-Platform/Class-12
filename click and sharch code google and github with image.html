@@ -43,13 +43,11 @@ button:hover{background:#2c80b9}
 #progressBar{height:18px;width:0%;transition:width .2s linear;background:#3498db}
 .meta{margin-top:10px;font-size:0.95rem;color:#444}
 .subject-label{display:inline-block;padding:6px 8px;background:#eef5fb;border-radius:6px;margin-bottom:8px}
-
-/* Solution steps styling */
 .solution-step-list{list-style:none;padding-left:0;margin-left:0;}
 .solution-step-list li{background:#f0f4f8;padding:10px 12px;margin-bottom:8px;border-radius:6px;line-height:1.5;transition:box-shadow 0.25s ease, transform 0.2s ease;}
 .solution-step-list li.step-numbered{background:#e8f0fc;cursor:default;}
 .solution-step-list li.step-numbered:hover{box-shadow:0 4px 12px rgba(0,0,0,0.15); transform:translateY(-2px);}
-.step-highlight { color:#f1c40f; font-weight:600; } /* Only Step X text yellow */
+.step-highlight { color:#f1c40f; font-weight:600; }
 </style>
 </head>
 <body>
@@ -65,11 +63,11 @@ button:hover{background:#2c80b9}
 <div id="imageMode"><input type="file" id="fileInput" accept="image/*" capture="environment"></div>
 <div id="textMode" class="hidden">
   <textarea id="manualQuestion" placeholder="Type or paste your question here..."></textarea>
-  <br><button id="solveManual">🔍 Solve</button>
+  <br><button id="solveManual" disabled>🔍 Solve</button>
 </div>
 <div id="codeMode" class="hidden">
   <input type="text" id="questionCode" placeholder="Enter question code (eg. C101)">
-  <br><button id="solveCode">🔍 Get Answer</button>
+  <br><button id="solveCode" disabled>🔍 Get Answer</button>
 </div>
 
 <div id="cropModal" aria-hidden="true">
@@ -86,7 +84,7 @@ button:hover{background:#2c80b9}
 </div>
 
 <div class="solution-box" id="result">
-  <div class="small">Select a mode and provide your question to see the solution.</div>
+  <div class="small">⏳ Loading question banks, please wait...</div>
 </div>
 </div>
 
@@ -122,9 +120,8 @@ async function loadSubjects(){
   for(const [subj,url] of Object.entries(subjectUrls)){
     if(!url) continue;
     try{
-      // Append timestamp to avoid browser cache
       const fetchUrl = `${url}?t=${Date.now()}`;
-      const resp = await fetch(fetchUrl, { cache: 'no-store' }); // prevents caching
+      const resp = await fetch(fetchUrl, { cache: 'no-store' });
       if(!resp.ok) continue;
       let data = await resp.json();
       if(!Array.isArray(data)) data = [data];
@@ -132,68 +129,51 @@ async function loadSubjects(){
     }catch(e){console.warn(`Failed to load ${subj}`, e);}
   }
 }
-loadSubjects();
+
+const solveManual=document.getElementById('solveManual');
+const solveCode=document.getElementById('solveCode');
+const result=document.getElementById('result');
+
+// Initialize question banks and enable search buttons
+async function init() {
+  await loadSubjects();
+  solveManual.disabled = false;
+  solveCode.disabled = false;
+  result.innerHTML = '<div class="small">Select a mode and provide your question to see the solution.</div>';
+}
+init();
 
 function htmlEscape(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function renderContent(content, label) {
   if (!content) return "";
   let html = "";
-
-  // If content is a string
   if (typeof content === "string") {
     const trimmed = content.trim();
-
-    // Check if content contains HTML tags
-    if (trimmed.match(/<[^>]+>/)) {
-      // Render HTML directly; LaTeX inside <span class="mathjax"> will still render
-      // Wrap non-table parts with mathjax
-      html += `<p><b>${label}:</b></p>${trimmed}`;
-    } 
-    // Check if content is an image URL
-    else if (trimmed.match(/\.(jpeg|jpg|png|gif|svg)$/i)) {
-      html += `<p><b>${label}:</b></p><img src="${htmlEscape(trimmed)}" alt="${label}">`;
-    } 
-    // Plain text (MathJax)
-    else {
-      html += `<p><b>${label}:</b> <span class="mathjax">${trimmed}</span></p>`;
-    }
-  } 
-  // If content is an object
-  else if (typeof content === "object") {
+    if (trimmed.match(/<[^>]+>/)) html += `<p><b>${label}:</b></p>${trimmed}`;
+    else if (trimmed.match(/\.(jpeg|jpg|png|gif|svg)$/i)) html += `<p><b>${label}:</b></p><img src="${htmlEscape(trimmed)}" alt="${label}">`;
+    else html += `<p><b>${label}:</b> <span class="mathjax">${trimmed}</span></p>`;
+  } else if (typeof content === "object") {
     if (content.text) {
       const text = content.text.trim();
-      if (text.match(/<[^>]+>/)) {
-        // Contains HTML (like a table) → render raw HTML
-        html += `<p><b>${label}:</b></p>${text}`;
-      } else {
-        // Plain text → wrap in MathJax span
-        html += `<p><b>${label}:</b> <span class="mathjax">${text}</span></p>`;
-      }
+      if (text.match(/<[^>]+>/)) html += `<p><b>${label}:</b></p>${text}`;
+      else html += `<p><b>${label}:</b> <span class="mathjax">${text}</span></p>`;
     }
-    if (content.image) {
-      html += `<p><b>${label} Image:</b></p><img src="${htmlEscape(content.image)}" alt="${label} image">`;
-    }
+    if (content.image) html += `<p><b>${label} Image:</b></p><img src="${htmlEscape(content.image)}" alt="${label} image">`;
   }
-
   return html;
 }
-
-
-
 
 function renderQA(item,subj){
   let html=`<div class="subject-label">${subj.toUpperCase()}</div>`;
   if(item.code) html+=`<p><b>Code:</b> <span class="small">${htmlEscape(item.code)}</span></p>`;
   html+=renderContent(item.question,"Question");
   html+=renderContent(item.solution,"Solution");
-
   const steps = item.solution_steps || (item.solution && item.solution.solution_steps);
   if(steps && Array.isArray(steps)){
     html+=`<p><b>Solution Steps:</b></p><ul class="solution-step-list">`;
     steps.forEach(step=>{
       const isNumbered = /Step\s*\d+/i.test(step);
       const className = isNumbered ? 'step-numbered' : '';
-      // Highlight only "Step X" text
       const stepHtml = htmlEscape(step).replace(/(Step\s*\d+)/ig,'<span class="step-highlight">$1</span>');
       html+=`<li class="${className}"><span class="mathjax">${stepHtml}</span></li>`;
     });
@@ -206,7 +186,6 @@ function renderQA(item,subj){
 function searchSolution(rawText){
   const text=cleanText(rawText), textNoNums=removeNums(text);
   let allMatches=[];
-
   for(const subj in fuseBanks){
     if(subj.endsWith("_nums")) continue;
     try{ const r=fuseBanks[subj].search(textNoNums); if(r.length) r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj})}); }catch(e){}
@@ -215,7 +194,6 @@ function searchSolution(rawText){
     if(!subj.endsWith("_nums")) continue;
     try{ const r=fuseBanks[subj].search(text); if(r.length) r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj:subj.replace(/_nums$/,'')})}); }catch(e){}
   }
-
   if(allMatches.length){
     allMatches.sort((a,b)=>a.score-b.score);
     let html="";
@@ -238,6 +216,7 @@ function searchByCode(code){
   return "❌ No question found with this code.";
 }
 
+// Mode toggle
 document.querySelectorAll("input[name='mode']").forEach(radio=>{
   radio.addEventListener('change',e=>{
     document.getElementById('imageMode').classList.toggle('hidden',e.target.value!=='image');
@@ -246,23 +225,21 @@ document.querySelectorAll("input[name='mode']").forEach(radio=>{
   });
 });
 
+// Elements
 const fileInput=document.getElementById('fileInput'),
 cropModal=document.getElementById('cropModal'),
 cropImage=document.getElementById('cropImage'),
 confirmCrop=document.getElementById('confirmCrop'),
 cancelCrop=document.getElementById('cancelCrop'),
-result=document.getElementById('result'),
 progressContainer=document.getElementById('progressContainer'),
 progressBar=document.getElementById('progressBar'),
 progressText=document.getElementById('progressText'),
-solveManual=document.getElementById('solveManual'),
 manualQuestion=document.getElementById('manualQuestion'),
-solveCode=document.getElementById('solveCode'),
 questionCode=document.getElementById('questionCode');
 
+// Image upload
 fileInput.addEventListener('change',()=>{
-  const file=fileInput.files[0];
-  if(!file) return;
+  const file=fileInput.files[0]; if(!file) return;
   cropImage.src=URL.createObjectURL(file);
   cropModal.style.display='flex';
   if(cropper) cropper.destroy();
@@ -302,6 +279,7 @@ cancelCrop.addEventListener('click',()=>{
   if(cropper){cropper.destroy();cropper=null;}
 });
 
+// Text mode
 solveManual.addEventListener('click',()=>{
   const text=manualQuestion.value.trim();
   if(!text){result.innerHTML="⚠️ Please type a question first.";return;}
@@ -313,6 +291,7 @@ solveManual.addEventListener('click',()=>{
   MathJax.typeset();
 });
 
+// Code mode
 solveCode.addEventListener('click',()=>{
   const code=questionCode.value.trim();
   if(!code){result.innerHTML="⚠️ Please enter a question code.";return;}
