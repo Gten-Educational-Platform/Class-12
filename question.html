@@ -1,13 +1,67 @@
 [
   {
-    "code": "C101",
-    "question": { "text": "Why does the instantaneous rate of reaction not change when a part of the reacting solution is taken out?", "image": null },
+  "0187CK": {
+    "question": {
+      "text": "The following results were obtained during kinetic studies of the reaction: $2A + B \\rightarrow \\text{Products}$. The time (in minutes) required to consume half of A is given in the data table below:"
+    },
+    "data_table": [
+      {
+        "Experiment": "I",
+        "A_concentration_mol_L": 0.10,
+        "B_concentration_mol_L": 0.20,
+        "Initial_Rate_mol_L_min": "6.93 \\times 10^{-3}"
+      },
+      {
+        "Experiment": "II",
+        "A_concentration_mol_L": 0.10,
+        "B_concentration_mol_L": 0.25,
+        "Initial_Rate_mol_L_min": "6.93 \\times 10^{-3}"
+      },
+      {
+        "Experiment": "III",
+        "A_concentration_mol_L": 0.20,
+        "B_concentration_mol_L": 0.30,
+        "Initial_Rate_mol_L_min": "1.386 \\times 10^{-2}"
+      }
+    ],
+    "options": [
+      {"option_number": 1, "value": 10},
+      {"option_number": 2, "value": 5},
+      {"option_number": 3, "value": 100},
+      {"option_number": 4, "value": 1}
+    ],
     "solution_steps": [
-      "Step 1: Instantaneous rate depends only on the concentration at a specific instant.",
-      "Step 2: Removing some portion of solution does not alter the concentration of reactants in the remaining mixture.",
-      "Step 3: Therefore, the instantaneous rate remains unchanged."
+      "Step 1: Determine the order of reaction with respect to A and B using initial rates.",
+      "Step 2: Compare Experiments I and II: $[A]$ is constant, $[B]$ changes from 0.20 to 0.25 M, but rate remains $6.93 \\times 10^{-3}$. Hence, rate is independent of $[B]$ → order w.r.t B, $n = 0$.",
+      "Step 3: Compare Experiments I and III: $[A]$ doubles from 0.10 to 0.20 M, $[B]$ changes slightly, rate doubles from $6.93 \\times 10^{-3}$ to $1.386 \\times 10^{-2}$. Hence, rate ∝ $[A]^1$ → order w.r.t A, $m = 1$.",
+      "Step 4: Rate law: $\\text{Rate} = k [A]^1 [B]^0 = k[A]$",
+      "Step 5: First-order half-life formula: $t_{1/2} = \\frac{0.693}{k}$",
+      "Step 6: Using Experiment I, $\\text{Rate} = k[A] = 6.93 \\times 10^{-3} \\text{ mol L}^{-1}\\text{min}^{-1}$, $[A] = 0.10$ M → $k = \\frac{6.93 \\times 10^{-3}}{0.10} = 0.0693\\ \\text{min}^{-1}$",
+      "Step 7: Compute half-life: $t_{1/2} = \\frac{0.693}{0.0693} = 10\\ \\text{minutes}$",
+      "Final Answer: 10 minutes"
     ]
   },
+  "CK0187": {
+    "question": {
+      "text": "For the reaction $2A + B \\rightarrow \\text{Products}$, when the concentrations of A and B both were doubled, the rate increased from $0.3\\ \\text{mol L}^{-1} \\text{s}^{-1}$ to $2.4\\ \\text{mol L}^{-1} \\text{s}^{-1}$. When the concentration of A alone is doubled, the rate increased from $0.3$ to $0.6\\ \\text{mol L}^{-1} \\text{s}^{-1}$. Which one of the following statements is correct?"
+    },
+    "options": [
+      {"option_number": 1, "statement": "Order of the reaction with respect to B is 2"},
+      {"option_number": 2, "statement": "Order of the reaction with respect to A is 2"},
+      {"option_number": 3, "statement": "Total order of the reaction is 4"},
+      {"option_number": 4, "statement": "Order of the reaction with respect to B is 1"}
+    ],
+    "solution_steps": [
+      "Step 1: Let the rate law be $\\text{Rate} = k[A]^m[B]^n$",
+      "Step 2: When [A] alone is doubled, rate doubles: $0.3 \\to 0.6$, hence $2^m = 2 \\Rightarrow m = 1$",
+      "Step 3: When both [A] and [B] are doubled, rate increases $0.3 \\to 2.4$, factor = 8",
+      "Step 4: Using rate law factor: $2^m \\cdot 2^n = 2^1 \\cdot 2^n = 2^n \\cdot 2 = 8 \\Rightarrow 2^n = 4 \\Rightarrow n = 2$",
+      "Step 5: Total order of reaction = $m + n = 1 + 2 = 3$",
+      "Step 6: Correct statement: Order of the reaction with respect to B is 2",
+      "Final Answer: Option 1"
+    ]
+  }
+},
 
   {
     "code": "C120",
@@ -200,6 +254,7 @@
     ]
   }
 ]
+
 
 
 
