@@ -43,7 +43,13 @@ button:hover{background:#2c80b9}
 #progressBar{height:18px;width:0%;transition:width .2s linear;background:#3498db}
 .meta{margin-top:10px;font-size:0.95rem;color:#444}
 .subject-label{display:inline-block;padding:6px 8px;background:#eef5fb;border-radius:6px;margin-bottom:8px}
-ol{padding-left:20px}
+
+/* Solution steps styling */
+.solution-step-list{list-style:none;padding-left:0;margin-left:0;}
+.solution-step-list li{background:#f0f4f8;padding:10px 12px;margin-bottom:8px;border-radius:6px;line-height:1.5;transition:box-shadow 0.25s ease, transform 0.2s ease;}
+.solution-step-list li.step-numbered{background:#e8f0fc;cursor:default;}
+.solution-step-list li.step-numbered:hover{box-shadow:0 4px 12px rgba(0,0,0,0.15); transform:translateY(-2px);}
+.step-highlight { color:#f1c40f; font-weight:600; } /* Only Step X text yellow */
 </style>
 </head>
 <body>
@@ -87,7 +93,6 @@ ol{padding-left:20px}
 <script>
 window.addEventListener('DOMContentLoaded',()=>{
 
-// ------------------- Fuse.js Question Banks -------------------
 const subjectUrls = {
   chemistry: "https://gten-educational-platform.github.io/Class-12/question.html",
   physics:   "https://gten-educational-platform.github.io/Class-12/physics.json",
@@ -119,15 +124,14 @@ async function loadSubjects(){
     try{
       const resp=await fetch(url);
       if(!resp.ok) continue;
-      const data=await resp.json();
-      if(!Array.isArray(data)) continue;
+      let data=await resp.json();
+      if(!Array.isArray(data)) data=[data];
       buildFuse(subj,data);
     }catch(e){console.warn(`Failed to load ${subj}`,e);}
   }
 }
 loadSubjects();
 
-// ------------------- Render Functions -------------------
 function htmlEscape(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function renderContent(content,label){
   if(!content) return "";
@@ -147,49 +151,42 @@ function renderQA(item,subj){
   if(item.code) html+=`<p><b>Code:</b> <span class="small">${htmlEscape(item.code)}</span></p>`;
   html+=renderContent(item.question,"Question");
   html+=renderContent(item.solution,"Solution");
-  if(item.solution_steps && Array.isArray(item.solution_steps)){
-    html+=`<p><b>Solution Steps:</b></p><ol>`;
-    item.solution_steps.forEach(step=>{html+=`<li><span class="mathjax">${htmlEscape(step)}</span></li>`;});
-    html+=`</ol>`;
+
+  const steps = item.solution_steps || (item.solution && item.solution.solution_steps);
+  if(steps && Array.isArray(steps)){
+    html+=`<p><b>Solution Steps:</b></p><ul class="solution-step-list">`;
+    steps.forEach(step=>{
+      const isNumbered = /Step\s*\d+/i.test(step);
+      const className = isNumbered ? 'step-numbered' : '';
+      // Highlight only "Step X" text
+      const stepHtml = htmlEscape(step).replace(/(Step\s*\d+)/ig,'<span class="step-highlight">$1</span>');
+      html+=`<li class="${className}"><span class="mathjax">${stepHtml}</span></li>`;
+    });
+    html+=`</ul>`;
   }
   setTimeout(()=>{if(window.MathJax && MathJax.typeset) MathJax.typeset();},60);
   return html;
 }
 
-// ------------------- Search Functions -------------------
 function searchSolution(rawText){
   const text=cleanText(rawText), textNoNums=removeNums(text);
   let allMatches=[];
 
   for(const subj in fuseBanks){
     if(subj.endsWith("_nums")) continue;
-    try{
-      const r=fuseBanks[subj].search(textNoNums);
-      if(r.length){
-        r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj})});
-      }
-    }catch(e){}
+    try{ const r=fuseBanks[subj].search(textNoNums); if(r.length) r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj})}); }catch(e){}
   }
-
   for(const subj in fuseBanks){
     if(!subj.endsWith("_nums")) continue;
-    try{
-      const r=fuseBanks[subj].search(text);
-      if(r.length){
-        r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj:subj.replace(/_nums$/,'')})});
-      }
-    }catch(e){}
+    try{ const r=fuseBanks[subj].search(text); if(r.length) r.forEach(m=>{if(m.score<0.8) allMatches.push({item:m.item,score:m.score,subj:subj.replace(/_nums$/,'')})}); }catch(e){}
   }
 
   if(allMatches.length){
     allMatches.sort((a,b)=>a.score-b.score);
     let html="";
-    allMatches.slice(0,5).forEach(m=>{ // show top 5 closest matches
-      html+=renderQA(m.item,m.subj)+"<hr>";
-    });
+    allMatches.slice(0,5).forEach(m=>{html+=renderQA(m.item,m.subj)+"<hr>";});
     return html;
   }
-
   try{window.open("https://www.google.com/search?q="+encodeURIComponent(rawText),"_blank");}catch(e){}
   return `❌ No match found. Searching Google...`;
 }
@@ -206,7 +203,6 @@ function searchByCode(code){
   return "❌ No question found with this code.";
 }
 
-// ------------------- Mode Switch -------------------
 document.querySelectorAll("input[name='mode']").forEach(radio=>{
   radio.addEventListener('change',e=>{
     document.getElementById('imageMode').classList.toggle('hidden',e.target.value!=='image');
@@ -215,7 +211,6 @@ document.querySelectorAll("input[name='mode']").forEach(radio=>{
   });
 });
 
-// ------------------- OCR (Tesseract v4) -------------------
 const fileInput=document.getElementById('fileInput'),
 cropModal=document.getElementById('cropModal'),
 cropImage=document.getElementById('cropImage'),
@@ -272,7 +267,6 @@ cancelCrop.addEventListener('click',()=>{
   if(cropper){cropper.destroy();cropper=null;}
 });
 
-// ------------------- Manual / Code Solve -------------------
 solveManual.addEventListener('click',()=>{
   const text=manualQuestion.value.trim();
   if(!text){result.innerHTML="⚠️ Please type a question first.";return;}
