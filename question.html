@@ -1,34 +1,36 @@
 [
- {
-  "code": "0187CK",
+{
+  "code": "CK0187",
   "question": {
-    "text": "The following results were obtained during kinetic studies of the reaction: $2A + B \\rightarrow \\text{Products}$. The time (in minutes) required to consume half of A is given in the table below:"
+    "text": "The following results were obtained during kinetic studies of the reaction: $2A + B \\rightarrow \\text{Products}$. The time (in minutes) required to consume half of A is:"
   },
+  "options": [
+    "(1) 10",
+    "(2) 5",
+    "(3) 100",
+    "(4) 1"
+  ],
+  "correct_answer": "(1) 10",
   "solution": {
-    "text": "The data table is:\n<table border='1' cellspacing='0' cellpadding='6'>\
+    "text": "The experimental data is given in the table below:\n<table border='1' cellspacing='0' cellpadding='6'>\
 <tr><th>Experiment</th><th>[A] (mol/L)</th><th>[B] (mol/L)</th><th>Initial Rate (mol L<sup>-1</sup> min<sup>-1</sup>)</th></tr>\
 <tr><td>I</td><td>0.10</td><td>0.20</td><td>6.93 × 10<sup>-3</sup></td></tr>\
 <tr><td>II</td><td>0.10</td><td>0.25</td><td>6.93 × 10<sup>-3</sup></td></tr>\
 <tr><td>III</td><td>0.20</td><td>0.30</td><td>1.386 × 10<sup>-2</sup></td></tr>\
-</table>\n<br>Step-by-step solution follows."
-  },
-  "solution_steps": [
-    "Step 1: Determine the order of reaction with respect to A and B using initial rates.",
-    "Step 2: Compare Experiments I and II: [A] is constant, [B] changes from 0.20 to 0.25 M, but rate remains 6.93 × 10^{-3}. Hence, rate is independent of [B] → order w.r.t B, n = 0.",
-    "Step 3: Compare Experiments I and III: [A] doubles from 0.10 to 0.20 M, [B] changes slightly, rate doubles from 6.93 × 10^{-3} to 1.386 × 10^{-2}. Hence, rate ∝ [A]^1 → order w.r.t A, m = 1.",
-    "Step 4: Rate law: Rate = k [A]^1 [B]^0 = k[A]",
-    "Step 5: First-order half-life formula: t_{1/2} = 0.693/k",
-    "Step 6: Using Experiment I, Rate = k[A] = 6.93 × 10^{-3} mol L^{-1} min^{-1}, [A] = 0.10 M → k = 6.93 × 10^{-3} / 0.10 = 0.0693 min^{-1}",
-    "Step 7: Compute half-life: t_{1/2} = 0.693 / 0.0693 = 10 minutes",
-    "Final Answer: 10 minutes"
-  ],
-  "options": [
-    {"option_number": 1, "value": 10},
-    {"option_number": 2, "value": 5},
-    {"option_number": 3, "value": 100},
-    {"option_number": 4, "value": 1}
-  ]
+</table>\nStep-by-step solution is as follows."
+    ,
+    "solution_steps": [
+      "Step 1: Determine the order of the reaction with respect to A and B. The general rate law is $\\text{Rate} = k[A]^x[B]^y$.",
+      "Step 2: To find the order with respect to B ($y$): Compare Experiments I and II where [A] is constant.\n$\\frac{\\text{Rate}_2}{\\text{Rate}_1} = \\frac{k[A]_2^x[B]_2^y}{k[A]_1^x[B]_1^y} = \\frac{6.93\\times10^{-3}}{6.93\\times10^{-3}} = \\left(\\frac{0.25}{0.20}\\right)^y = (1.25)^y$. This is true only if $y = 0$. Hence, the reaction is independent of [B].",
+      "Step 3: To find the order with respect to A ($x$): Compare Experiments I and III.\n$\\frac{\\text{Rate}_3}{\\text{Rate}_1} = \\frac{k[A]_3^x[B]_3^y}{k[A]_1^x[B]_1^y} = \\frac{1.386\\times10^{-2}}{6.93\\times10^{-3}} = 2 = \\left(\\frac{0.20}{0.10}\\right)^x = 2^x \\Rightarrow x = 1$.",
+      "Step 4: Overall rate law: $\\text{Rate} = k[A]^1[B]^0 = k[A]$. The reaction is first-order with respect to A.",
+      "Step 5: Calculate the rate constant $k$ using Experiment I: $\\text{Rate} = k[A] = 6.93 \\times 10^{-3}$, [A] = 0.10 M → $k = \\frac{6.93 \\times 10^{-3}}{0.10} = 6.93 \\times 10^{-2} \\text{ min}^{-1}$.",
+      "Step 6: Calculate the half-life: For a first-order reaction, $t_{1/2} = \\frac{0.693}{k} = \\frac{0.693}{6.93 \\times 10^{-2}} = 10$ minutes.",
+      "Final Answer: 10 minutes"
+    ]
+  }
 },
+
 
   {
     "code": "C120",
@@ -221,6 +223,7 @@
     ]
   }
 ]
+
 
 
 
