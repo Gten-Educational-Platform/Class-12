@@ -112,47 +112,47 @@
     ]
   }
 },
- {
+  {
     "code": "CK0077",
     "question": {
       "text": "Conversion of A into B and C follows first-order kinetics. A, B, and C are all optically active. Initially, A is present in a 500 mL solution, and 100 minutes after the start of the reaction, the resulting solution becomes optically inactive. If the angle of rotation of A is +50° per molar, B is -20° per molar, and C is +10° per molar, then find the time for completion of (875/9)% of the chemical reaction in minutes. The reaction is: $A(aq.) \\rightarrow B(aq.) + C(aq.)$"
     },
     "solution": {
-      "text": "The reaction is first-order, and the observed rotation at any time is the sum of contributions from all components. We can calculate the rate constant using the given data and then determine the time for the desired completion.",
-      "solution_steps": [
-        "Step 1: Let the initial concentration of A be [A]_0. After time t, [A]_t = [A]_0 e^{-kt}.",
-        "Step 2: From the reaction A → B + C, the concentrations of B and C at time t are [B]_t = [C]_t = [A]_0 - [A]_t = [A]_0 (1 - e^{-kt}).",
-        "Step 3: The observed rotation at time t, α_t, is α_t = [A]_t * (+50) + [B]_t * (-20) + [C]_t * (+10).",
-        "Step 4: Substitute concentrations: α_t = 50[A]_0 e^{-kt} - 20[A]_0(1 - e^{-kt}) + 10[A]_0(1 - e^{-kt}) = [A]_0 (60 e^{-kt} - 10).",
-        "Step 5: At t = 100 min, solution is optically inactive: α_100 = 0 → 60 e^{-100k} - 10 = 0 → e^{-100k} = 1/6.",
-        "Step 6: Solve for k: -100k = ln(1/6) = -ln 6 → k = ln 6 / 100 min⁻¹.",
-        "Step 7: For completion of (875/9)% = 875/900, remaining fraction of A: [A]_t / [A]_0 = 1 - 875/900 = 25/900 = 1/36.",
-        "Step 8: Using first-order law: k = (1/t) ln([A]_0 / [A]_t) = (1/t) ln(36) = (2 ln 6)/t.",
-        "Step 9: Substitute k = ln 6 / 100 → t = 200 minutes.",
-        "Final Answer: Time for completion of (875/9)% of reaction is 200 minutes."
-      ]
-    }
-  },
-  {
-    "code": "CK0079",
-    "question": {
-      "text": "Conversion of A into B and C follows first-order kinetics. A, B, and C are all optically active. Initially, A is present in a 500 mL solution, and 100 minutes after the start of the reaction, the resulting solution becomes optically inactive. If the angle of rotation of A is +50° per molar, B is -20° per molar, and C is +10° per molar, then find the time for completion of (875/9)% of the chemical reaction in minutes. The reaction is: $A(aq.) \\rightarrow B(aq.) + C(aq.)$."
+      "text": "The reaction is first-order. The observed rotation at any time is the sum of contributions from all components. Using the given data, the rate constant k can be calculated, then the time for desired completion can be determined.",
+      "image": null
     },
-    "solution": {
-      "text": "The reaction is first-order, and we use the optical rotation data to determine the rate constant k using log base 10, then calculate the time for the desired fraction of completion.",
-      "solution_steps": [
-        "Step 1: For a first-order reaction, the rate law in terms of log base 10 is k = (2.303 / t) * log10([A]_0 / [A]_t).",
-        "Step 2: From the optical rotation relation, after 100 minutes, α_100 = 0, which gives e^{-100k} = 1/6.",
-        "Step 3: Take log base 10: log10(e^{-100k}) = log10(1/6) → -100k * log10(e) = -log10(6).",
-        "Step 4: Substitute log10(e) = 0.4343 → -100k * 0.4343 = -0.7782 → k = 0.0179 min⁻¹.",
-        "Step 5: Fraction completed = (875/9)% = 97.22%, remaining fraction = 2.78% = 1/36.",
-        "Step 6: Using first-order equation: t = (2.303 / k) * log10([A]_0 / [A]_t).",
-        "Step 7: Substitute values: t = (2.303 / 0.0179) * log10(36) ≈ 200 minutes.",
-        "Step 8: Alternatively, using k = (2.303 / 100) * log10(6) → t = 100 / log10(6) * log10(36) = 200 minutes.",
-        "Final Answer: Time for completion of (875/9)% of reaction is 200 minutes."
-      ]
-    }
+    "solution_steps": [
+      "Step 1: Let initial concentration of A be [A]_0. After time t, [A]_t = [A]_0 e^{-kt}.",
+      "Step 2: B and C: [B]_t = [C]_t = [A]_0 - [A]_t = [A]_0(1 - e^{-kt}).",
+      "Step 3: Observed rotation: α_t = [A]_t*50 + [B]_t*(-20) + [C]_t*10 = [A]_0(60 e^{-kt} - 10).",
+      "Step 4: At t = 100 min, solution is optically inactive: α_100 = 0 → e^{-100k} = 1/6.",
+      "Step 5: Solve for k: k = ln 6 / 100 min⁻¹.",
+      "Step 6: Fraction completion = (875/9)% → remaining [A]_t/[A]_0 = 1/36.",
+      "Step 7: First-order law: t = (1/k) ln([A]_0/[A]_t) = (1/k) ln(36) = 200 min.",
+      "Final Answer: 200 minutes."
+    ]
   },
+ {
+  "code": "CK0079",
+  "question": {
+    "text": "Conversion of A into B and C follows first-order kinetics. A, B, and C are all optically active. Initially, A is present in a 500 mL solution, and 100 minutes after the start of the reaction, the resulting solution becomes optically inactive. If the angle of rotation of A is +50° per molar, B is -20° per molar, and C is +10° per molar, then find the time for completion of (875/9)% of the chemical reaction in minutes. The reaction is: $A(aq.) \\rightarrow B(aq.) + C(aq.)$."
+  },
+  "solution": {
+    "text": "The reaction is first-order. Using optical rotation data and log base 10, the rate constant k is determined, then the time for desired completion is calculated.",
+    "image": null
+  },
+  "solution_steps": [
+    "Step 1: Determine the rate constant (k) of the reaction using log base 10. The first-order rate law can be expressed as: k = (1/t) * ln([A]_0 / [A]_t) or in log base 10: k = (2.303 / t) * log10([A]_0 / [A]_t).",
+    "Step 2: From the problem, after 100 minutes, solution is optically inactive. This gives e^(-100k) = 1/6.",
+    "Step 3: Take log base 10: log10(e^(-100k)) = log10(1/6) → -100k * log10(e) = -log10(6).",
+    "Step 4: Substitute log10(e) = 0.4343 → -100k * 0.4343 = -0.7782 → k = 0.0179 min⁻¹.",
+    "Step 5: Fraction of reaction completed = (875/9)% = 97.22%. Remaining fraction of A = 100% - 97.22% = 2.78% = 1/36.",
+    "Step 6: Use first-order rate equation: t = (2.303 / k) * log10([A]_0 / [A]_t).",
+    "Step 7: Substitute values: t = (2.303 / 0.0179) * log10(36) ≈ 128.66 * 1.5563 ≈ 200 minutes.",
+    "Step 8: Alternatively, using k = (2.303 / 100) * log10(6) → t = 100 / log10(6) * log10(36) = 200 minutes.",
+    "Final Answer: Time for completion of (875/9)% of reaction is 200 minutes."
+  ]
+},
 
 {
     "code": "C124",
@@ -197,6 +197,7 @@
     ]
   }
 ]
+
 
 
 
