@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G10 Educational Platform - Admission</title>
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    button {
+      margin: 10px;
+      padding: 12px 25px;
+      font-size: 17px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #0056b3; }
+    #pdf-frame {
+      width: 100%;
+      height: 600px;
+      border: none;
+      display: none;
+      margin-top: 20px;
+    }
+    #service-type-box {
+      display: none;
+      margin: 30px auto;
+      max-width: 600px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      padding: 20px;
+    }
+    #service-type-box h2 {
+      margin-bottom: 20px;
+      color: #007BFF;
+    }
+    .service-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      background-color: #28a745;
+      color: white;
+      text-decoration: none;
+    }
+    .service-btn:hover {
+      background-color: #218838;
+    }
+    @media (max-width: 768px) {
+      button, .service-btn {
+        width: 100%;
+        font-size: 18px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>G10 EDUCATIONAL PLATFORM</h1>
+  <div>
+    <button type="button" onclick="showPDF()">📘 Prospectus</button>
+    <button type="button" onclick="showServices()">📝 Fill Admission Form</button>
+  </div>
+
+  <iframe id="pdf-frame" src="https://drive.google.com/file/d/1we22QTVvt33YMLwMx09HFqXeCB0Iai5a/preview"></iframe>
+
+  <div id="service-type-box">
+    <h2>Select Your Service Type</h2>
+
+    <!-- ✅ Replace these links with your actual admission form URLs -->
+    <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">🏠 HOME TUITION</a>
+    <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">👤 INDIVIDUAL COACHING</a>
+    <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">💻 ONLINE COACHING</a>
+    <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">🔁 DUAL COACHING</a>
+    <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">👥 GROUP COACHING</a>
+    <a href="https://payments.cashfree.com/forms/G10EP" class="service-btn">🌟 SPECIAL GROUP COACHING</a>
+  </div>
+
+  <script>
+    function showPDF() {
+      document.getElementById('pdf-frame').style.display = 'block';
+      document.getElementById('service-type-box').style.display = 'none';
+    }
+
+    function showServices() {
+      document.getElementById('pdf-frame').style.display = 'none';
+      document.getElementById('service-type-box').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
