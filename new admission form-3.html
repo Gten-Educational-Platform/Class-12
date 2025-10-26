@@ -1,105 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>G10 Educational Platform - Admission</title>
-  <style>
-    body {
-      background-color: #f0f0f0;
-      font-size: 16px;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>G10 Educational Platform - Admission Portal</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: url('https://i.ibb.co/kV86qkYz/Untitled-design-2.jpg') no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 280px;
+    background: #1a1a2e;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar img {
+    width: 120px;
+    display: block;
+    margin: 0 auto 15px;
+  }
+
+  .sidebar h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #00aaff;
+  }
+
+  .sidebar p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .sidebar a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    background: #0078ff;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 8px 0;
+    text-align: center;
+    transition: background 0.3s;
+  }
+
+  .sidebar a:hover {
+    background: #0099ff;
+  }
+
+  /* Right panel */
+  .content {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.6); /* Darker overlay */
+    color: #fff; /* Ensure text is readable */
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Right side alignment */
+  }
+
+  .top-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    background: #0078ff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  button:hover {
+    background: #0099ff;
+  }
+
+  .pdf-container, .service-container {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .pdf-container iframe, .service-container iframe {
+    width: 100%;
+    height: calc(100vh - 60px);
+    border: none;
+  }
+
+  .back-btn {
+    background: #ff4b5c;
+    margin-bottom: 10px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+  }
+
+  .service-btn {
+    display: block;
+    background: #0078ff;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 1rem;
+  }
+
+  .service-btn:hover {
+    background: #0099ff;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      height: 100%;
+      z-index: 10;
+      transform: translateX(-100%);
     }
-    button {
-      margin: 10px;
-      padding: 12px 25px;
-      font-size: 17px;
-      background-color: #007BFF;
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .menu-btn {
+      display: block;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #0078ff;
       color: white;
       border: none;
+      padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
+      z-index: 11;
     }
-    button:hover { background-color: #0056b3; }
-    #pdf-frame {
-      width: 100%;
-      height: 600px;
-      border: none;
+
+    .content {
+      align-items: flex-start; /* Mobile: buttons stretch */
+    }
+
+    .top-buttons {
+      flex-direction: column-reverse;
+      align-items: flex-end;
+    }
+
+    .top-buttons, .service-container {
+      align-self: stretch;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .menu-btn {
       display: none;
-      margin-top: 20px;
     }
-    #service-type-box {
-      display: none;
-      margin: 30px auto;
-      max-width: 600px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
-      padding: 20px;
-    }
-    #service-type-box h2 {
-      margin-bottom: 20px;
-      color: #007BFF;
-    }
-    .service-btn {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      background-color: #28a745;
-      color: white;
-      text-decoration: none;
-    }
-    .service-btn:hover {
-      background-color: #218838;
-    }
-    @media (max-width: 768px) {
-      button, .service-btn {
-        width: 100%;
-        font-size: 18px;
-        padding: 14px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-  <h1>G10 EDUCATIONAL PLATFORM</h1>
-  <div>
-    <button type="button" onclick="showPDF()">📘 Prospectus</button>
-    <button type="button" onclick="showServices()">📝 Fill Admission Form</button>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" />
+  <h2>G10 Educational Platform</h2>
+  <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati, Assam.</p>
+  <p><b>About Us:</b> G10 Educational Platform is a premier coaching institute in Guwahati, preparing students for <b>CBSE Board Exams</b>, <b>IIT-JEE</b>, <b>NEET</b>, and <b>CUET</b>. We believe in personalized learning with dedicated mentorship.</p>
+  <p><b>Why Choose Us?</b></p>
+  <ul>
+    <li>Experienced faculty from reputed institutes</li>
+    <li>Regular doubt-clearing sessions</li>
+    <li>Weekly mock tests and performance tracking</li>
+    <li>Career guidance and mentorship</li>
+    <li>Interactive digital learning support</li>
+  </ul>
+  <p><b>Contact:</b><br>
+  📞 +91 97065-58527<br>
+  ✉️ g10education@gmail.com<br>
+  🌐 <a href="https://g10education.in" target="_blank">www.g10education.in</a></p>
+
+  <hr style="border: 0.5px solid #333; margin: 15px 0;">
+  <p><b>Quick Links</b></p>
+  <a href="https://g10education.in" target="_blank">🏠 Visit Website</a>
+  <a href="#">📅 Academic Calendar</a>
+  <a href="#">📚 Study Materials</a>
+  <a href="#">🎯 Test Series</a>
+  <a href="#">📞 Contact Support</a>
+</div>
+
+<!-- Right Content -->
+<div class="content" id="content">
+  <button class="menu-btn" id="menu-btn">☰ Menu</button>
+
+  <!-- Main Buttons -->
+  <div class="top-buttons" id="main-buttons">
+    <button id="viewProspectus">📘 View Prospectus</button>
+    <button id="fillForm">📝 Fill Admission Form</button>
   </div>
 
-  <iframe id="pdf-frame" src="https://drive.google.com/file/d/1we22QTVvt33YMLwMx09HFqXeCB0Iai5a/preview"></iframe>
+  <!-- PDF Viewer -->
+  <div class="pdf-container" id="pdfContainer">
+    <button class="back-btn" id="backBtnPDF">⬅ Back</button>
+    <iframe src="https://drive.google.com/file/d/1we22QTVvt33YMLwMx09HFqXeCB0Iai5a/preview"></iframe>
+  </div>
 
-  <div id="service-type-box">
-    <h2>Select Your Service Type</h2>
-
-    <!-- ✅ Replace these links with your actual admission form URLs -->
+  <!-- Service Selection -->
+  <div class="service-container" id="serviceContainer">
+    <button class="back-btn" id="backBtnForm">⬅ Back</button>
+    
+    <!-- Logo above heading -->
+    <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" 
+         alt="G10 Logo" 
+         style="display:block; margin: 0 auto 10px; width:80px; height:auto;">
+    
+    <h2 style="text-align:center; color:#007BFF; margin-bottom:20px;">Select Your Service Type</h2>
     <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">🏠 HOME TUITION</a>
     <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">👤 INDIVIDUAL COACHING</a>
-    <a href="https://payments.cashfree.com/forms/G10EP3">💻 ONLINE COACHING</a>
+    <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">💻 ONLINE COACHING</a>
     <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">🔁 DUAL COACHING</a>
     <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">👥 GROUP COACHING</a>
     <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">🌟 SPECIAL GROUP COACHING</a>
   </div>
+</div>
 
-  <script>
-    function showPDF() {
-      document.getElementById('pdf-frame').style.display = 'block';
-      document.getElementById('service-type-box').style.display = 'none';
+<script>
+  const viewBtn = document.getElementById("viewProspectus");
+  const fillFormBtn = document.getElementById("fillForm");
+  const pdfContainer = document.getElementById("pdfContainer");
+  const serviceContainer = document.getElementById("serviceContainer");
+  const mainButtons = document.getElementById("main-buttons");
+  const backBtnPDF = document.getElementById("backBtnPDF");
+  const backBtnForm = document.getElementById("backBtnForm");
+  const sidebar = document.getElementById("sidebar");
+  const menuBtn = document.getElementById("menu-btn");
+
+  viewBtn.addEventListener("click", () => {
+    mainButtons.style.display = "none";
+    pdfContainer.style.display = "flex";
+    serviceContainer.style.display = "none";
+  });
+
+  fillFormBtn.addEventListener("click", () => {
+    mainButtons.style.display = "none";
+    serviceContainer.style.display = "flex";
+    pdfContainer.style.display = "none";
+  });
+
+  backBtnPDF.addEventListener("click", () => {
+    pdfContainer.style.display = "none";
+    mainButtons.style.display = "flex";
+  });
+
+  backBtnForm.addEventListener("click", () => {
+    serviceContainer.style.display = "none";
+    mainButtons.style.display = "flex";
+  });
+
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+        sidebar.classList.remove("active");
+      }
     }
-
-    function showServices() {
-      document.getElementById('pdf-frame').style.display = 'none';
-      document.getElementById('service-type-box').style.display = 'block';
-    }
-  </script>
-
+  });
+</script>
 </body>
 </html>
-
