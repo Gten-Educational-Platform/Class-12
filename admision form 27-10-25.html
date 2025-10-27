@@ -26,10 +26,25 @@
     transition: transform 0.3s ease;
   }
 
+  /* 3D LOGO STYLE */
   .sidebar img {
     width: 120px;
     display: block;
     margin: 0 auto 15px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
+    padding: 6px;
+    border: 1px solid rgba(184, 115, 51, 0.7);
+    box-shadow:
+      0 6px 12px rgba(184, 115, 51, 0.3),
+      inset 0 3px 6px rgba(255, 255, 255, 0.15),
+      0 0 15px rgba(184, 115, 51, 0.4);
+    animation: logoPulse 2.5s infinite ease-in-out;
+  }
+
+  @keyframes logoPulse {
+    0%, 100% { box-shadow: 0 6px 12px rgba(184,115,51,0.3), inset 0 3px 6px rgba(255,255,255,0.15), 0 0 15px rgba(184,115,51,0.4); }
+    50% { box-shadow: 0 8px 16px rgba(184,115,51,0.5), inset 0 4px 8px rgba(255,255,255,0.25), 0 0 25px rgba(184,115,51,0.6); }
   }
 
   .sidebar h2 {
@@ -74,32 +89,81 @@
     align-items: flex-end;
   }
 
+  /* Top Buttons */
   .top-buttons {
     display: flex;
+    justify-content: flex-end;
     gap: 15px;
     margin-bottom: 10px;
+    width: 100%;
+  }
+
+  /* 3D Gray-Copper Buttons */
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 12px rgba(184, 115, 51, 0.6), 0 5px 0 #222; }
+    50% { box-shadow: 0 0 22px rgba(184, 115, 51, 0.9), 0 5px 0 #222; }
   }
 
   button {
-    background: #0078ff;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
+    position: relative;
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    color: #fff;
+    border: 1px solid rgba(184, 115, 51, 0.7);
+    padding: 12px 22px;
+    border-radius: 10px;
     font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 5px 0 #111, 0 10px 20px rgba(184, 115, 51, 0.2);
+    animation: pulseGlow 2.5s infinite ease-in-out;
   }
 
   button:hover {
-    background: #0099ff;
+    background: linear-gradient(145deg, #444, #333);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 #111, 0 14px 25px rgba(184, 115, 51, 0.4);
   }
 
+  button:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #111, 0 6px 10px rgba(184, 115, 51, 0.3);
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    height: 45%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+  }
+
+  /* Containers */
   .pdf-container, .service-container {
     display: none;
     width: 100%;
     height: 100%;
     flex-direction: column;
     position: relative;
+  }
+
+  /* 🔥 Glowing border for PDF container */
+  .pdf-container {
+    border: 2px solid rgba(184, 115, 51, 0.8);
+    border-radius: 12px;
+    box-shadow:
+      0 0 15px rgba(184, 115, 51, 0.5),
+      inset 0 0 10px rgba(184, 115, 51, 0.3);
+    animation: pdfGlow 2.5s infinite ease-in-out;
+    overflow: hidden;
+  }
+
+  @keyframes pdfGlow {
+    0%, 100% { box-shadow: 0 0 15px rgba(184,115,51,0.5), inset 0 0 10px rgba(184,115,51,0.3); }
+    50% { box-shadow: 0 0 25px rgba(184,115,51,0.8), inset 0 0 18px rgba(184,115,51,0.5); }
   }
 
   .pdf-container iframe, .service-container iframe {
@@ -109,28 +173,51 @@
   }
 
   .back-btn {
-    background: #ff4b5c;
-    margin-bottom: 10px;
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    border: 1px solid rgba(184, 115, 51, 0.7);
+    animation: pulseGlow 2.5s infinite ease-in-out;
     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 10;
   }
 
+  /* Service Section */
+  .service-container {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    position: relative;
+    padding: 20px;
+  }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
   .service-btn {
     display: block;
-    background: #0078ff;
+    background: #333;
     color: white;
     text-decoration: none;
     text-align: center;
-    padding: 12px;
+    padding: 14px;
     border-radius: 8px;
-    margin: 10px 0;
+    border: 2px solid #B87333;
     font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
   }
 
   .service-btn:hover {
-    background: #0099ff;
+    background: #444;
+    transform: scale(1.03);
   }
 
   /* Mobile responsive */
@@ -151,7 +238,7 @@
       position: absolute;
       top: 15px;
       left: 15px;
-      background: #0078ff;
+      background: #B87333;
       color: white;
       border: none;
       padding: 8px 12px;
@@ -169,8 +256,8 @@
       align-items: flex-end;
     }
 
-    .top-buttons, .service-container {
-      align-self: stretch;
+    .service-grid {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -189,23 +276,22 @@
   <h2>G10 Educational Platform</h2>
   <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati, Assam.</p>
   <p><b>About Us:</b> G10 Educational Platform is a premier coaching institute in Guwahati, preparing students for <b>CBSE Board Exams</b>, <b>IIT-JEE</b>, <b>NEET</b>, and <b>CUET</b>. We believe in personalized learning with dedicated mentorship.</p>
-  <p><b>Why Choose Us?</b></p>
   <ul>
-    <li>Experienced faculty </li>
+    <li>Experienced faculty</li>
     <li>Regular doubt-clearing sessions</li>
-    <li>24X7 Topic Wise practice Test</li>
-    <li>Live Class if student not able to come</li>
-    <li>Provide Study Materials</li>
-    <li>Small Group</li>
-    <li>24X7 AI Question Solver and Support</li>
-    <li>Weekly mock tests and performance tracking</li>
-    <li>Career guidance and mentorship</li>
-    <li>Interactive digital learning support</li>
+    <li>24x7 Topic Wise Practice Test</li>
+    <li>Live Classes for absentees</li>
+    <li>Study Materials Provided</li>
+    <li>Small Group Batches</li>
+    <li>24x7 AI Question Solver & Support</li>
+    <li>Weekly Mock Tests and Performance Tracking</li>
+    <li>Career Guidance and Mentorship</li>
+    <li>Interactive Digital Learning Support</li>
   </ul>
   <p><b>Contact:</b><br>
   📞 +91 9706380357<br>
   ✉️ g10.educational.platform@gmail.com<br>
-  🌐 <a href="https://www.g10educationalplatformindia.co.in/" target="_blank">https://www.g10educationalplatformindia.co.in/</a></p>
+  🌐 <a href="https://www.g10educationalplatformindia.co.in/" target="_blank">Visit Website</a></p>
 
   <hr style="border: 0.5px solid #333; margin: 15px 0;">
   <p><b>Quick Links</b></p>
@@ -238,13 +324,16 @@
     <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" 
          alt="G10 Logo" 
          style="display:block; margin: 0 auto 10px; width:80px; height:auto;">
-    <h2 style="text-align:center; color:#007BFF; margin-bottom:20px;">Select Your Service Type</h2>
-    <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">🏠 HOME TUITION</a>
-    <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">👤 INDIVIDUAL COACHING</a>
-    <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">💻 ONLINE COACHING</a>
-    <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">🔁 DUAL COACHING</a>
-    <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">👥 GROUP COACHING</a>
-    <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">🌟 SPECIAL GROUP COACHING</a>
+    <h2 style="text-align:center; color:#B87333; margin-bottom:20px;">Select Your Service Type</h2>
+
+    <div class="service-grid">
+      <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">🏠 HOME TUITION</a>
+      <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">👤 INDIVIDUAL COACHING</a>
+      <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">💻 ONLINE COACHING</a>
+      <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">🔁 DUAL COACHING</a>
+      <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">👥 GROUP COACHING</a>
+      <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">🌟 SPECIAL GROUP COACHING</a>
+    </div>
   </div>
 </div>
 
@@ -269,11 +358,9 @@
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
     if (isMobile) {
-      // ✅ Use embedded PDF.js viewer for reliable mobile display
       pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfURL)}#toolbar=0&zoom=auto`;
     } else {
-      // 💻 Desktop - open with 40% zoom
-      pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfURL)}#zoom=40`;
+      pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfURL)}#zoom=40&spread=even`;
     }
   });
 
