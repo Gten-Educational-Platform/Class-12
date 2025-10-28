@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Gallery</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #0b111e;
+    color: #e0e0e0;
+    overflow-x: hidden;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #121b2f;
+    color: #00b7ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    font-size: 22px;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+  }
+
+  .home-btn {
+    background: linear-gradient(145deg, #ff0000, #ffcc00);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 25px rgba(255, 204, 0, 0.8);
+    text-decoration: none;
+  }
+
+  .home-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(255, 204, 0, 1), 0 0 35px rgba(255, 0, 0, 1);
+  }
+
+  .main-content {
+    display: flex;
+    flex: 1;
+    margin-top: 90px;
+    padding: 0 20px;
+  }
+
+  .sidebar {
+    background: #121b2f;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 220px;
+    height: calc(100vh - 100px);
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .sidebar-logo img {
+    width: 120px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255,0,0,0.6);
+  }
+
+  .category-btn {
+    background: #1e2a48;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    text-align: left;
+  }
+
+  .category-btn:hover {
+    background: #00b7ff;
+    transform: translateY(-2px);
+  }
+
+  .content-area {
+    flex: 1;
+    text-align: center;
+    margin-left: 260px;
+    width: calc(100% - 260px);
+  }
+
+  .photo-viewer {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .photo-viewer img {
+    max-width: 90%;
+    max-height: 75vh;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255,80,0,0.6), 0 0 35px rgba(255,0,0,0.8);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .photo-viewer img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 35px rgba(255,100,0,1), 0 0 45px rgba(255,0,0,1);
+  }
+
+  .nav-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .nav-btn {
+    background: #1e2a48;
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  }
+
+  .nav-btn:hover {
+    background: #00b7ff;
+  }
+
+  /* Disable right-click & drag */
+  img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+
+  /* MOBILE DESIGN CHANGE ONLY */
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      font-size: 18px;
+      text-align: center;
+    }
+    .home-btn {
+      margin-top: 8px;
+      font-size: 13px;
+      padding: 8px 14px;
+    }
+    .main-content {
+      flex-direction: column;
+      margin-top: 130px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      background: #121b2f;
+      gap: 6px;
+      border-radius: 0;
+      padding: 10px;
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+
+    .sidebar-logo {
+      order: 3;
+      flex-basis: 100%;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .sidebar-logo img {
+      width: 100px;
+    }
+
+    .category-btn {
+      flex: 1 1 30%;
+      text-align: center;
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+
+    .content-area {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .nav-buttons {
+      flex-direction: row;
+      justify-content: center;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 10px;
+      transform: none;
+    }
+  }
+</style>
+</head>
+<body oncontextmenu="return false">
+  <header>
+    <span>📸 Photo Gallery</span>
+    <a href="https://www.g10educationalplatformindia.co.in/" class="home-btn" target="_blank">🏠 Back to Home</a>
+  </header>
+
+  <div class="main-content">
+    <div class="sidebar" id="categoryButtons">
+      <div class="sidebar-logo">
+        <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo">
+      </div>
+    </div>
+
+    <div class="content-area">
+      <div class="photo-viewer" id="photoViewer">
+        <img id="currentPhoto" src="" alt="">
+        <div class="nav-buttons" id="navButtons">
+          <button class="nav-btn" onclick="prevPhoto()">⬅️ Prev</button>
+          <button class="nav-btn" onclick="nextPhoto()">➡️ Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const categories = [
+      { id: 'campus', title: '🎓 Campus Life', images: [
+        "https://i.ibb.co/BDnm269/0-IMG20160623165106.jpg",
+        "https://i.ibb.co/xr5qQ5P/3-copy.jpg",
+        "https://i.ibb.co/hxsvTMsC/198.jpg",
+        "https://i.ibb.co/fzC9Tqfj/2021-03-06-1.jpg"
+      ]},
+      { id: 'teachers', title: '👩‍🏫 Teachers & Students', images: [
+        "https://i.ibb.co/Rp6trK5t/13238857-996996830421120-12607335831314382-n.jpg",
+        "https://i.ibb.co/sB3Z02B/13240513-996997537087716-6855441500773550842-n-1.jpg"
+      ]},
+      { id: 'classroom', title: '🏫 Classroom & Institute', images: [
+        "https://i.ibb.co/fz1L8gPB/15192761-1167830040004464-530667849259646460-n.jpg",
+        "https://i.ibb.co/BKsrXQgh/15267711-1167829386671196-7391738023458210398-n.jpg"
+      ]},
+      { id: 'events', title: '🏆 Events & Achievements', images: [
+        "https://i.ibb.co/Wvhn2zfW/15284112-1167830526671082-8728559295730652116-n.jpg",
+        "https://i.ibb.co/yFG43hdZ/47686523-2021988357921957-988630810737246208-o-1.jpg"
+      ]},
+      { id: 'outdoor', title: '🌳 Outdoor & Excursion', images: [
+        "https://i.ibb.co/jkphT99x/IMG20160619130035.jpg",
+        "https://i.ibb.co/nsp7xsv3/IMG20160623164015.jpg"
+      ]},
+      { id: 'old', title: '📸 Old Memories', images: [
+        "https://i.ibb.co/zWnyQ5jY/IMG20160720172642.jpg",
+        "https://i.ibb.co/Css8tG04/IMG20160811161132.jpg"
+      ]}
+    ];
+
+    const categoryButtons = document.getElementById("categoryButtons");
+    const photoViewer = document.getElementById("photoViewer");
+    const currentPhoto = document.getElementById("currentPhoto");
+
+    let currentCategory = null;
+    let currentIndex = 0;
+
+    categories.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.className = "category-btn";
+      btn.textContent = cat.title;
+      btn.onclick = () => showCategory(cat.id);
+      categoryButtons.appendChild(btn);
+    });
+
+    function showCategory(id) {
+      currentCategory = categories.find(c => c.id === id);
+      currentIndex = 0;
+      updatePhoto();
+      photoViewer.style.display = "flex";
+    }
+
+    function updatePhoto() {
+      if (currentCategory && currentCategory.images.length > 0) {
+        currentPhoto.src = currentCategory.images[currentIndex];
+        adjustButtons();
+      }
+    }
+
+    function nextPhoto() {
+      if (!currentCategory) return;
+      currentIndex = (currentIndex + 1) % currentCategory.images.length;
+      updatePhoto();
+    }
+
+    function prevPhoto() {
+      if (!currentCategory) return;
+      currentIndex = (currentIndex - 1 + currentCategory.images.length) % currentCategory.images.length;
+      updatePhoto();
+    }
+
+    // Adjust nav buttons based on image height (for mobile)
+    function adjustButtons() {
+      const navButtons = document.getElementById("navButtons");
+      if (window.innerWidth <= 768) {
+        const imgHeight = currentPhoto.clientHeight;
+        navButtons.style.top = `${imgHeight + 20}px`;
+      }
+    }
+
+    window.addEventListener('resize', adjustButtons);
+    currentPhoto.addEventListener('load', adjustButtons);
+  </script>
+</body>
+</html>
