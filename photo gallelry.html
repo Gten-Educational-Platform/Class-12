@@ -112,7 +112,7 @@
   }
 
   .photo-viewer {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
@@ -159,13 +159,11 @@
     background: #00b7ff;
   }
 
-  /* Disable right-click & drag */
   img {
     -webkit-user-drag: none;
     pointer-events: none;
   }
 
-  /* MOBILE DESIGN CHANGE ONLY */
   @media (max-width: 768px) {
     header {
       flex-direction: column;
@@ -181,8 +179,6 @@
       flex-direction: column;
       margin-top: 130px;
     }
-
-    /* Sidebar */
     .sidebar {
       width: 100%;
       flex-direction: row;
@@ -197,30 +193,25 @@
       height: auto;
       overflow: visible;
     }
-
     .sidebar-logo {
       order: 3;
       flex-basis: 100%;
       text-align: center;
       margin: 10px 0;
     }
-
     .sidebar-logo img {
       width: 100px;
     }
-
     .category-btn {
       flex: 1 1 30%;
       text-align: center;
       font-size: 12px;
       padding: 6px 8px;
     }
-
     .content-area {
       margin-left: 0;
       width: 100%;
     }
-
     .nav-buttons {
       flex-direction: row;
       justify-content: center;
@@ -294,6 +285,7 @@
     let currentCategory = null;
     let currentIndex = 0;
 
+    // Create category buttons
     categories.forEach(cat => {
       const btn = document.createElement("button");
       btn.className = "category-btn";
@@ -306,7 +298,6 @@
       currentCategory = categories.find(c => c.id === id);
       currentIndex = 0;
       updatePhoto();
-      photoViewer.style.display = "flex";
     }
 
     function updatePhoto() {
@@ -328,7 +319,6 @@
       updatePhoto();
     }
 
-    // Adjust nav buttons based on image height (for mobile)
     function adjustButtons() {
       const navButtons = document.getElementById("navButtons");
       if (window.innerWidth <= 768) {
@@ -339,6 +329,14 @@
 
     window.addEventListener('resize', adjustButtons);
     currentPhoto.addEventListener('load', adjustButtons);
+
+    // 🟢 Load first image automatically
+    window.addEventListener("load", () => {
+      currentCategory = categories[0]; // first category
+      currentIndex = 0;
+      photoViewer.style.display = "flex";
+      updatePhoto();
+    });
   </script>
 </body>
 </html>
