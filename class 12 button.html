@@ -84,7 +84,6 @@
     100%{box-shadow:0 0 10px rgba(65,105,225,.6);}
   }
 
-  /* ✅ Improved Back-to-Home Button */
   .back-btn {
     position:absolute;top:20px;right:30px;
     background:linear-gradient(145deg,#243b55,#141e30);
@@ -101,7 +100,6 @@
     box-shadow:0 6px 0 #000,0 14px 25px rgba(65,105,225,.4);
   }
 
-  /* --- Mobile-friendly adjustments --- */
   @media (max-width:768px){
     .sidebar{position:fixed;height:100%;transform:translateX(-100%);z-index:20;}
     .sidebar.active{transform:translateX(0);}
@@ -117,9 +115,18 @@
     .main-logo{width:60px;}
   }
 
-  .calendar-frame {border:0;width:100%;height:280px;border-radius:8px;}
-  @media (min-width:1024px){.calendar-frame {height:200px;}}
-  @media (max-width:768px){.calendar-frame {height:60vh;}}
+  /* Adjusted calendar height + smaller back button */
+  .calendar-frame {border:0;width:100%;height:85vh;border-radius:8px;}
+  @media (min-width:1024px){.calendar-frame {height:64vh;}}
+  @media (max-width:768px){.calendar-frame {height:68vh;}}
+
+  .calendar-small-btn {
+    padding:6px 12px;
+    font-size:0.85rem;
+    width:auto;
+    border-radius:8px;
+    margin-top:-8px; /* ⬅️ Moved the button up */
+  }
 
   .main-logo {
     width:70px;
@@ -141,12 +148,13 @@
   <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati, Assam.</p>
   <p><b>About Us:</b> G10 Educational Platform is a premier coaching institute in Guwahati preparing students for <b>CBSE Board Exams</b>, <b>IIT-JEE</b>, <b>NEET</b>, and <b>CUET</b>.</p>
 
+  <button class="sidebar-btn" onclick="showCalendar()">📅 Academic Calendar</button>
   <button class="sidebar-btn" onclick="window.open('https://www.g10educationalplatformindia.co.in/', '_blank')">🌐 Visit Website</button>
   <button class="sidebar-btn" onclick="window.open('https://gten-educational-platform.github.io/Class-12/photo%20gallelry.html', '_blank')">🖼️ Photo Gallery</button>
   <button class="sidebar-btn" onclick="window.open('https://my.unogreen.in/my-digital-card/73x8rq', '_blank')">📞 Contact Us</button>
   <button class="sidebar-btn" onclick="window.open('https://ai-question-and-its-solution-3oip.onrender.com', '_blank')">🤖 AI Q Solver</button>
   <button class="sidebar-btn" onclick="window.open('https://gten-educational-platform.github.io/Class-12/admision%20form%2027-10-25.html', '_blank')">📝 Admission Form</button>
-  <button class="sidebar-btn" onclick="showCalendar()">📅 Academic Calendar</button>
+  
 
   <ul>
     <li>Experienced Faculty</li>
@@ -234,8 +242,7 @@
         class="calendar-frame" frameborder="0" scrolling="no">
       </iframe>
     </div>
-    <br>
-    <button class="subject-btn" onclick="backToSubjects()">⬅️ Back to Subjects</button>
+    <button class="subject-btn calendar-small-btn" onclick="backToSubjects()">⬅️ Back to Subjects</button>
   </div>
 </div>
 
