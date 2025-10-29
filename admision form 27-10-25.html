@@ -15,7 +15,6 @@
     background-size: cover;
   }
 
-  /* Sidebar */
   .sidebar {
     width: 280px;
     background: #1a1a2e;
@@ -26,7 +25,6 @@
     transition: transform 0.3s ease;
   }
 
-  /* 3D LOGO STYLE */
   .sidebar img {
     width: 120px;
     display: block;
@@ -35,16 +33,9 @@
     background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
     padding: 6px;
     border: 1px solid rgba(184, 115, 51, 0.7);
-    box-shadow:
-      0 6px 12px rgba(184, 115, 51, 0.3),
-      inset 0 3px 6px rgba(255, 255, 255, 0.15),
-      0 0 15px rgba(184, 115, 51, 0.4);
-    animation: logoPulse 2.5s infinite ease-in-out;
-  }
-
-  @keyframes logoPulse {
-    0%, 100% { box-shadow: 0 6px 12px rgba(184,115,51,0.3), inset 0 3px 6px rgba(255,255,255,0.15), 0 0 15px rgba(184,115,51,0.4); }
-    50% { box-shadow: 0 8px 16px rgba(184,115,51,0.5), inset 0 4px 8px rgba(255,255,255,0.25), 0 0 25px rgba(184,115,51,0.6); }
+    box-shadow: 0 6px 12px rgba(184, 115, 51, 0.3),
+                inset 0 3px 6px rgba(255, 255, 255, 0.15),
+                0 0 15px rgba(184, 115, 51, 0.4);
   }
 
   .sidebar h2 {
@@ -54,12 +45,7 @@
     color: #00aaff;
   }
 
-  .sidebar p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .sidebar a {
+  .sidebar a, .sidebar button.sidebar-btn {
     display: block;
     color: #fff;
     text-decoration: none;
@@ -68,81 +54,107 @@
     border-radius: 8px;
     margin: 8px 0;
     text-align: center;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
     transition: background 0.3s;
   }
 
-  .sidebar a:hover {
+  .sidebar a:hover, .sidebar button.sidebar-btn:hover {
     background: #0099ff;
   }
 
-  /* Right panel */
   .content {
     flex: 1;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.45);
     color: #fff;
     padding: 20px;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
   }
 
-  /* Top Buttons */
   .top-buttons {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    align-items: flex-end;
     gap: 15px;
-    margin-bottom: 10px;
-    width: 100%;
+    z-index: 5;
   }
 
-  /* 3D Gray-Copper Buttons */
-  @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 12px rgba(184, 115, 51, 0.6), 0 5px 0 #222; }
-    50% { box-shadow: 0 0 22px rgba(184, 115, 51, 0.9), 0 5px 0 #222; }
-  }
-
-  button {
+  button, .service-btn {
     position: relative;
     background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
     color: #fff;
-    border: 1px solid rgba(184, 115, 51, 0.7);
+    border: 1px solid rgba(184, 60, 51, 0.8);
     padding: 12px 22px;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 5px 0 #111, 0 10px 20px rgba(184, 115, 51, 0.2);
-    animation: pulseGlow 2.5s infinite ease-in-out;
+    box-shadow: 0 5px 0 #111, 0 10px 20px rgba(184, 60, 51, 0.25);
+    text-decoration: none;
+    text-align: center;
   }
 
-  button:hover {
+  button:hover, .service-btn:hover {
     background: linear-gradient(145deg, #444, #333);
     transform: translateY(-2px);
-    box-shadow: 0 7px 0 #111, 0 14px 25px rgba(184, 115, 51, 0.4);
+    box-shadow: 0 7px 0 #111, 0 14px 25px rgba(184, 60, 51, 0.4);
   }
 
-  button:active {
+  button:active, .service-btn:active {
     transform: translateY(3px);
-    box-shadow: 0 2px 0 #111, 0 6px 10px rgba(184, 115, 51, 0.3);
+    box-shadow: 0 2px 0 #111, 0 6px 10px rgba(184, 60, 51, 0.3);
   }
 
-  button::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    height: 45%;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+  .service-btn {
+    width: 230px;
+    margin: 10px 0;
+    align-self: flex-start;
+    border-radius: 50px;
+    border: 2px solid transparent;
+    background: radial-gradient(circle at top left, #2e2e2e, #1c1c1c);
+    background-clip: padding-box;
+    animation: metallicGlow 3s infinite alternate;
   }
 
-  /* Containers */
-  .pdf-container, .service-container {
+  @keyframes metallicGlow {
+    0% { box-shadow: 0 0 4px #ff4d4d, 0 0 8px #ff6666, 0 0 14px #cc0000; border-color: #ff6666; }
+    50% { box-shadow: 0 0 4px #3399ff, 0 0 8px #66ccff, 0 0 14px #0077ff; border-color: #3399ff; }
+    100% { box-shadow: 0 0 4px #ffd700, 0 0 8px #ffcc00, 0 0 14px #ffb300; border-color: #ffd700; }
+  }
+
+  .service-container {
+    align-items: flex-start;
+    padding-left: 50px;
+  }
+
+  .service-logo {
+    width: 60px;
+    border-radius: 0;
+    background: none;
+    margin-bottom: 10px;
+    box-shadow: none;
+  }
+
+  .service-heading {
+    text-align: left;
+    color: #FFD700;
+    font-weight: 800;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .pdf-container, .service-container, .calendar-container, .iframe-container {
     display: none;
     width: 100%;
     height: 100%;
@@ -150,77 +162,50 @@
     position: relative;
   }
 
-  /* 🔥 Glowing border for PDF container */
-  .pdf-container {
-    border: 2px solid rgba(184, 115, 51, 0.8);
-    border-radius: 12px;
-    box-shadow:
-      0 0 15px rgba(184, 115, 51, 0.5),
-      inset 0 0 10px rgba(184, 115, 51, 0.3);
-    animation: pdfGlow 2.5s infinite ease-in-out;
-    overflow: hidden;
-  }
-
-  @keyframes pdfGlow {
-    0%, 100% { box-shadow: 0 0 15px rgba(184,115,51,0.5), inset 0 0 10px rgba(184,115,51,0.3); }
-    50% { box-shadow: 0 0 25px rgba(184,115,51,0.8), inset 0 0 18px rgba(184,115,51,0.5); }
-  }
-
-  .pdf-container iframe, .service-container iframe {
+  .pdf-container iframe, .calendar-container iframe, .iframe-container iframe {
     width: 100%;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 40px);
     border: none;
   }
 
   .back-btn {
     background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
-    border: 1px solid rgba(184, 115, 51, 0.7);
-    animation: pulseGlow 2.5s infinite ease-in-out;
+    border: 1px solid rgba(184, 60, 51, 0.8);
     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 10;
   }
 
-  /* Service Section */
-  .service-container {
-    display: none;
-    width: 100%;
-    height: 100%;
-    flex-direction: column;
-    position: relative;
-    padding: 20px;
+  .calendar-bottom-btn {
+    align-self: center;
+    margin: 15px 0;
   }
 
-  .service-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+  /* 🔥 Soft glowing border animation for PDF and Service iframe */
+  .pdf-container iframe,
+  .iframe-container iframe {
+    border: 3px solid #ffd700;
+    border-radius: 10px;
+    animation: glowBorder 6s infinite alternate ease-in-out;
+    box-shadow: 0 0 10px #ffd700, 0 0 20px rgba(0, 128, 255, 0.3);
   }
 
-  .service-btn {
-    display: block;
-    background: #333;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    padding: 14px;
-    border-radius: 8px;
-    border: 2px solid #B87333;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
+  @keyframes glowBorder {
+    0% {
+      border-color: #ffd700;
+      box-shadow: 0 0 10px #ffd700, 0 0 20px rgba(255, 255, 0, 0.3);
+    }
+    50% {
+      border-color: #66ccff;
+      box-shadow: 0 0 10px #66ccff, 0 0 20px rgba(0, 128, 255, 0.3);
+    }
+    100% {
+      border-color: #3399ff;
+      box-shadow: 0 0 10px #3399ff, 0 0 20px rgba(0, 128, 255, 0.35);
+    }
   }
 
-  .service-btn:hover {
-    background: #444;
-    transform: scale(1.03);
-  }
-
-  /* Mobile responsive */
   @media (max-width: 768px) {
     .sidebar {
       position: fixed;
@@ -228,11 +213,7 @@
       z-index: 10;
       transform: translateX(-100%);
     }
-
-    .sidebar.active {
-      transform: translateX(0);
-    }
-
+    .sidebar.active { transform: translateX(0); }
     .menu-btn {
       display: block;
       position: absolute;
@@ -246,94 +227,88 @@
       cursor: pointer;
       z-index: 11;
     }
-
-    .content {
-      align-items: flex-start;
+    .small-back {
+      font-size: 0.9rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      width: auto;
+      height: auto;
     }
-
-    .top-buttons {
-      flex-direction: column-reverse;
-      align-items: flex-end;
-    }
-
-    .service-grid {
-      grid-template-columns: 1fr;
-    }
+    .calendar-container iframe { height: 67vh !important; }
+    .service-container { padding-left: 20px; align-items: stretch; }
+    .service-btn { width: 100%; font-size: 0.9rem; padding: 10px 14px; }
+    .top-buttons { position: fixed; top: 10px; right: 10px; z-index: 20; }
+    .service-heading { margin-top: 70px !important; }
   }
 
-  @media (min-width: 769px) {
-    .menu-btn {
-      display: none;
-    }
-  }
+  @media (min-width: 769px) { .menu-btn { display: none; } }
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" />
   <h2>G10 Educational Platform</h2>
   <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati, Assam.</p>
-  <p><b>About Us:</b> G10 Educational Platform is a premier coaching institute in Guwahati, preparing students for <b>CBSE Board Exams</b>, <b>IIT-JEE</b>, <b>NEET</b>, and <b>CUET</b>. We believe in personalized learning with dedicated mentorship.</p>
+  <p><b>About Us:</b> G10 Educational Platform is a premier coaching institute in Guwahati preparing students for <b>CBSE Board Exams</b>, <b>IIT-JEE</b>, <b>NEET</b>, and <b>CUET</b>.</p>
+
+  <button class="sidebar-btn" onclick="window.open('https://www.g10educationalplatformindia.co.in/', '_blank')">🌐 Visit Website</button>
+  <button class="sidebar-btn" onclick="window.open('https://gten-educational-platform.github.io/Class-12/photo%20gallelry.html', '_blank')">🖼️ Photo Gallery</button>
+  <button class="sidebar-btn" onclick="window.open('https://my.unogreen.in/my-digital-card/73x8rq', '_blank')">📞 Contact Us</button>
+  <button class="sidebar-btn" onclick="window.open('https://ai-question-and-its-solution-3oip.onrender.com', '_blank')">🤖 AI Q Solver</button>
+  <button class="sidebar-btn" onclick="window.open('https://gten-educational-platform.github.io/Class-12/admision%20form%2027-10-25.html', '_blank')">📝 Admission Form</button>
+  <button class="sidebar-btn" onclick="showCalendar()">📅 Academic Calendar</button>
+
   <ul>
-    <li>Experienced faculty</li>
-    <li>Regular doubt-clearing sessions</li>
-    <li>24x7 Topic Wise Practice Test</li>
-    <li>Live Classes for absentees</li>
+    <li>Experienced Faculty</li>
+    <li>24×7 Topic Wise Practice Test</li>
+    <li>Weekly Mock Tests</li>
     <li>Study Materials Provided</li>
     <li>Small Group Batches</li>
-    <li>24x7 AI Question Solver & Support</li>
-    <li>Weekly Mock Tests and Performance Tracking</li>
-    <li>Career Guidance and Mentorship</li>
-    <li>Interactive Digital Learning Support</li>
   </ul>
+
   <p><b>Contact:</b><br>
   📞 +91 9706380357<br>
   ✉️ g10.educational.platform@gmail.com<br>
-  🌐 <a href="https://www.g10educationalplatformindia.co.in/" target="_blank">Visit Website</a></p>
-
-  <hr style="border: 0.5px solid #333; margin: 15px 0;">
-  <p><b>Quick Links</b></p>
-  <a href="https://www.g10educationalplatformindia.co.in/" target="_blank">🏠 Visit Website</a>
-  <a href="#">📅 Academic Calendar (Coming Soon)</a>
-  <a href="#">📚 Study Materials (Coming Soon)</a>
-  <a href="#">🎯 Free Test Series (Coming Soon)</a>
-  <a href="https://my.unogreen.in/my-digital-card/73x8rq">📞 Contact Support</a>
+  🌐 <a href="https://www.g10educationalplatformindia.co.in/" target="_blank" style="color:#00aaff;">Visit Website</a></p>
 </div>
 
-<!-- Right Content -->
 <div class="content" id="content">
-  <button class="menu-btn" id="menu-btn">☰ Menu</button>
+  <button class="menu-btn" id="menu-btn">☰</button>
 
-  <!-- Main Buttons -->
   <div class="top-buttons" id="main-buttons">
     <button id="viewProspectus">📘 View Prospectus</button>
     <button id="fillForm">📝 Fill Admission Form</button>
   </div>
 
-  <!-- PDF Viewer -->
   <div class="pdf-container" id="pdfContainer">
     <button class="back-btn" id="backBtnPDF">⬅ Back</button>
-    <iframe id="pdfIframe" src=""></iframe>
+    <iframe id="pdfIframe"></iframe>
   </div>
 
-  <!-- Service Selection -->
   <div class="service-container" id="serviceContainer">
     <button class="back-btn" id="backBtnForm">⬅ Back</button>
-    <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" 
-         alt="G10 Logo" 
-         style="display:block; margin: 0 auto 10px; width:80px; height:auto;">
-    <h2 style="text-align:center; color:#B87333; margin-bottom:20px;">Select Your Service Type</h2>
-
-    <div class="service-grid">
-      <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">🏠 HOME TUITION</a>
-      <a href="https://payments.cashfree.com/forms?code=G10EP" class="service-btn">👤 INDIVIDUAL COACHING</a>
-      <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">💻 ONLINE COACHING</a>
-      <a href="https://payments.cashfree.com/forms/G10EP3" class="service-btn">🔁 DUAL COACHING</a>
-      <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">👥 GROUP COACHING</a>
-      <a href="https://payments.cashfree.com/forms?code=G10EP2" class="service-btn">🌟 SPECIAL GROUP COACHING</a>
+    <div class="service-heading">
+      <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" class="service-logo" />
+      <h2><b>Select Your Service Type</b></h2>
     </div>
+    <button class="service-btn" onclick="openService('https://payments.cashfree.com/forms?code=G10EP')">🏠 HOME TUITION</button>
+    <button class="service-btn" onclick="openService('https://payments.cashfree.com/forms?code=G10EP')">👤 INDIVIDUAL COACHING</button>
+    <button class="service-btn" onclick="openService('https://payments.cashfree.com/forms/G10EP3')">💻 ONLINE COACHING</button>
+    <button class="service-btn" onclick="openService('https://payments.cashfree.com/forms/G10EP3')">🔁 DUAL COACHING</button>
+    <button class="service-btn" onclick="openService('https://payments.cashfree.com/forms?code=G10EP2')">👥 GROUP COACHING</button>
+    <button class="service-btn" onclick="openService('https://payments.cashfree.com/forms?code=G10EP2')">🌟 SPECIAL GROUP COACHING</button>
+  </div>
+
+  <div class="iframe-container" id="iframeContainer">
+    <button class="back-btn" id="backBtnIframe">⬅</button>
+    <iframe id="serviceIframe"></iframe>
+  </div>
+
+  <div class="calendar-container" id="calendarContainer">
+    <button class="back-btn" id="backBtnCalendar" style="display:none;">⬅ Back</button>
+    <iframe src="https://calendar.google.com/calendar/embed?src=2d45aa02a0b66c1e9646307bb635051cbc441c8ee4743ddfa654df2c24353370%40group.calendar.google.com&ctz=Asia%2FKolkata"></iframe>
+    <button class="calendar-bottom-btn" id="calendarBottomBtn">⬅ Back to Admission Portal</button>
   </div>
 </div>
 
@@ -342,54 +317,77 @@
   const fillFormBtn = document.getElementById("fillForm");
   const pdfContainer = document.getElementById("pdfContainer");
   const serviceContainer = document.getElementById("serviceContainer");
+  const iframeContainer = document.getElementById("iframeContainer");
   const mainButtons = document.getElementById("main-buttons");
   const backBtnPDF = document.getElementById("backBtnPDF");
   const backBtnForm = document.getElementById("backBtnForm");
+  const backBtnIframe = document.getElementById("backBtnIframe");
+  const pdfIframe = document.getElementById("pdfIframe");
+  const serviceIframe = document.getElementById("serviceIframe");
   const sidebar = document.getElementById("sidebar");
   const menuBtn = document.getElementById("menu-btn");
-  const pdfIframe = document.getElementById("pdfIframe");
+  const calendarContainer = document.getElementById("calendarContainer");
+  const calendarBottomBtn = document.getElementById("calendarBottomBtn");
 
   const pdfURL = "https://gten-educational-platform.github.io/Class-12/Centre%20Prospectus.pdf";
 
-  viewBtn.addEventListener("click", () => {
+  viewBtn.onclick = () => {
     mainButtons.style.display = "none";
     serviceContainer.style.display = "none";
+    calendarContainer.style.display = "none";
+    iframeContainer.style.display = "none";
     pdfContainer.style.display = "flex";
+    pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfURL)}#zoom=40&spread=even`;
+  };
 
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    if (isMobile) {
-      pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfURL)}#toolbar=0&zoom=auto`;
-    } else {
-      pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfURL)}#zoom=40&spread=even`;
-    }
-  });
-
-  fillFormBtn.addEventListener("click", () => {
+  fillFormBtn.onclick = () => {
     mainButtons.style.display = "none";
-    serviceContainer.style.display = "flex";
     pdfContainer.style.display = "none";
-  });
+    calendarContainer.style.display = "none";
+    iframeContainer.style.display = "none";
+    serviceContainer.style.display = "flex";
+  };
 
-  backBtnPDF.addEventListener("click", () => {
+  backBtnPDF.onclick = () => {
     pdfContainer.style.display = "none";
     mainButtons.style.display = "flex";
-    pdfIframe.src = "";
-  });
+  };
 
-  backBtnForm.addEventListener("click", () => {
+  backBtnForm.onclick = () => {
     serviceContainer.style.display = "none";
     mainButtons.style.display = "flex";
-  });
+  };
 
-  menuBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("active");
-  });
+  function openService(url) {
+    serviceContainer.style.display = "none";
+    iframeContainer.style.display = "flex";
+    serviceIframe.src = url;
+  }
 
-  document.addEventListener("click", (e) => {
-    if (window.innerWidth <= 768) {
-      if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-        sidebar.classList.remove("active");
-      }
+  backBtnIframe.onclick = () => {
+    iframeContainer.style.display = "none";
+    serviceContainer.style.display = "flex";
+  };
+
+  function showCalendar() {
+    mainButtons.style.display = "none";
+    pdfContainer.style.display = "none";
+    serviceContainer.style.display = "none";
+    iframeContainer.style.display = "none";
+    calendarContainer.style.display = "flex";
+    if (window.innerWidth <= 768) sidebar.classList.remove("active");
+  }
+
+  calendarBottomBtn.onclick = () => {
+    calendarContainer.style.display = "none";
+    mainButtons.style.display = "flex";
+  };
+
+  menuBtn.onclick = () => sidebar.classList.toggle("active");
+
+  document.addEventListener("click", e => {
+    if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+      sidebar.classList.remove("active");
     }
   });
 </script>
