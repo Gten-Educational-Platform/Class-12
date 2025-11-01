@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>G10 Educational Platform - Class 9</title>
-
 <style>
   body {
     margin:0;
@@ -12,7 +11,7 @@
     display:flex;
     height:100vh;
     overflow:hidden;
-    background:url('https://i.ibb.co/RTjxjG88/class12.jpg') no-repeat center center fixed;
+    background:url('https://i.ibb.co/jvs7y0DL/class-11.jpg') no-repeat center center fixed;
     background-size:cover;
   }
   .sidebar {
@@ -44,40 +43,69 @@
     flex:1;background:rgba(0,0,0,.6);color:#fff;padding:20px;overflow-y:auto;position:relative;
   }
   .menu-btn{display:none;}
-  @keyframes glowEffect {
-    0%{box-shadow:0 0 10px var(--glow-color);}
-    50%{box-shadow:0 0 18px var(--glow-color-bright);}
-    100%{box-shadow:0 0 10px var(--glow-color);}
+
+  /* 🔹 Soft Glow Animations */
+  @keyframes redGlow {
+    0%,100% { box-shadow:0 0 10px rgba(255,60,60,0.6), 0 0 25px rgba(255,60,60,0.4); }
+    50% { box-shadow:0 0 18px rgba(255,100,100,0.8), 0 0 35px rgba(255,100,100,0.5); }
+  }
+  @keyframes orangeGlow {
+    0%,100% { box-shadow:0 0 10px rgba(255,140,0,0.6), 0 0 25px rgba(255,140,0,0.4); }
+    50% { box-shadow:0 0 18px rgba(255,180,60,0.8), 0 0 35px rgba(255,180,60,0.5); }
+  }
+  @keyframes blueGlow {
+    0%,100% { box-shadow:0 0 10px rgba(30,144,255,0.6), 0 0 25px rgba(30,144,255,0.4); }
+    50% { box-shadow:0 0 18px rgba(100,180,255,0.8), 0 0 35px rgba(100,180,255,0.5); }
+  }
+  @keyframes greenGlow {
+    0%,100% { box-shadow:0 0 10px rgba(0,255,150,0.6), 0 0 25px rgba(0,255,150,0.4); }
+    50% { box-shadow:0 0 18px rgba(0,255,180,0.8), 0 0 35px rgba(0,255,180,0.5); }
+  }
+  @keyframes purpleGlow {
+    0%,100% { box-shadow:0 0 10px rgba(180,0,255,0.6), 0 0 25px rgba(180,0,255,0.4); }
+    50% { box-shadow:0 0 18px rgba(200,100,255,0.8), 0 0 35px rgba(200,100,255,0.5); }
   }
 
-  /* 🎨 Subject Buttons (Different Colors) */
+  /* 🔸 Subject Buttons */
   .subject-btn {
     width:250px;margin:12px 0;
-    color:#fff;border:1px solid var(--border-color,#b87333);
-    padding:12px 20px;border-radius:10px;font-size:1rem;font-weight:bold;
-    cursor:pointer;transition:all .25s ease;
-    box-shadow:0 5px 0 #111,0 10px 20px var(--shadow-color,rgba(184,115,51,.2));
-    animation:glowEffect 5s infinite ease-in-out;
-    display:block;position:relative;overflow:hidden;
-    background:linear-gradient(145deg,var(--bg1,#3a3a3a),var(--bg2,#2a2a2a));
+    color:#fff;padding:12px 20px;border-radius:10px;
+    font-size:1rem;font-weight:bold;cursor:pointer;
+    transition:all .25s ease;display:block;position:relative;overflow:hidden;
+    border:1px solid transparent;
   }
   .subject-btn::after {
     content:'';position:absolute;top:2px;left:2px;right:2px;height:45%;
-    background:linear-gradient(to bottom,rgba(255,255,255,.12),rgba(255,255,255,0));
+    background:linear-gradient(to bottom,rgba(255,255,255,.15),rgba(255,255,255,0));
     border-radius:8px;
   }
-  .subject-btn:hover {
-    background:linear-gradient(145deg,var(--hover1,#444),var(--hover2,#333));
-    transform:translateY(-2px);
-    box-shadow:0 6px 0 #000,0 14px 25px var(--shadow-hover,rgba(184,115,51,.3));
-  }
+  .subject-btn:hover { transform:translateY(-2px); }
 
-  /* ✳️ Unique color themes per subject */
-  .mock { --bg1:#3a3a3a; --bg2:#2a2a2a; --glow-color:#b87333; --glow-color-bright:#ffd700; --border-color:#b87333; --shadow-color:rgba(184,115,51,.25); }
-  .science { --bg1:#1b3c59; --bg2:#12273b; --glow-color:#00ffff; --glow-color-bright:#00bfff; --border-color:#00bfff; --shadow-color:rgba(0,191,255,.25); }
-  .math { --bg1:#283618; --bg2:#1b2610; --glow-color:#9acd32; --glow-color-bright:#adff2f; --border-color:#9acd32; --shadow-color:rgba(154,205,50,.25); }
-  .sst { --bg1:#4a1c40; --bg2:#2e112b; --glow-color:#ff69b4; --glow-color-bright:#ffb6c1; --border-color:#ff69b4; --shadow-color:rgba(255,105,180,.25); }
-  .english { --bg1:#242038; --bg2:#191528; --glow-color:#9370db; --glow-color-bright:#ba55d3; --border-color:#9370db; --shadow-color:rgba(147,112,219,.25); }
+  .physics-btn {
+    background:#991b1b;
+    animation:redGlow 4s infinite ease-in-out;
+    border:1px solid rgba(255,80,80,0.7);
+  }
+  .chemistry-btn {
+    background:#c2410c;
+    animation:orangeGlow 4s infinite ease-in-out;
+    border:1px solid rgba(255,160,40,0.7);
+  }
+  .math-btn {
+    background:#1e3a8a;
+    animation:blueGlow 4s infinite ease-in-out;
+    border:1px solid rgba(30,144,255,0.7);
+  }
+  .biology-btn {
+    background:#065f46;
+    animation:greenGlow 4s infinite ease-in-out;
+    border:1px solid rgba(0,255,150,0.7);
+  }
+  .pcmb-btn {
+    background:#6b21a8;
+    animation:purpleGlow 4s infinite ease-in-out;
+    border:1px solid rgba(180,0,255,0.7);
+  }
 
   .dropdown-content {
     display:none;position:relative;background:rgba(255,255,255,.1);
@@ -89,10 +117,9 @@
   }
   .dropdown-content a:hover {background:rgba(255,255,255,.2);}
 
-  @keyframes blueGlow{
-    0%{box-shadow:0 0 10px rgba(65,105,225,.6);}
+  @keyframes backGlow {
+    0%,100%{box-shadow:0 0 10px rgba(65,105,225,.6);}
     50%{box-shadow:0 0 18px rgba(0,191,255,.9);}
-    100%{box-shadow:0 0 10px rgba(65,105,225,.6);}
   }
 
   .back-btn {
@@ -102,7 +129,7 @@
     padding:10px 18px;border-radius:10px;font-weight:bold;cursor:pointer;
     transition:all .25s ease;
     box-shadow:0 5px 0 #111,0 10px 20px rgba(65,105,225,.3);
-    animation:blueGlow 4s infinite ease-in-out;
+    animation:backGlow 4s infinite ease-in-out;
     z-index:10;
   }
   .back-btn:hover {
@@ -129,30 +156,18 @@
   .calendar-frame {border:0;width:100%;height:85vh;border-radius:8px;}
   @media (min-width:1024px){.calendar-frame {height:64vh;}}
   @media (max-width:768px){.calendar-frame {height:68vh;}}
-
   .calendar-small-btn {
-    padding:6px 12px;
-    font-size:0.85rem;
-    width:auto;
-    border-radius:8px;
-    margin-top:-8px;
+    padding:6px 12px;font-size:0.85rem;width:auto;border-radius:8px;margin-top:-8px;
   }
-
   .main-logo {
-    width:70px;
-    display:block;
-    margin:0 auto 10px;
-    border:none;
-    background:none;
-    box-shadow:none;
-    padding:0;
+    width:70px;display:block;margin:0 auto 10px;border:none;background:none;box-shadow:none;padding:0;
   }
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
+  <!-- Sidebar Content (unchanged) -->
   <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" />
   <h2>G10 Educational Platform</h2>
   <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati, Assam.</p>
@@ -179,7 +194,6 @@
   🌐 <a href="https://www.g10educationalplatformindia.co.in/" target="_blank">Visit Website</a></p>
 </div>
 
-<!-- Main Content -->
 <div class="content" id="content">
   <button class="menu-btn" id="menu-btn">☰ Menu</button>
   <button class="back-btn" onclick="window.location.href='https://www.g10educationalplatformindia.co.in/'">🏠 Back to Home</button>
@@ -189,9 +203,9 @@
     <h2 style="text-align:center;color:#B87333;margin-bottom:20px;">Class 9 - Subjects</h2>
 
     <div class="relative">
-      <button onclick="toggleDropdown('mock test')" class="subject-btn mock">Mock Test</button>
+      <button onclick="toggleDropdown('mock test')" class="subject-btn physics-btn">Mock Test</button>
       <div id="mock test" class="dropdown-content">
-        <a href="#">1 Coming Soon</a>
+       <a href="#">1 Coming Soon</a>
         <a href="#">2 Coming Soon</a>
         <a href="#">3. Coming Soon</a>
         <a href="#">4. Coming Soon</a>
@@ -199,7 +213,7 @@
     </div>
 
     <div class="relative">
-      <button onclick="toggleDropdown('science')" class="subject-btn science">Science</button>
+      <button onclick="toggleDropdown('science')" class="subject-btn chemistry-btn">Science</button>
       <div id="science" class="dropdown-content">
         <a href="https://www.g10educationalplatformindia.co.in/courses/CLASS-9-SCIENCE-STUDY-MATERIAL-IMPORTANT-QUESTIONS--TEST-ETC-6532a64ee4b0e43e1e0e0d86-6532a64ee4b0e43e1e0e0d86">Study Materials</a>
         <a href="https://practice-test-backend-class-9-science-r94f.onrender.com">Practice Test</a>
@@ -210,9 +224,9 @@
     </div>
 
     <div class="relative">
-      <button onclick="toggleDropdown('math')" class="subject-btn math">Math</button>
+      <button onclick="toggleDropdown('math')" class="subject-btn math-btn">Math</button>
       <div id="math" class="dropdown-content">
-        <a href="https://www.g10educationalplatformindia.co.in/courses/CLASS-9-MATH-STUDY-MATERIAL-IMPORTANT-QUESTION--TEST-ETC-6527b1f1e4b08b4582d9f9bb-6527b1f1e4b08b4582d9f9bb">Study Materials</a>
+         <a href="https://www.g10educationalplatformindia.co.in/courses/CLASS-9-MATH-STUDY-MATERIAL-IMPORTANT-QUESTION--TEST-ETC-6527b1f1e4b08b4582d9f9bb-6527b1f1e4b08b4582d9f9bb">Study Materials</a>
         <a href="https://practice-test-backend-class-9-math-1jed.onrender.com">Practice Test</a>
         <a href="#">Live Class on Demand Coming Soon</a>
         <a href="https://www.g10educationalplatformindia.co.in/courses/CLASS-9-MATH-PACKAGES-6829f1b5d5f9014be7528b5a">Complete Course</a>
@@ -220,67 +234,67 @@
     </div>
 
     <div class="relative">
-      <button onclick="toggleDropdown('sst')" class="subject-btn sst">Social Science</button>
+      <button onclick="toggleDropdown('sst')" class="subject-btn biology-btn">Social Science</button>
       <div id="sst" class="dropdown-content">
         <a href="#">Study Materials Coming Soon</a>
         <a href="#">Test Coming Soon</a>
         <a href="#">Live Class on Demand Coming Soon</a>
-        <a href="#">Complete Course Coming Soon</a>
-      </div>
+        <a href="#">Complete Course Coming Soon</a></div>
     </div>
 
     <div class="relative">
-      <button onclick="toggleDropdown('english')" class="subject-btn english">English</button>
+      <button onclick="toggleDropdown('english')" class="subject-btn pcmb-btn">English</button>
       <div id="english" class="dropdown-content">
-        <a href="#">Study Materials Coming Soon</a>
-        <a href="#">Practice Tests Coming Soon</a>
-        <a href="#">Live Classes Coming Soon</a>
-        <a href="#">Complete Course Coming Soon</a>
+        <a href="#">Combined Study Materials</a>
+        <a href="#">Practice Tests</a>
+        <a href="#">Live Classes</a>
+        <a href="#">Complete Course</a>
       </div>
     </div>
   </div>
 
   <div id="calendar-section" style="display:none;text-align:center;">
     <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" class="main-logo" />
-    <h2 style="color:#64ffda;">📅 Academic Calendar</h2>
+    <h2 style="color:#64ffda;">📅 G10 Academic Calendar</h2>
     <div style="margin:auto;width:95%;max-width:1000px;background:rgba(255,255,255,.1);
       border-radius:12px;padding:10px;box-shadow:0 4px 30px rgba(0,0,0,.5);backdrop-filter:blur(10px);">
       <iframe 
-        src="https://calendar.google.com/calendar/embed?src=2d45aa02a0b66c1e9646307bb635051cbc441c8ee4743ddfa654df2c24353370%40group.calendar.google.com&ctz=Asia%2FKolkata"
-        class="calendar-frame" frameborder="0" scrolling="no">
-      </iframe>
+        src="https://calendar.google.com/calendar/embed?src=2d45aa02e67a0e5d7bc2292a406d6e85f7c0f6bb8e1d9f0e0a4b7f4a2fffe3c1%40group.calendar.google.com&ctz=Asia%2FKolkata"
+        class="calendar-frame"></iframe>
     </div>
-    <button class="subject-btn calendar-small-btn" onclick="backToSubjects()">⬅️ Back to Subjects</button>
+    <br />
+    <button class="sidebar-btn calendar-small-btn" onclick="backToMain()">⬅️ Back to Subjects</button>
   </div>
 </div>
 
 <script>
-function toggleDropdown(id){
-  document.querySelectorAll('.dropdown-content').forEach(d=>{
-    if(d.id!==id)d.style.display='none';
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.getElementById('menu-btn');
+  const mainSection = document.getElementById('main-section');
+  const calendarSection = document.getElementById('calendar-section');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
   });
-  const dd=document.getElementById(id);
-  dd.style.display=dd.style.display==='block'?'none':'block';
-}
-const sidebar=document.getElementById("sidebar");
-const menuBtn=document.getElementById("menu-btn");
-menuBtn.addEventListener("click",()=>{sidebar.classList.toggle("active");});
-document.addEventListener("click",e=>{
-  if(window.innerWidth<=768){
-    if(!sidebar.contains(e.target)&&!menuBtn.contains(e.target)){
-      sidebar.classList.remove("active");
-    }
+
+  function toggleDropdown(id) {
+    const el = document.getElementById(id);
+    const allDropdowns = document.querySelectorAll('.dropdown-content');
+    allDropdowns.forEach(drop => {
+      if (drop.id !== id) drop.style.display = 'none';
+    });
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
   }
-});
-function showCalendar(){
-  document.getElementById("main-section").style.display="none";
-  document.getElementById("calendar-section").style.display="block";
-  if(window.innerWidth <= 768){sidebar.classList.remove("active");}
-}
-function backToSubjects(){
-  document.getElementById("calendar-section").style.display="none";
-  document.getElementById("main-section").style.display="block";
-}
+
+  function showCalendar() {
+    mainSection.style.display = 'none';
+    calendarSection.style.display = 'block';
+  }
+
+  function backToMain() {
+    calendarSection.style.display = 'none';
+    mainSection.style.display = 'block';
+  }
 </script>
 </body>
 </html>
