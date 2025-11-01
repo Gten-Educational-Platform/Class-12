@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>G10 Educational Platform - NEET</title>
+
 <style>
   body {
     margin:0;
@@ -11,7 +12,7 @@
     display:flex;
     height:100vh;
     overflow:hidden;
-    background:url('https://i.ibb.co/TBrjyzHX/NEET.jpg') no-repeat center center fixed;
+    background:url('https://i.ibb.co/RTjxjG88/class12.jpg') no-repeat center center fixed;
     background-size:cover;
   }
   .sidebar {
@@ -43,21 +44,22 @@
     flex:1;background:rgba(0,0,0,.6);color:#fff;padding:20px;overflow-y:auto;position:relative;
   }
   .menu-btn{display:none;}
-  @keyframes copperGlow{
-    0%{box-shadow:0 0 10px rgba(184,115,51,.6);}
-    33%{box-shadow:0 0 15px rgba(212,175,55,.8);}
-    66%{box-shadow:0 0 15px rgba(205,127,50,.8);}
-    100%{box-shadow:0 0 10px rgba(184,115,51,.6);}
+  @keyframes glowEffect {
+    0%{box-shadow:0 0 10px var(--glow-color);}
+    50%{box-shadow:0 0 18px var(--glow-color-bright);}
+    100%{box-shadow:0 0 10px var(--glow-color);}
   }
+
+  /* 🎨 Subject Buttons (Different Colors) */
   .subject-btn {
     width:250px;margin:12px 0;
-    background:linear-gradient(145deg,#3a3a3a,#2a2a2a);
-    color:#fff;border:1px solid rgba(184,115,51,.7);
+    color:#fff;border:1px solid var(--border-color,#b87333);
     padding:12px 20px;border-radius:10px;font-size:1rem;font-weight:bold;
     cursor:pointer;transition:all .25s ease;
-    box-shadow:0 5px 0 #111,0 10px 20px rgba(184,115,51,.2);
-    animation:copperGlow 5s infinite ease-in-out;
+    box-shadow:0 5px 0 #111,0 10px 20px var(--shadow-color,rgba(184,115,51,.2));
+    animation:glowEffect 5s infinite ease-in-out;
     display:block;position:relative;overflow:hidden;
+    background:linear-gradient(145deg,var(--bg1,#3a3a3a),var(--bg2,#2a2a2a));
   }
   .subject-btn::after {
     content:'';position:absolute;top:2px;left:2px;right:2px;height:45%;
@@ -65,10 +67,18 @@
     border-radius:8px;
   }
   .subject-btn:hover {
-    background:linear-gradient(145deg,#444,#333);
+    background:linear-gradient(145deg,var(--hover1,#444),var(--hover2,#333));
     transform:translateY(-2px);
-    box-shadow:0 6px 0 #000,0 14px 25px rgba(184,115,51,.3);
+    box-shadow:0 6px 0 #000,0 14px 25px var(--shadow-hover,rgba(184,115,51,.3));
   }
+
+  /* ✳️ Unique color themes per subject */
+  .physics { --bg1:#2a2a2a; --bg2:#1e1e1e; --glow-color:#1e90ff; --glow-color-bright:#00bfff; --border-color:#1e90ff; --shadow-color:rgba(30,144,255,.25); }
+  .chemistry { --bg1:#4a1c40; --bg2:#2e112b; --glow-color:#ff69b4; --glow-color-bright:#ffb6c1; --border-color:#ff69b4; --shadow-color:rgba(255,105,180,.25); }
+  .biology { --bg1:#1b3c59; --bg2:#12273b; --glow-color:#00ff7f; --glow-color-bright:#7cffcb; --border-color:#00ff7f; --shadow-color:rgba(0,255,127,.25); }
+  .pcm { --bg1:#283618; --bg2:#1b2610; --glow-color:#9acd32; --glow-color-bright:#adff2f; --border-color:#9acd32; --shadow-color:rgba(154,205,50,.25); }
+  .mock { --bg1:#3a3a3a; --bg2:#2a2a2a; --glow-color:#b87333; --glow-color-bright:#ffd700; --border-color:#b87333; --shadow-color:rgba(184,115,51,.25); }
+
   .dropdown-content {
     display:none;position:relative;background:rgba(255,255,255,.1);
     border:1px solid rgba(184,115,51,.4);border-radius:8px;padding:10px;width:250px;
@@ -78,6 +88,7 @@
     display:block;color:#fff;text-decoration:none;padding:8px;border-radius:5px;
   }
   .dropdown-content a:hover {background:rgba(255,255,255,.2);}
+
   @keyframes blueGlow{
     0%{box-shadow:0 0 10px rgba(65,105,225,.6);}
     50%{box-shadow:0 0 18px rgba(0,191,255,.9);}
@@ -115,7 +126,6 @@
     .main-logo{width:60px;}
   }
 
-  /* Adjusted calendar height + smaller back button */
   .calendar-frame {border:0;width:100%;height:85vh;border-radius:8px;}
   @media (min-width:1024px){.calendar-frame {height:64vh;}}
   @media (max-width:768px){.calendar-frame {height:68vh;}}
@@ -125,7 +135,7 @@
     font-size:0.85rem;
     width:auto;
     border-radius:8px;
-    margin-top:-8px; /* ⬅️ Moved the button up */
+    margin-top:-8px;
   }
 
   .main-logo {
@@ -154,20 +164,6 @@
   <button class="sidebar-btn" onclick="window.open('https://my.unogreen.in/my-digital-card/73x8rq', '_blank')">📞 Contact Us</button>
   <button class="sidebar-btn" onclick="window.open('https://ai-question-and-its-solution-3oip.onrender.com', '_blank')">🤖 AI Q Solver</button>
   <button class="sidebar-btn" onclick="window.open('https://gten-educational-platform.github.io/Class-12/admision%20form%2027-10-25.html', '_blank')">📝 Admission Form</button>
-  
-
-  <ul>
-    <li>Experienced Faculty</li>
-    <li>24×7 Topic Wise Practice Test</li>
-    <li>Weekly Mock Tests</li>
-    <li>Study Materials Provided</li>
-    <li>Small Group Batches</li>
-  </ul>
-
-  <p><b>Contact:</b><br>
-  📞 +91 9706380357<br>
-  ✉️ g10.educational.platform@gmail.com<br>
-  🌐 <a href="https://www.g10educationalplatformindia.co.in/" target="_blank">Visit Website</a></p>
 </div>
 
 <!-- Main Content -->
@@ -179,11 +175,10 @@
     <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" class="main-logo" />
     <h2 style="text-align:center;color:#B87333;margin-bottom:20px;">NEET - Subjects</h2>
 
-    <!-- Subjects -->
     <div class="relative">
-      <button onclick="toggleDropdown('physics')" class="subject-btn">Physics</button>
+      <button onclick="toggleDropdown('physics')" class="subject-btn physics">Physics</button>
       <div id="physics" class="dropdown-content">
-        <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-STUDY-MATERIALS-PHYSICS-TOPIC-WISE-MCQ-INCLUDED-65583b06e4b008ebe665c085-65583b06e4b008ebe665c085">Study Materials</a>
+       <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-STUDY-MATERIALS-PHYSICS-TOPIC-WISE-MCQ-INCLUDED-65583b06e4b008ebe665c085-65583b06e4b008ebe665c085">Study Materials</a>
         <a href="https://practice-test-backend-neet-physics-15fq.onrender.com">Practic Test</a>
         <a href="https://www.g10educationalplatformindia.co.in/courses/DPP-NEET-PHYSICS-682df5e9e7b39355d342e21d">Live Class on Demand</a>
         <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-PHYSICS-PACKAGE-682df9b22c2d7a321de87f58">Complete Course</a>
@@ -191,7 +186,7 @@
     </div>
 
     <div class="relative">
-      <button onclick="toggleDropdown('chemistry')" class="subject-btn">Chemistry</button>
+      <button onclick="toggleDropdown('chemistry')" class="subject-btn chemistry">Chemistry</button>
       <div id="chemistry" class="dropdown-content">
         <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-STUDY-MATERIALS-CHEMISTRY-TOPIC-WISE-MCQ-INCLUDED-6535da92e4b0fd7ae343ad02-6535da92e4b0fd7ae343ad02">Study Materials</a>
         <a href="https://practice-test-backend-neet-chemistry-asmc.onrender.com">Practice Test</a>
@@ -201,32 +196,29 @@
       </div>
     </div>
 
-     <div class="relative">
-      <button onclick="toggleDropdown('biology')" class="subject-btn">Biology</button>
+    <div class="relative">
+      <button onclick="toggleDropdown('biology')" class="subject-btn biology">Biology</button>
       <div id="biology" class="dropdown-content">
-        <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-STUDY-MATERIALS-BIOLOGY-TOPIC-WISE-MCQ-INCLUDED-6535dab8e4b0a2a4dd41c5a3-6535dab8e4b0a2a4dd41c5a3">Study Materials</a>
+         <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-STUDY-MATERIALS-BIOLOGY-TOPIC-WISE-MCQ-INCLUDED-6535dab8e4b0a2a4dd41c5a3-6535dab8e4b0a2a4dd41c5a3">Study Materials</a>
         <a href="https://neet-bio.onrender.com">Practice Test</a>
         <a href="https://www.g10educationalplatformindia.co.in/courses/DPP-NEET-BIOLOGY-682df5ba857fbd7268fa8eba">Live Class on Demand</a>
         <a href="https://www.g10educationalplatformindia.co.in/courses/NEET-BIOLOGY-PACKAGE-682df7fdb0586e76c14a1536">Complete Course</a>
       </div>
     </div>
 
-
-	<div class="relative">
-      <button onclick="toggleDropdown('PCM')" class="subject-btn">PCM</button>
-      <div id="PCM" class="dropdown-content">
-        <a href="#">Study Materials</a>
-        <a href="#">Practice Test</a>
-        <a href="#">Live Class on Demand</a>
+    <div class="relative">
+      <button onclick="toggleDropdown('pcb')" class="subject-btn pcm">PCB</button>
+      <div id="pcb" class="dropdown-content">
+        <a href="#">Combined Study Materials</a>
+        <a href="#">Practice Tests</a>
+        <a href="#">Live Classes</a>
         <a href="#">Complete Course</a>
       </div>
     </div>
 
- 
-
     <div class="relative">
-      <button onclick="toggleDropdown('mock test')" class="subject-btn">Mock Test</button>
-      <div id="mock test" class="dropdown-content">
+      <button onclick="toggleDropdown('mock')" class="subject-btn mock">Mock Test</button>
+      <div id="mock" class="dropdown-content">
         <a href="https://gten-educational-platform.github.io/Class-12/">Mock Test 1 Coming Soon</a>
         <a href="https://gten-educational-platform.github.io/Class-12/">Mock Test 2 Coming Soon</a>
         <a href="https://gten-educational-platform.github.io/Class-12/">Mock Test 3 Coming Soons</a>
@@ -237,7 +229,7 @@
 
   <div id="calendar-section" style="display:none;text-align:center;">
     <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" class="main-logo" />
-    <h2 style="color:#64ffda;">📅 G10 Academic Calendar</h2>
+    <h2 style="color:#64ffda;">📅 Academic Calendar</h2>
     <div style="margin:auto;width:95%;max-width:1000px;background:rgba(255,255,255,.1);
       border-radius:12px;padding:10px;box-shadow:0 4px 30px rgba(0,0,0,.5);backdrop-filter:blur(10px);">
       <iframe 
@@ -279,5 +271,3 @@ function backToSubjects(){
 </script>
 </body>
 </html>
-
-
