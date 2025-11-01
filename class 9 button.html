@@ -155,7 +155,7 @@
 
   .calendar-frame {border:0;width:100%;height:85vh;border-radius:8px;}
   @media (min-width:1024px){.calendar-frame {height:64vh;}}
-  @media (max-width:768px){.calendar-frame {height:68vh;}}
+  @media (max-width:768px){.calendar-frame {height:65vh;}}
   .calendar-small-btn {
     padding:6px 12px;font-size:0.85rem;width:auto;border-radius:8px;margin-top:-8px;
   }
@@ -167,7 +167,6 @@
 <body>
 
 <div class="sidebar" id="sidebar">
-  <!-- Sidebar Content (unchanged) -->
   <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" />
   <h2>G10 Educational Platform</h2>
   <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati, Assam.</p>
@@ -286,9 +285,13 @@
     el.style.display = (el.style.display === 'block') ? 'none' : 'block';
   }
 
+  // ✅ Modified: When Academic Calendar opens, collapse sidebar if on mobile
   function showCalendar() {
     mainSection.style.display = 'none';
     calendarSection.style.display = 'block';
+    if (window.innerWidth <= 768) {
+      sidebar.classList.remove('active');
+    }
   }
 
   function backToMain() {
