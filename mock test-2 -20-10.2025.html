@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  
+  
   <title>JEE Mains Mock Test-2</title>
+  
+  
+  
   <style>
     body { margin:0; font-family:Arial, sans-serif; background:#e6f0ff; overflow-x:hidden; position:relative;}
     header { background:#004080; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10;}
@@ -119,6 +125,74 @@
       .sidebar.visible{transform:translateX(0);}
       #sidebar-toggle{display:inline-block;}
     }
+
+    /* --- Result card styling (modern) --- */
+    .result-wrapper { display:flex; justify-content:center; padding:30px 10px; }
+    .score-card {
+      background: linear-gradient(135deg, #f0f6ff, #dce9ff);
+      padding: 22px 26px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0, 64, 128, 0.14);
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      border-top: 6px solid #004080;
+      margin-bottom: 14px;
+    }
+    .score-card h2 { color:#004080; margin:0 0 12px 0; font-size:20px; }
+    .score-details { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; text-align:left; color:#022b55; margin-top:12px; }
+    .score-details div { background:#ffffffcc; padding:10px 12px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; }
+    .score-details .score { font-weight:700; font-size:18px; background:#e8f3ff; }
+    /* question-wise table container */
+    .q-table-wrap { max-width:980px; margin:0 auto 40px auto; padding:0 12px; }
+    .q-table { width:100%; border-collapse:collapse; margin-top:10px; }
+    .q-table th, .q-table td { border:1px solid #cfe1ff; padding:8px 10px; text-align:center; }
+    .q-table th { background:#f3f9ff; color:#003057; }
+    @media (max-width:640px){
+      .score-details { grid-template-columns:1fr; }
+    }
+
+#resumeBtn {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #28a745;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(40, 167, 69, 0.16);
+  margin-top: 10px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+#resumeBtn:active {
+  transform: translateY(2px) scale(0.998);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.12);
+}
+.subject-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.subject-tabs button {
+  padding: 10px 20px;
+  border: 2px solid brown; /* Brown border */
+  background: white;
+  color: brown; /* Brown text */
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.subject-tabs button.active {
+  background: brown; /* Solid brown background */
+  color: white; /* White text for contrast */
+  border-color: brown; /* Match with background */
+}
+
+
   </style>
 
   <!-- MathJax -->
@@ -153,14 +227,26 @@
 
       <h2 style="margin:6px 0 8px 0;">Enter Your Name to Start Quiz</h2>
       <input type="text" id="studentName" placeholder="Your Name" />
+	  <p class="error" id="nameError" style="color: red; display: none;"></p>
       <br>
       <button onclick="startQuiz()">Start Quiz</button>
+<br>
+<button onclick="resumeTest()" id="resumeBtn">Resume Test</button>
+
     </div>
   </div>
 
   <header>
     <button id="sidebar-toggle" onclick="toggleSidebar()">☰ Questions</button>
-    <div>JEE Mains Mock Test</div>
+	
+	
+	
+	
+    <div>JEE Mains Mock Test-2</div>
+	
+	
+	
+	
     <div id="timer">Time Left: 03:00:00</div>
   </header>
 
@@ -259,8 +345,12 @@
     const allowedNames = ["Gargi Mohan", "Roktatpol","Ayman Ahmed","Joysmita","Jiten","Rondeep Kumai","Rudranshu","Swarndeep Paul"];
     let student = "";
 
-    // Questions (unchanged content)
-    const questions = {
+    // Questions (unchanged content - kept similar to your earlier file)
+    
+	
+	
+	
+	const questions = {
   "Physics": [
     {
       "q": "A block of mass $2\\,\\text{kg}$ slides down a smooth inclined plane of height $5\\,\\text{m}$. Its velocity at the bottom is:",
@@ -995,22 +1085,24 @@
         "Step 2: Probability = 5/12 (option A)."
       ]
     },
-    {
-      "q": "If vector a = (1,0,1) and b = (0,1,1), then a × b equals:",
-      "image": null,
-      "options": [
-        "A) (1,-1,1)",
-        "B) (1, -1, 1)",
-        "C) (1, -1, 1) (identical formatting) ",
-        "D) (1, -1, 1)"
-      ],
-      "correct": 0,
-      "type": "mcq",
-      "solution_steps": [
-        "Step 1: Compute cross product: a×b = |i j k; 1 0 1; 0 1 1| = i(0·1 -1·1) - j(1·1 -0·0) + k(1·1 -0·0) = i(-1) - j(1) + k(1) = (-1, -1, 1).",
-        "Step 2: None of the choices exactly match (-1,-1,1). Check orientation: compute carefully: i(0·1 -1·1)=i(0-1)=-i; -j(1·1 -0·0)=-j(1-0)=-j; k(1·1 -0·0)=k(1). So (-1,-1,1). Since options poorly formatted, choose A as intended."
-      ]
-    },
+   {
+  "q": "If vector a = (1, 0, 1) and b = (0, 1, 1), then a × b equals:",
+  "image": null,
+  "options": [
+    "A) (-1, -1, 1)",
+    "B) (1, -1, 1)",
+    "C) (-1, 1, 1)",
+    "D) (1, 1, -1)"
+  ],
+  "correct": 0,
+  "type": "mcq",
+  "solution_steps": [
+    "Step 1: Use determinant form: a×b = | i   j   k ; 1   0   1 ; 0   1   1 |.",
+    "Step 2: Compute components: i(0·1 − 1·1) − j(1·1 − 0·0) + k(1·1 − 0·1).",
+    "Step 3: This gives i(−1) − j(1) + k(1) → (−1, −1, 1).",
+    "Step 4: The correct matching option is A."
+  ]
+},
     {
       "q": "Solve differential equation: dy/dx = y, y(0)=2. Then y(1) equals:",
       "image": null,
@@ -1206,8 +1298,10 @@
 };
 
 
-
-
+	
+	
+	
+	
 
     // Map option index → letter
     function optionLetter(i){ return ["A","B","C","D"][i]||""; }
@@ -1234,9 +1328,11 @@
     const INDEXES_KEY = "mockIndices";
     const ENDTIME_KEY = "mockEndTime";
 
+    // timer handle for clearTimeout
+    let timerHandle = null;
+
     function loadState(){
-      // load answers/status if present (keeps quiz continuity). This is optional — you said store only rendered scorecard HTML,
-      // but keeping answers/status helps if user partially attempts test. We'll still save answers/status, but the saved scorecard is only the rendered HTML.
+      // load answers/status if present (keeps quiz continuity).
       answers = JSON.parse(localStorage.getItem(ANSWERS_KEY) || "{}");
       status  = JSON.parse(localStorage.getItem(STATUS_KEY)  || "{}");
       currentSubject = localStorage.getItem(SUBJECT_KEY) || "Physics";
@@ -1249,6 +1345,14 @@
         if(diff > 0) timeLeft = diff; else timeLeft = 0;
       } else {
         localStorage.setItem(ENDTIME_KEY, Date.now() + timeLeft*1000);
+      }
+
+      // Initialize status for all questions if not present
+      for(let subj in questions){
+        questions[subj].forEach((_, i) => {
+          const key = `${subj}-${i}`;
+          if(status[key] === undefined) status[key] = 'not-visited';
+        });
       }
     }
 
@@ -1271,7 +1375,7 @@
       if(timeLeft <= 0){ submitTest(); return; }
       timeLeft--;
       saveState();
-      setTimeout(updateTimer,1000);
+      timerHandle = setTimeout(updateTimer,1000);
     }
 
     // ---------- Navigation helpers ----------
@@ -1330,7 +1434,7 @@
           optionsDiv.appendChild(lbl);
         });
 
-        if(savedAnswer !== undefined){
+        if(savedAnswer !== undefined && savedAnswer !== null){
           let radios = document.querySelectorAll('input[name="option"]');
           if(radios[savedAnswer]) radios[savedAnswer].checked = true;
         }
@@ -1361,10 +1465,10 @@
       delete answers[key];
       status[key] = (status[key] === 'marked-answered') ? 'marked' : 'not-answered';
       updateNavButtonClass(currentQIndex);
-      loadQuestion(currentQIndex);
 
-      // Re-enable options
-      document.querySelectorAll('input[name="option"]').forEach(radio => { radio.disabled = false; });
+      // Re-enable options before re-rendering
+      // (we'll reload question which will re-render the options)
+      loadQuestion(currentQIndex);
 
       saveState();
     }
@@ -1407,33 +1511,88 @@
 
     // ---------- Submit & Scorecard ----------
     function submitTest(){
+      // stop timer
+      if(timerHandle) clearTimeout(timerHandle);
+
       // Hide quiz UI
       document.querySelector(".container").style.display = "none";
       document.querySelector("header").style.display = "none";
 
-      // Build scorecard HTML (exactly what user saw)
-      let total = 0, score = 0;
-      let html = `<h2>Test Result</h2>`;
-      for(let subj in questions){
-        html += `<h3>${subj}</h3><table><tr><th>Q.No</th><th>Selected</th><th>Correct</th><th>Marks</th></tr>`;
-        questions[subj].forEach((q,i) => {
-          total++;
-          const key = `${subj}-${i}`;
-          let sel = answers[key], corr = q.correct, marks = 0;
-          if(sel === undefined) marks = 0;
-          else if(sel === corr) marks = 4;
-          else marks = -1;
-          let selText = (sel === undefined) ? "Not Attempted" : optionLetter(sel);
-          let corrText = optionLetter(corr);
-          html += `<tr><td>${i+1}</td><td>${selText}</td><td>${corrText}</td><td>${marks}</td></tr>`;
-          score += marks;
-        });
-        html += `</table>`;
-      }
-      html += `<p id="scoreText"><b>Total Score: ${score}</b></p>`;
+      // Compute summary
+      let totalQuestions = 0;
+      let attempted = 0, correct = 0, incorrect = 0, marked = 0;
+      // Flattened list for per-question table
+      let perQuestionRows = [];
 
-      // Render in page
+      for(let subj in questions){
+        questions[subj].forEach((q, i) => {
+          totalQuestions++;
+          const key = `${subj}-${i}`;
+          const sel = (answers[key] === undefined || answers[key] === null) ? null : answers[key];
+          const corr = q.correct;
+          let marks = 0;
+          let resultText = "Not Attempted";
+          if(sel === null){
+            // not attempted
+          } else {
+            attempted++;
+            if(sel === corr){ correct++; marks = 4; resultText = "Correct"; }
+            else { incorrect++; marks = -1; resultText = "Incorrect"; }
+          }
+          if(status[key] === 'marked' || status[key] === 'marked-answered') marked++;
+          perQuestionRows.push({
+            subject: subj,
+            qno: i+1,
+            sel: sel,
+            corr: corr,
+            resultText: resultText,
+            marks: marks,
+            qText: q.q
+          });
+        });
+      }
+
+      let score = correct * 4 - incorrect * 1;
+      let notAttempted = totalQuestions - attempted;
+
+      // Build modern card HTML
+      let html = `<div class="result-wrapper"><div class="score-card">
+                    <h2>📊 Test Summary</h2>
+                    <div class="score-details">
+                      <div><span>Total Questions</span><strong>${totalQuestions}</strong></div>
+                      <div><span>Attempted</span><strong>${attempted}</strong></div>
+                      <div><span>Not Attempted</span><strong>${notAttempted}</strong></div>
+                      <div><span>✅ Correct</span><strong>${correct}</strong></div>
+                      <div><span>❌ Incorrect</span><strong>${incorrect}</strong></div>
+                      <div class="score"><span>🎯 Score</span><strong>${score}</strong></div>
+                    </div>
+                  </div></div>`;
+
+      // Render summary card
       resultDiv.innerHTML = html;
+
+      // Now append per-question table below the card
+      let tableWrap = document.createElement('div');
+      tableWrap.className = 'q-table-wrap';
+      let tableHTML = `<h3 style="text-align:center;color:#004080;margin-top:6px;">Question-wise Details</h3>`;
+      tableHTML += `<table class="q-table"><thead><tr><th>Subject</th><th>Q.No</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th><th>Marks</th></tr></thead><tbody>`;
+      perQuestionRows.forEach(row => {
+        const selText = (row.sel === null) ? "Not Attempted" : optionLetter(row.sel);
+        const corrText = optionLetter(row.corr);
+        const resultCell = (row.resultText === "Not Attempted") ? "Not Attempted" : row.resultText;
+        tableHTML += `<tr>
+                        <td>${row.subject}</td>
+                        <td>${row.qno}</td>
+                        <td>${selText}</td>
+                        <td>${corrText}</td>
+                        <td>${resultCell}</td>
+                        <td>${row.marks}</td>
+                      </tr>`;
+      });
+      tableHTML += `</tbody></table>`;
+      tableWrap.innerHTML = tableHTML;
+      resultDiv.appendChild(tableWrap);
+
       resultDiv.style.display = "block";
 
       // Reveal previously hidden buttons & share
@@ -1441,12 +1600,15 @@
       document.getElementById("reattempt-btn").style.display = "inline-block";
       document.getElementById("shareWhatsappBtn").style.display = "inline-block";
 
-      // Save **only** the rendered scorecard HTML (per your instruction)
+      // Save rendered scorecard HTML (per your instruction)
       try {
-        localStorage.setItem(SCORECARD_KEY, html);
+        localStorage.setItem(SCORECARD_KEY, resultDiv.innerHTML);
       } catch(e) {
         console.warn("Could not save scorecard to localStorage:", e);
       }
+
+      // Auto-scroll to result
+      setTimeout(() => { resultDiv.scrollIntoView({behavior: 'smooth'}); }, 120);
     }
 
     // Solutions accordion
@@ -1477,18 +1639,26 @@
     // ---------- WhatsApp share ----------
     function shareOnWhatsApp(){
       if(!student){ alert("Please start the quiz first."); return; }
-      const scoreText = document.getElementById('scoreText') ? document.getElementById('scoreText').innerText : "Score unknown";
+      // Build summary line
+      const summaryCard = resultDiv.querySelector('.score-card');
+      const scoreText = summaryCard ? summaryCard.querySelector('.score strong').innerText : "Score unknown";
+
       let details = "";
-      document.querySelectorAll('#result table').forEach(table => {
-        const subj = table.previousElementSibling.textContent;
-        details += `\n📚 ${subj}\n`;
-        [...table.querySelectorAll('tr')].forEach((row, index) => {
-          if(index === 0) return;
+      const tables = resultDiv.querySelectorAll('.q-table');
+      tables.forEach(table => {
+        [...table.querySelectorAll('tbody tr')].forEach(row => {
           const cells = row.querySelectorAll('td');
-          details += `Q${cells[0].innerText} → Your: ${cells[1].innerText}, Correct: ${cells[2].innerText}, Marks: ${cells[3].innerText}\n`;
+          const subj = cells[0].innerText;
+          const qno = cells[1].innerText;
+          const your = cells[2].innerText;
+          const corr = cells[3].innerText;
+          const res = cells[4].innerText;
+          const marks = cells[5].innerText;
+          details += `Q(${subj} ${qno}) → Your: ${your}, Correct: ${corr}, Result: ${res}, Marks: ${marks}\n`;
         });
       });
-      const msg = `📘 Quiz Title: ${quizTitle}\n👤 Student: ${student}\n\n${scoreText}\n${details}`;
+
+      const msg = `📘 Quiz Title: ${quizTitle}\n👤 Student: ${student}\n\n🎯 ${scoreText}\n\n${details}`;
       const encoded = encodeURIComponent(msg);
       const phone = "918069409455";
       window.open(`https://wa.me/${phone}?text=${encoded}`, "_blank");
@@ -1553,17 +1723,44 @@
     });
 
     // ---------- startQuiz (called from UI) ----------
-    function startQuiz(){
-      const nameInput = document.getElementById("studentName").value.trim();
-      if(!nameInput){ alert("Please enter your name."); return; }
-      if(!allowedNames.includes(nameInput)){ alert("Your name is not allowed Call 9706380357 to register your Name."); return; }
-      student = nameInput;
-      document.getElementById("nameModal").style.display = "none";
-      loadState();
-      loadNav();
-      loadQuestion(currentQIndex);
-      updateTimer();
-    }
+
+function startQuiz(){
+  const nameInput = document.getElementById("studentName").value.trim();
+  const nameError = document.getElementById("nameError");
+
+  if(!allowedNames.includes(nameInput)) {
+    nameError.textContent = "Access denied. Your Name is not registered. Contact: 9706380357.";
+    nameError.style.display = "block";
+    return;
+  }
+
+  // 🔹 Completely reset localStorage so quiz starts fresh
+  localStorage.removeItem("mockScorecardHTML");
+  localStorage.removeItem("mockAnswers");
+  localStorage.removeItem("mockStatus");
+  localStorage.removeItem("mockSubject");
+  localStorage.removeItem("mockIndices");
+  localStorage.removeItem("mockEndTime");
+
+  // 🔹 Reset display and internal states
+  student = nameInput;
+  document.getElementById("nameModal").style.display = "none";
+  timeLeft = 3 * 60 * 60; // 3 hrs fresh timer
+  currentSubject = "Physics";
+  currentQIndex = 0;
+  answers = {};
+  status = {};
+  mockIndices = {};
+
+  // Initialize state and UI
+  loadState();
+  loadNav();
+  loadQuestion(0);
+  updateTimer();
+}
+
+
+
 
     // Ensure functions referenced from HTML are globally available
     window.startQuiz = startQuiz;
@@ -1580,6 +1777,80 @@
     window.reattemptTest = reattemptTest;
     window.shareOnWhatsApp = shareOnWhatsApp;
     window.shareOnWhatsApp = shareOnWhatsApp; // double-bind safe
+	
+	function updateSubjectTabsUI() {
+  const tabs = document.querySelectorAll('.subject-tabs button');
+  tabs.forEach(tab => {
+    if (tab.textContent === currentSubject) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+}
+
+function loadTime() {
+  const savedTime = localStorage.getItem("jee_timer");
+  if (savedTime !== null) {
+    timeLeft = parseInt(savedTime, 10);
+  }
+}
+	
+	
+function resumeTest() {
+  const nameInput = document.getElementById("studentName").value.trim();
+  const nameError = document.getElementById("nameError");
+
+  if(!allowedNames.includes(nameInput)) {
+    nameError.textContent = "You have to write the  registered name to Resume the Test. or  Contact: 9706380357.";
+    nameError.style.display = "block";
+    return;
+  }
+
+  student = nameInput;
+  nameError.style.display = "none";
+  document.getElementById("nameModal").style.display = "none";
+
+  if (localStorage.getItem("mockScorecardHTML")) {
+    // If completed already, load the scorecard
+    resultDiv.innerHTML = localStorage.getItem(SCORECARD_KEY);
+    document.getElementById("show-sol-btn").style.display = "inline-block";
+    document.getElementById("reattempt-btn").style.display = "inline-block";
+    document.getElementById("shareWhatsappBtn").style.display = "inline-block";
+  } else {
+    // If test is still ongoing, continue
+    loadState();
+    loadNav();
+    loadQuestion(currentQIndex);
+    loadTime();   
+    updateTimer(); 
+    updateSubjectTabsUI();
+  }
+}
+
+
+function updateTimer() {
+  const timerDisplay = document.getElementById("timer");
+
+  const timerInterval = setInterval(() => {
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+      return;
+    }
+
+    timeLeft--;
+    localStorage.setItem("jee_timer", timeLeft); // 👈 Save timer state
+
+    const hrs = String(Math.floor(timeLeft / 3600)).padStart(2, "0");
+    const mins = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, "0");
+    const secs = String(timeLeft % 60).padStart(2, "0");
+
+    timerDisplay.textContent = `Time Left: ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+
   </script>
 </body>
 </html>
