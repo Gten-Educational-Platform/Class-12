@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JEE Mains Mock Test-3</title>
+  
+  
+  
+  <title>JEE Mains Mock Test-4</title>
+  
+  
+  
   <style>
     body { margin:0; font-family:Arial, sans-serif; background:#e6f0ff; overflow-x:hidden; position:relative;}
     header { background:#004080; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10;}
@@ -146,6 +152,47 @@
       .score-details { grid-template-columns:1fr; }
     }
 
+#resumeBtn {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #28a745;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(40, 167, 69, 0.16);
+  margin-top: 10px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+#resumeBtn:active {
+  transform: translateY(2px) scale(0.998);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.12);
+}
+.subject-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.subject-tabs button {
+  padding: 10px 20px;
+  border: 2px solid brown; /* Brown border */
+  background: white;
+  color: brown; /* Brown text */
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.subject-tabs button.active {
+  background: brown; /* Solid brown background */
+  color: white; /* White text for contrast */
+  border-color: brown; /* Match with background */
+}
+
+
   </style>
 
   <!-- MathJax -->
@@ -180,15 +227,25 @@
 
       <h2 style="margin:6px 0 8px 0;">Enter Your Name to Start Quiz</h2>
       <input type="text" id="studentName" placeholder="Your Name" />
+	  <p class="error" id="nameError" style="color: red; display: none;"></p>
       <br>
       <button onclick="startQuiz()">Start Quiz</button>
+<br>
+<button onclick="resumeTest()" id="resumeBtn">Resume Test</button>
+
     </div>
   </div>
 
   <header>
     <button id="sidebar-toggle" onclick="toggleSidebar()">☰ Questions</button>
 	
-    <div>JEE Mains Mock Test-3</div>
+	
+	
+	
+    <div>JEE Mains Mock Test-4</div>
+	
+	
+	
 	
     <div id="timer">Time Left: 03:00:00</div>
   </header>
@@ -285,11 +342,15 @@
     document.getElementById("shareWhatsappBtn").style.display = "none";
 
     // Allowed names
-    const allowedNames = ["Gargi Mohan", "Raktutpal","Ayman Ahmed","Joysmita","Jiten","Rondeep Kumai","Rudranshu","Swarndeep Paul"];
+    const allowedNames = ["Gargi Mohan", "Roktatpol","Ayman Ahmed","Joysmita","Jiten","Rondeep Kumai","Rudranshu","Swarndeep Paul"];
     let student = "";
 
     // Questions (unchanged content - kept similar to your earlier file)
-    const questions = {
+    
+	
+	
+	
+	 const questions = {
   "Physics": [
    
     {
@@ -1100,6 +1161,10 @@
         }
       ]
     };
+	
+	
+	
+	
 
     // Map option index → letter
     function optionLetter(i){ return ["A","B","C","D"][i]||""; }
@@ -1521,17 +1586,44 @@
     });
 
     // ---------- startQuiz (called from UI) ----------
-    function startQuiz(){
-      const nameInput = document.getElementById("studentName").value.trim();
-      if(!nameInput){ alert("Please enter your name."); return; }
-      if(!allowedNames.includes(nameInput)){ alert("Your name is not allowed Call 9706380357 to register your Name."); return; }
-      student = nameInput;
-      document.getElementById("nameModal").style.display = "none";
-      loadState();
-      loadNav();
-      loadQuestion(currentQIndex);
-      updateTimer();
-    }
+
+function startQuiz(){
+  const nameInput = document.getElementById("studentName").value.trim();
+  const nameError = document.getElementById("nameError");
+
+  if(!allowedNames.includes(nameInput)) {
+    nameError.textContent = "Access denied. Your Name is not registered. Contact: 9706380357.";
+    nameError.style.display = "block";
+    return;
+  }
+
+  // 🔹 Completely reset localStorage so quiz starts fresh
+  localStorage.removeItem("mockScorecardHTML");
+  localStorage.removeItem("mockAnswers");
+  localStorage.removeItem("mockStatus");
+  localStorage.removeItem("mockSubject");
+  localStorage.removeItem("mockIndices");
+  localStorage.removeItem("mockEndTime");
+
+  // 🔹 Reset display and internal states
+  student = nameInput;
+  document.getElementById("nameModal").style.display = "none";
+  timeLeft = 3 * 60 * 60; // 3 hrs fresh timer
+  currentSubject = "Physics";
+  currentQIndex = 0;
+  answers = {};
+  status = {};
+  mockIndices = {};
+
+  // Initialize state and UI
+  loadState();
+  loadNav();
+  loadQuestion(0);
+  updateTimer();
+}
+
+
+
 
     // Ensure functions referenced from HTML are globally available
     window.startQuiz = startQuiz;
@@ -1548,10 +1640,80 @@
     window.reattemptTest = reattemptTest;
     window.shareOnWhatsApp = shareOnWhatsApp;
     window.shareOnWhatsApp = shareOnWhatsApp; // double-bind safe
+	
+	function updateSubjectTabsUI() {
+  const tabs = document.querySelectorAll('.subject-tabs button');
+  tabs.forEach(tab => {
+    if (tab.textContent === currentSubject) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+}
+
+function loadTime() {
+  const savedTime = localStorage.getItem("jee_timer");
+  if (savedTime !== null) {
+    timeLeft = parseInt(savedTime, 10);
+  }
+}
+	
+	
+function resumeTest() {
+  const nameInput = document.getElementById("studentName").value.trim();
+  const nameError = document.getElementById("nameError");
+
+  if(!allowedNames.includes(nameInput)) {
+    nameError.textContent = "You have to write the  registered name to Resume the Test. or  Contact: 9706380357.";
+    nameError.style.display = "block";
+    return;
+  }
+
+  student = nameInput;
+  nameError.style.display = "none";
+  document.getElementById("nameModal").style.display = "none";
+
+  if (localStorage.getItem("mockScorecardHTML")) {
+    // If completed already, load the scorecard
+    resultDiv.innerHTML = localStorage.getItem(SCORECARD_KEY);
+    document.getElementById("show-sol-btn").style.display = "inline-block";
+    document.getElementById("reattempt-btn").style.display = "inline-block";
+    document.getElementById("shareWhatsappBtn").style.display = "inline-block";
+  } else {
+    // If test is still ongoing, continue
+    loadState();
+    loadNav();
+    loadQuestion(currentQIndex);
+    loadTime();   
+    updateTimer(); 
+    updateSubjectTabsUI();
+  }
+}
+
+
+function updateTimer() {
+  const timerDisplay = document.getElementById("timer");
+
+  const timerInterval = setInterval(() => {
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+      return;
+    }
+
+    timeLeft--;
+    localStorage.setItem("jee_timer", timeLeft); // 👈 Save timer state
+
+    const hrs = String(Math.floor(timeLeft / 3600)).padStart(2, "0");
+    const mins = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, "0");
+    const secs = String(timeLeft % 60).padStart(2, "0");
+
+    timerDisplay.textContent = `Time Left: ${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
 
   </script>
 </body>
 </html>
-
-
-
