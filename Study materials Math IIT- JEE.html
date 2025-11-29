@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A4 JPEG & PDF Viewer App</title>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body { display:flex; height:100vh; overflow:hidden; }
+
+#viewer {
+    flex:1;
+    background-image: url('https://i.ibb.co/RTjxjG88/class12.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-y:auto !important;
+    overflow-x:hidden;
+    position:relative;
+    display:flex;
+    justify-content:flex-start;
+    align-items:flex-start;
+    padding:20px 0;
+}
+
+#menuBtn{display:none;position:fixed;top:10px;left:10px;background:#1e293b;color:white;border:none;padding:10px 14px;border-radius:6px;font-size:18px;z-index:2000;}
+#sidebar{width:280px;background:#1e293b;color:white;overflow-y:auto;padding:15px;transition:left 0.35s ease;}
+#sidebar h2{font-size:20px;margin-bottom:10px;color:#38bdf8;}
+.chapter{margin-bottom:10px;background:#334155;padding:10px;border-radius:8px;cursor:pointer;}
+.subList{display:none;padding:10px;background:#475569;margin-top:5px;border-radius:6px;}
+.subList div{padding:6px;background:#64748b;margin:5px 0;border-radius:6px;cursor:pointer;}
+.subList div:hover{background:#94a3b8;}
+#imgWrapper{position:relative;display:flex;justify-content:center;align-items:flex-start;width:auto;height:auto;}
+#contentImg{max-width:none !important;max-height:none !important;width:auto;height:auto;transform-origin: top left;transition:transform 0.25s ease;cursor:grab;pointer-events:none;user-select:none;-webkit-user-drag:none;position:absolute;top:0; left:0;}
+@media (min-width: 901px) {
+    #imgWrapper { display:flex; justify-content:center; align-items:flex-start; width:100%; height:auto; position:relative; }
+    #contentImg { left:0 !important; }
+}
+#controls{position:fixed;bottom:20px;right:20px;display:flex;gap:10px;z-index:2000;align-items:center;background:#ffffffd0;padding:6px 10px;border-radius:8px;backdrop-filter:blur(6px);}
+.btn{padding:8px 10px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-size:20px;}
+#pageInput{width:52px;padding:6px;border-radius:6px;border:2px solid #2563eb;font-size:16px;text-align:center;}
+#pageNum{position:fixed;bottom:80px;right:20px;background:#00000090;color:white;padding:5px 12px;border-radius:6px;font-size:14px;}
+@media(max-width:900px){
+    #menuBtn{ display:block; }
+    #sidebar{position:fixed;top:0;left:-300px;height:100%;z-index:1500;}
+    #sidebar.open{ left:0; }
+    #viewer{ margin-top:70px; justify-content:flex-start; align-items:flex-start !important; }
+    #controls{ position:fixed;top:10px;left:60px;right:10px; bottom:auto;overflow-x:auto;white-space:nowrap;gap:8px; }
+}
+#blackProtector { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.95); z-index: 99999; display: none; pointer-events: all; }
+.pdf-canvas{ display:block; margin:10px auto; box-shadow:0 4px 12px rgba(0,0,0,0.08); background:white; transform-origin: top left; }
+
+/* Enable horizontal scroll only on PC */
+@media (min-width: 901px) {
+    #viewer { overflow-x: auto !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="blackProtector"></div>
+<button id="menuBtn">☰</button>
+
+<div id="sidebar">
+<h2>IIT-JEE Math</h2>
+   <h4> Chapters <h4>
+    <div class="chapter">Chapter 1 sets, relations, functions
+        <div class="subList">
+            <div onclick="loadSub('C1_T1')">Theory</div>
+            <div onclick="loadSub('C1_Q1')">Questions</div>
+			<div onclick="loadSub('C1_A1')">Answer Key</div>
+			<div onclick="loadSub('C1_S1')">Solution</div>
+        </div>
+    </div>
+    <div class="chapter">Chapter 2 complex numbers
+        <div class="subList">
+            <div onclick="loadSub('C2_T2')">Theory</div>
+            <div onclick="loadSub('C2_Q2')">Questions</div>
+			<div onclick="loadSub('C2_A2')">Answer Key</div>
+			<div onclick="loadSub('C2_S2')">Solution</div>
+        </div>
+    </div>
+    <div class="chapter">Chapter 3 quadratic equations
+        <div class="subList">
+            <div onclick="loadSub('C3_T3')">Theory</div>
+            <div onclick="loadSub('C3_Q3')">Questions</div>
+			<div onclick="loadSub('C3_A3')">Answer Key</div>
+			<div onclick="loadSub('C3_S3')">Solution</div>
+        </div>
+    </div>
+    <div class="chapter">Chapter 4 Matrices And Determinants
+        <div class="subList">
+            <div onclick="loadSub('C4_T4')">Theory</div>
+            <div onclick="loadSub('C4_Q4')">Questions</div>
+			<div onclick="loadSub('C4_A4')">Answer Key</div>
+			<div onclick="loadSub('C4_S4')">Solution</div>
+        </div>
+    </div>
+    <div class="chapter">Chapter 5 determinants
+        <div class="subList">
+            <div onclick="loadSub('C5_T5')">Theory</div>
+            <div onclick="loadSub('C5_Q5')">Questions</div>
+			<div onclick="loadSub('C5_A5')">Answer Key</div>
+			<div onclick="loadSub('C5_S5')">Solution</div>
+        </div>
+    </div>
+    <div class="chapter">Chapter 6 permutations, combinations
+        <div class="subList">
+            <div onclick="loadSub('C6_T6')">Theory</div>
+            <div onclick="loadSub('C6_Q6')">Questions</div>
+			<div onclick="loadSub('C6_A6')">Answer Key</div>
+			<div onclick="loadSub('C6_S6')">Solution</div>
+        </div>
+    </div>
+	    <div class="chapter">Chapter 7 Binomial Theorem and Its Simple Applications
+        <div class="subList">
+            <div onclick="loadSub('C7_T7')">Theory</div>
+            <div onclick="loadSub('C7_Q7')">Questions</div>
+			<div onclick="loadSub('C7_A7')">Answer Key</div>
+			<div onclick="loadSub('C7_S7')">Solution</div>
+        </div>
+    </div>
+	    <div class="chapter">Chapter 8 Sequence and Series
+        <div class="subList">
+            <div onclick="loadSub('C8_T8')">Theory</div>
+            <div onclick="loadSub('C8_Q8')">Questions</div>
+			<div onclick="loadSub('C8_A8')">Answer Key</div>
+			<div onclick="loadSub('C8_S8')">Solution</div>
+        </div>
+    </div>
+	    <div class="chapter">Chapter 9 Limit, Continuity, Differentiability
+        <div class="subList">
+            <div onclick="loadSub('C9_T9')">Theory</div>
+            <div onclick="loadSub('C9_Q9')">Questions</div>
+			<div onclick="loadSub('C9_A9')">Answer Key</div>
+			<div onclick="loadSub('C9_S9')">Solution</div>
+        </div>
+    </div>
+	    <div class="chapter">Chapter 10 Integral Calculus
+        <div class="subList">
+            <div onclick="loadSub('C10_T10')">Theory</div>
+            <div onclick="loadSub('C10_Q10')">Questions</div>
+			<div onclick="loadSub('C10_A10')">Answer Key</div>
+			<div onclick="loadSub('C10_S10')">Solution</div>
+        </div>
+    </div>
+		    <div class="chapter">Chapter 11 Differential Equations
+        <div class="subList">
+            <div onclick="loadSub('C11_T11')">Theory</div>
+            <div onclick="loadSub('C11_Q11')">Questions</div>
+			<div onclick="loadSub('C11_A11')">Answer Key</div>
+			<div onclick="loadSub('C11_S11')">Solution</div>
+        </div>
+    </div>
+		    <div class="chapter">Chapter 12 Co-Ordinate Geometry
+        <div class="subList">
+            <div onclick="loadSub('C12_T12')">Theory</div>
+            <div onclick="loadSub('C12_Q12')">Questions</div>
+			<div onclick="loadSub('C12_A12')">Answer Key</div>
+			<div onclick="loadSub('C12_S12')">Solution</div>
+        </div>
+    </div>
+		    <div class="chapter">Chapter 13 Three Dimensional Geometry 
+        <div class="subList">
+            <div onclick="loadSub('C13_T13')">Theory</div>
+            <div onclick="loadSub('C13_Q13')">Questions</div>
+			<div onclick="loadSub('C13_A13')">Answer Key</div>
+			<div onclick="loadSub('C13_S13')">Solution</div>
+        </div>
+    </div>
+		    <div class="chapter">Chapter 14 Vector Algebra
+        <div class="subList">
+            <div onclick="loadSub('C14_T14')">Theory</div>
+            <div onclick="loadSub('C14_Q14')">Questions</div>
+			<div onclick="loadSub('C14_A14')">Answer Key</div>
+			<div onclick="loadSub('C14_S14')">Solution</div>
+        </div>
+    </div>
+			    <div class="chapter">Chapter 15 Statistics
+        <div class="subList">
+            <div onclick="loadSub('C15_T15')">Theory</div>
+            <div onclick="loadSub('C15_Q15')">Questions</div>
+			<div onclick="loadSub('C15_A15')">Answer Key</div>
+			<div onclick="loadSub('C15_S15')">Solution</div>
+        </div>
+    </div>
+			    <div class="chapter">Chapter 16 Probability
+        <div class="subList">
+            <div onclick="loadSub('C14_T14')">Theory</div>
+            <div onclick="loadSub('C14_Q14')">Questions</div>
+			<div onclick="loadSub('C16_A16')">Answer Key</div>
+			<div onclick="loadSub('C16_S16')">Solution</div>
+        </div>
+    </div>
+
+				    <div class="chapter">Chapter 17 Trigonometry
+        <div class="subList">
+            <div onclick="loadSub('C17_T17')">Theory</div>
+            <div onclick="loadSub('C17_Q17')">Questions</div>
+			<div onclick="loadSub('C17_A17')">Answer Key</div>
+			<div onclick="loadSub('C17_S17')">Solution</div>
+        </div>
+    </div>
+	
+				    <div class="chapter">Chapter 18 Differentiability
+        <div class="subList">
+            <div onclick="loadSub('C18_T18')">Theory</div>
+            <div onclick="loadSub('C18_Q18')">Questions</div>
+			<div onclick="loadSub('C18_A18')">Answer Key</div>
+			<div onclick="loadSub('C18_S18')">Solution</div>
+        </div>
+    </div>
+    <div class="chapter">Chapter 19 Continuity
+        <div class="subList">
+            <div onclick="loadSub('C19_T19')">Theory</div>
+            <div onclick="loadSub('C19_Q19')">Questions</div>
+			<div onclick="loadSub('C19_A19')">Answer Key</div>
+			<div onclick="loadSub('C19_S19')">Solution</div>
+        </div>
+    </div>
+</div>
+
+<div id="viewer">
+    <div id="imgWrapper">
+        <img id="contentImg" src="" alt="Page">
+    </div>
+</div>
+
+<div id="pageNum">Page 1 / 1</div>
+
+<div id="controls">
+    <button class="btn" id="prevBtn">◀</button>
+    <input type="number" id="pageInput">
+    <button class="btn" id="nextBtn">▶</button>
+    <button class="btn" id="zoomIn">⊕</button>
+    <button class="btn" id="zoomOut">⊖</button>
+     <button class="btn" id="homeBtn" onclick="window.open('https://gten-educational-platform.github.io/Class-12/IIT%20JEE%20button.html')">🏠</button>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+let data = {
+  "C1_T1":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C1_Q1":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C1_A1":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+	   "C1_S1":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+  
+  
+   "C2_T2":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C2_Q2":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C2_A2":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+ 	   "C2_S2":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+
+
+
+
+
+  "C3_T3":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C3_Q3":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C3_A3":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+ 	   "C3_S3":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+
+
+
+
+  "C4_T4":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C4_Q4":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C4_A4":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C4_S4":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C5_T5":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C5_Q5":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C5_A5":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C5_S5":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C6_T6":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C6_Q6":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C6_A6":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C6_S6":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C7_T7":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C7_Q7":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C7_A7":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C7_S7":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C8_T8":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C8_Q8":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C8_A8":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C8_S8":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C9_T9":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C9_Q9":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C9_A9":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C9_S9":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C10_T10":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C10_Q10":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C10_A10":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C10_S10":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C11_T11":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C11_Q11":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C11_A11":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C11_S11":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C12_T12":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C12_Q12":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C12_A12":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C12_S12":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C13_T13":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C13_Q13":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C13_A13":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C13_S13":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C14_T14":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C14_Q14":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C14_A14":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C14_S14":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+   
+    "C15_T15":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C15_Q15":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C15_A15":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+ 	   "C15_S15":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+   
+   
+     "C16_T16":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C16_Q16":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C16_A16":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C16_S16":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C17_T17":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C17_Q17":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C17_A17":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   	   "C17_S17":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+   
+   
+   
+   
+     "C18_T18":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C18_Q18":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C18_A18":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+	   "C18_S18":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+
+
+
+
+   "C19_T19":[
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+  ],
+  "C19_Q19":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+   ],
+  "C19_A19":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ],
+	 	   "C19_S19":[
+  "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
+     ]
+  
+};
+
+let currentList=[], index=0, zoomLevel=1, autoScale=1;
+let img=document.getElementById("contentImg");
+let viewer=document.getElementById("viewer");
+let protector=document.getElementById("blackProtector");
+let imgX=0, imgY=0;
+let pdfMode={active:false,pdf:null,page:1,total:0,scale:1};
+let pdfX=0, pdfY=0, pdfStartX=0, pdfStartY=0, pdfDrag=false;
+
+document.querySelectorAll(".chapter").forEach(ch=>{
+    ch.addEventListener("click",()=>{ 
+        let list=ch.querySelector(".subList"); 
+        list.style.display=list.style.display==="block"?"none":"block"; 
+    }); 
+});
+menuBtn.onclick = () => { 
+    sidebar.classList.toggle("open"); 
+    document.getElementById("controls").style.display = sidebar.classList.contains("open")?"none":"flex"; 
+};
+
+function loadSub(code){
+    currentList = data[code]; index = 0; imgX=imgY=0; exitPDF(); loadPage(true);
+    document.getElementById("controls").style.display="flex";
+    if(window.innerWidth < 900) sidebar.classList.remove("open");
+}
+
+function loadPage(first=false){
+    let url = currentList[index]; if(!url) return;
+    if(url.toLowerCase().endsWith(".pdf")) { enterPDF(url); return; }
+    exitPDF(); img.src=url; img.onload=()=>{
+        let W=img.naturalWidth,H=img.naturalHeight,vw=viewer.clientWidth,vh=viewer.clientHeight;
+        if(first){ autoScale = window.innerWidth > 900 ? vh/H*2.45 : vw/W; zoomLevel=autoScale; imgX=0; imgY=0; }
+        img.style.transform=`translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
+        pageNum.textContent=`Page ${index+1} / ${currentList.length}`;
+        pageInput.value=index+1;
+    };
+    pageNum.textContent=`Page ${index+1} / ${currentList.length}`;
+    pageInput.value=index+1;
+}
+
+function clamp(value,min,max){ return Math.min(Math.max(value,min),max); }
+
+nextBtn.onclick = ()=>{
+    if(pdfMode.active){
+        if(pdfMode.page < pdfMode.total){ pdfMode.page++; renderPDFPage(); return; } 
+        else { exitPDF(); if(index<currentList.length-1){ index++; imgX=imgY=0; loadPage(true); } return; }
+    }
+    if(index<currentList.length-1){ index++; imgX=imgY=0; loadPage(true); }
+};
+prevBtn.onclick = ()=>{
+    if(pdfMode.active){
+        if(pdfMode.page>1){ pdfMode.page--; renderPDFPage(); return; }
+        else { exitPDF(); if(index>0){ index--; imgX=imgY=0; loadPage(true); } return; }
+    }
+    if(index>0){ index--; imgX=imgY=0; loadPage(true); }
+};
+pageInput.oninput=()=>{
+    let p=parseInt(pageInput.value); if(isNaN(p)) return;
+    if(pdfMode.active){ if(p>=1&&p<=pdfMode.total){ pdfMode.page=p; renderPDFPage(); } }
+    else{ if(p>=1&&p<=currentList.length){ index=p-1; imgX=imgY=0; loadPage(true); } }
+};
+
+zoomIn.onclick=()=>{
+    if(pdfMode.active){ pdfMode.scale=Math.min(4,pdfMode.scale+0.1); renderPDFPage(); return; }
+    zoomLevel=Math.min(4,zoomLevel+0.1); img.style.transform=`translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
+};
+zoomOut.onclick=()=>{
+    if(pdfMode.active){ pdfMode.scale=Math.max(0.5,pdfMode.scale-0.1); renderPDFPage(); return; }
+    zoomLevel=Math.max(autoScale,zoomLevel-0.1); img.style.transform=`translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
+};
+
+let lastDist=0, drag=false, startX=0, startY=0, startImgX=0, startImgY=0;
+let pinchCenter={x:0,y:0}, pinchStart={left:0,top:0};
+
+viewer.addEventListener("touchstart",e=>{
+    if(e.touches.length===1){
+        if(pdfMode.active){ pdfDrag=true; pdfStartX=e.touches[0].pageX; pdfStartY=e.touches[0].pageY;
+        const canvas=document.getElementById("pdfPage"); pdfX=parseFloat(canvas.dataset.x||0); pdfY=parseFloat(canvas.dataset.y||0);}
+        else { drag=true; startX=e.touches[0].pageX; startY=e.touches[0].pageY; startImgX=imgX; startImgY=imgY; }
+    } else if(e.touches.length===2){
+        lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+        pinchCenter.x=(e.touches[0].clientX+e.touches[1].clientX)/2; pinchCenter.y=(e.touches[0].clientY+e.touches[1].clientY)/2;
+        if(pdfMode.active){ pinchStart.left=pdfX; pinchStart.top=pdfY; } else{ pinchStart.left=imgX; pinchStart.top=imgY; }
+    } else if(e.touches.length>=3){ showBlack(); setTimeout(hideBlack,1000); }
+});
+
+viewer.addEventListener("touchmove",e=>{
+    e.preventDefault();
+    if(e.touches.length===1){
+        if(pdfMode.active && pdfDrag){
+            const canvas=document.getElementById("pdfPage");
+            pdfX += e.touches[0].pageX - pdfStartX; pdfY += e.touches[0].pageY - pdfStartY;
+            pdfStartX = e.touches[0].pageX; pdfStartY = e.touches[0].pageY;
+            let vw=viewer.clientWidth, vh=viewer.clientHeight; let cw=canvas.width*pdfMode.scale, ch=canvas.height*pdfMode.scale;
+            pdfX=clamp(pdfX,Math.min(0,vw-cw),0); pdfY=clamp(pdfY,Math.min(0,vh-ch),0);
+            canvas.style.transform=`translate(${pdfX}px,${pdfY}px) scale(${pdfMode.scale})`;
+            canvas.dataset.x=pdfX; canvas.dataset.y=pdfY;
+        } else if(drag){
+            imgX=startImgX+(e.touches[0].pageX-startX); imgY=startImgY+(e.touches[0].pageY-startY);
+            let vw=viewer.clientWidth, vh=viewer.clientHeight; let iw=img.naturalWidth*zoomLevel, ih=img.naturalHeight*zoomLevel;
+            imgX=clamp(imgX,Math.min(0,vw-iw),0); imgY=clamp(imgY,Math.min(0,vh-ih),0);
+            img.style.transform=`translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
+        }
+    } else if(e.touches.length===2){
+        let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+        let zoomChange = lastDist ? d/lastDist : 1; lastDist=d;
+        if(pdfMode.active){
+            pdfMode.scale=Math.max(0.5,Math.min(4,pdfMode.scale*zoomChange));
+            pdfX=pinchStart.left+(pinchCenter.x*(zoomChange-1));
+            pdfY=pinchStart.top+(pinchCenter.y*(zoomChange-1));
+            const canvas=document.getElementById("pdfPage"); let vw=viewer.clientWidth,vh=viewer.clientHeight;
+            let cw=canvas.width*pdfMode.scale,ch=canvas.height*pdfMode.scale;
+            pdfX=clamp(pdfX,Math.min(0,vw-cw),0); pdfY=clamp(pdfY,Math.min(0,vh-ch),0);
+            canvas.style.transform=`translate(${pdfX}px,${pdfY}px) scale(${pdfMode.scale})`;
+            canvas.dataset.x=pdfX; canvas.dataset.y=pdfY;
+        } else{
+            zoomLevel=Math.max(autoScale,Math.min(4,zoomLevel*zoomChange));
+            imgX=pinchStart.left+(pinchCenter.x*(zoomChange-1)); imgY=pinchStart.top+(pinchCenter.y*(zoomChange-1));
+            let vw=viewer.clientWidth, vh=viewer.clientHeight; let iw=img.naturalWidth*zoomLevel, ih=img.naturalHeight*zoomLevel;
+            imgX=clamp(imgX,Math.min(0,vw-iw),0); imgY=clamp(imgY,Math.min(0,vh-ih),0);
+            img.style.transform=`translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
+        }
+    }
+});
+
+viewer.addEventListener("touchend",e=>{ if(e.touches.length<2) lastDist=0; if(e.touches.length===0){ drag=false; pdfDrag=false; } });
+
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("keydown",e=>{ if(e.key==="s" && (e.ctrlKey||e.metaKey)) e.preventDefault(); });
+document.addEventListener("copy",e=>e.preventDefault());
+document.addEventListener("cut",e=>e.preventDefault());
+
+function showBlack(){ protector.style.display="block"; }
+function hideBlack(){ protector.style.display="none"; }
+
+document.addEventListener("visibilitychange",()=>{ document.hidden?showBlack():setTimeout(hideBlack,300); });
+window.addEventListener("blur",showBlack);
+window.addEventListener("focus",()=>setTimeout(hideBlack,300));
+document.addEventListener("keyup",e=>{ if(e.key==="PrintScreen") showBlack(),setTimeout(hideBlack,1500); });
+window.addEventListener("resize",()=>{ showBlack(); setTimeout(hideBlack,1000); });
+
+async function enterPDF(url){
+    try{
+        pdfMode.active=true; pdfMode.page=1; pdfMode.scale=1;
+        viewer.innerHTML="<div id='imgWrapper'><canvas id='pdfPage' class='pdf-canvas'></canvas></div>";
+        pageInput.value=""; pdfX=0; pdfY=0;
+        let loadingTask = pdfjsLib.getDocument(url); pdfMode.pdf = await loadingTask.promise;
+        pdfMode.total = pdfMode.pdf.numPages; renderPDFPage();
+    }catch(err){ console.error("PDF load error:",err); window.open(url,"_blank"); pdfMode.active=false; }
+}
+
+async function renderPDFPage(){
+    if(!pdfMode.active || !pdfMode.pdf) return;
+    let canvas = document.getElementById("pdfPage"); if(!canvas) return;
+    let ctx = canvas.getContext("2d");
+    let page = await pdfMode.pdf.getPage(pdfMode.page);
+    let vw=viewer.clientWidth;
+    let unscaledViewport = page.getViewport({ scale: 1 });
+    if(pdfMode.scale===1) pdfMode.scale = vw/unscaledViewport.width;
+    let viewport = page.getViewport({ scale: pdfMode.scale });
+    canvas.width=viewport.width; canvas.height=viewport.height;
+    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+    pdfX=(viewer.clientWidth-canvas.width)/2; pdfY=0;
+    canvas.style.transform=`translate(${pdfX}px,${pdfY}px) scale(1)`;
+    canvas.dataset.x=pdfX; canvas.dataset.y=pdfY;
+    pageNum.textContent=`PDF Page ${pdfMode.page} / ${pdfMode.total}`; pageInput.value="";
+}
+
+function exitPDF(){
+    if(!pdfMode.active) return;
+    pdfMode.active=false; pdfMode.pdf=null; pdfMode.page=1; pdfMode.total=0; pdfMode.scale=1;
+    viewer.innerHTML="<div id='imgWrapper'><img id='contentImg' src=''></div>";
+    img=document.getElementById("contentImg");
+}
+
+
+
+
+
+
+/* ---------------------- TRIPLE CLICK RESET ---------------------- */
+
+let lastClickTime = 0;
+let clickCount = 0;
+
+viewer.addEventListener("click", function () {
+    let now = Date.now();
+
+    if (now - lastClickTime < 350) clickCount++;
+    else clickCount = 1;
+
+    lastClickTime = now;
+
+    if (clickCount === 3) {
+        resetView();
+        clickCount = 0;
+    }
+});
+
+/* Reset image/PDF to initial size + position */
+function resetView() {
+    if (pdfMode.active) {
+        // Reset PDF zoom
+        pdfMode.scale = 1;
+        pdfX = 0;
+        pdfY = 0;
+
+        const canvas = document.getElementById("pdfPage");
+        if (canvas) {
+            canvas.style.transform = `translate(0px,0px) scale(1)`;
+            canvas.dataset.x = 0;
+            canvas.dataset.y = 0;
+        }
+
+        renderPDFPage();
+    } else {
+        // Reset IMAGE
+        zoomLevel = autoScale;
+        imgX = 0;
+        imgY = 0;
+        img.style.transform = `translate(0px,0px) scale(${autoScale})`;
+    }
+}
+
+</script>
+</body>
+</html>
