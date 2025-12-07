@@ -44,7 +44,7 @@ body { display:flex; height:100vh; overflow:hidden; }
 #sidebar h2{font-size:20px;margin-bottom:10px;color:#38bdf8}
 .chapter{margin-bottom:10px;background:#334155;padding:10px;border-radius:8px;cursor:pointer}
 .subList{display:none;padding:10px;background:#475569;margin-top:5px;border-radius:6px}
-.subList div{padding:6px;background:#64748b;margin:5px 0;border-radius:6px;cursor:pointer}
+.subList div{Padding:6px;background:#64748b;margin:5px 0;border-radius:6px;cursor:pointer}
 .subList div:hover{background:#94a3b8}
 
 /* IMAGE / PDF WRAPPER */
@@ -111,16 +111,16 @@ body { display:flex; height:100vh; overflow:hidden; }
         <div class="subList">
             <div onclick="loadSub('C1_T1')">Theory</div>
             <div onclick="loadSub('C1_Q1')">Questions</div>
-			<div onclick="loadSub('C1_A1')">Answer Key</div>
-			<div onclick="loadSub('C1_S1')">Solution</div>
+            <div onclick="loadSub('C1_A1')">Answer Key</div>
+            <div onclick="loadSub('C1_S1')">Solution</div>
         </div>
  </div>
     <div class="chapter">Chapter 19 Continuity
         <div class="subList">
             <div onclick="loadSub('C19_T19')">Theory</div>
             <div onclick="loadSub('C19_Q19')">Questions</div>
-			<div onclick="loadSub('C19_A19')">Answer Key</div>
-			<div onclick="loadSub('C19_S19')">Solution</div>
+            <div onclick="loadSub('C19_A19')">Answer Key</div>
+            <div onclick="loadSub('C19_S19')">Solution</div>
         </div>
     </div>
 </div>
@@ -150,23 +150,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 let data = {
   "C1_T1":[
     "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
-	"https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
+    "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
     "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
     "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
   ],
 
-	   "C1_S1":[
+       "C1_S1":[
   "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
     "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
     "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
@@ -178,12 +167,12 @@ let data = {
     "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
     "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
   ],
-	 	   "C19_S19":[
+           "C19_S19":[
   "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0001.jpg",
     "https://gten-educational-platform.github.io/Class-12/Centre Prospectus.pdf",
     "https://gten-educational-platform.github.io/SEETS-JPEG/SET AND RELATIN theory-2025_page-0003.jpg"
      ]
-  
+
 };
 
 /* ================= STATE VARS ================= */
@@ -243,11 +232,16 @@ function loadPage(first=false){
   img.src = url;
   img.onload = () => {
     let W = img.naturalWidth, H = img.naturalHeight, vw = viewer.clientWidth, vh = viewer.clientHeight;
-    if(first){
-      autoScale = window.innerWidth > 900 ? (vh / H) * 2.45 : (vw / W);
+
+   if(first){
+
+      autoScale = window.innerWidth > 900 ? (vh / H) * 2.60 : (vw / W);
       zoomLevel = autoScale; imgX = 0; imgY = 0;
     }
-    img.style.transform = `translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
+
+
+
+  img.style.transform = `translate(${imgX}px,${imgY}px) scale(${zoomLevel})`;
     pageNum.textContent = `Page ${index+1} / ${currentList.length}`;
     pageInput.value = index+1;
   };
@@ -462,24 +456,46 @@ function resetView(){
 }
 
 /* ============== SWIPE FOR NAVIGATION ============== */
-let swipeStartX = 0, swipeEndX = 0, swipeLocked = false;
+/* Minimal change: swipeAllowed checks only zoom state (autoScale or pdf scale == 1).
+   This enables swipe when unzoomed. We intentionally DO NOT check 'drag' here
+   because your current code sets drag at touchstart which previously blocked swipe. */
 
-viewer.addEventListener('touchstart', function(e){
-  if(e.touches.length > 1){ swipeLocked = true; return; }
-  swipeStartX = e.touches[0].clientX; swipeLocked = false;
+let swipeStartX = 0;
+let swipeEndX = 0;
+
+function swipeAllowed() {
+  // Images: allow swipe ONLY when zoomLevel equals autoScale
+  if(!pdfMode.active) {
+    return Math.abs(zoomLevel - autoScale) < 0.001;
+  }
+  // PDFs: allow swipe ONLY when pdfMode.scale equals 1
+  return Math.abs(pdfMode.scale - 1) < 0.001;
+}
+
+viewer.addEventListener("touchstart", function (e) {
+  // If swipe isn't allowed due to zoom, bail early
+  if (!swipeAllowed()) return;
+  if (e.touches.length === 1) {
+    swipeStartX = e.touches[0].clientX;
+    swipeEndX = swipeStartX;
+  }
 });
 
-viewer.addEventListener('touchmove', function(e){
-  if(e.touches.length === 1) swipeEndX = e.touches[0].clientX;
+viewer.addEventListener("touchmove", function (e) {
+  if (!swipeAllowed()) return;
+  if (e.touches.length === 1) {
+    swipeEndX = e.touches[0].clientX;
+  }
 });
 
-viewer.addEventListener('touchend', function(e){
-  if(swipeLocked || e.touches.length > 0) return;
+viewer.addEventListener("touchend", function (e) {
+  if (!swipeAllowed()) return;
+
   let swipeDistance = swipeEndX - swipeStartX;
-  if(Math.abs(swipeDistance) > 60){
-    swipeLocked = true;
-    if(swipeDistance < 0) nextBtn.click(); else prevBtn.click();
-    setTimeout(()=> swipeLocked = false, 300);
+
+  if (Math.abs(swipeDistance) > 60) {
+    if (swipeDistance < 0) nextBtn.click();
+    else prevBtn.click();
   }
 });
 
@@ -507,8 +523,6 @@ document.addEventListener("click", (e) => {
     controls.style.display = "flex";   // show controls again
   }
 });
-
-
 
 </script>
 </body>
