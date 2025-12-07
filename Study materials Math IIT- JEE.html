@@ -186,6 +186,10 @@ let imgX = 0, imgY = 0;
 let pdfMode = { active:false, pdf:null, page:1, total:0, scale:1 };
 let pdfX = 0, pdfY = 0, pdfStartX = 0, pdfStartY = 0, pdfDrag = false;
 
+/* ========== SWIPE VARS (added) ========== */
+let swipeStartX = 0;
+let swipeEndX = 0;
+
 /* ELEMENT SHORTCUTS */
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
@@ -235,7 +239,7 @@ function loadPage(first=false){
 
    if(first){
 
-      autoScale = window.innerWidth > 1000 ? (vh / H) * 2.60 : (vw / W);
+      autoScale = window.innerWidth > 1000 ? (vh / H) * 2.65 : (vw / W);
       zoomLevel = autoScale; imgX = 0; imgY = 0;
     }
 
@@ -296,12 +300,26 @@ zoomOut.addEventListener('click', ()=> {
 let lastDist = 0, drag = false, startX = 0, startY = 0, startImgX = 0, startImgY = 0;
 let pinchCenter = {x:0,y:0}, pinchStart = {left:0,top:0};
 
+/* ======= MODIFY: only enable pdfDrag when zoomed; when unzoomed record swipe start ====== */
 viewer.addEventListener('touchstart', e => {
   if(e.touches.length === 1){
     if(pdfMode.active){
-      pdfDrag = true; pdfStartX = e.touches[0].pageX; pdfStartY = e.touches[0].pageY;
-      const canvas = document.getElementById('pdfPage');
-      if(canvas){ pdfX = parseFloat(canvas.dataset.x||0); pdfY = parseFloat(canvas.dataset.y||0); }
+      // <--- CHANGED: enable drag only when pdf is zoomed in, otherwise prepare for swipe
+      if (Math.abs(pdfMode.scale - 1) < 0.001) {
+        // PDF is unzoomed: don't start pdfDrag; record swipe start so swipe handlers can work
+        pdfDrag = false;
+        swipeStartX = e.touches[0].clientX;
+        swipeEndX = swipeStartX;
+
+        // Ensure canvas doesn't block touches when unzoomed
+        const canvas = document.getElementById('pdfPage');
+        if (canvas) canvas.style.pointerEvents = 'none';
+      } else {
+        // PDF is zoomed: allow panning (drag) and enable pointer events
+        pdfDrag = true; pdfStartX = e.touches[0].pageX; pdfStartY = e.touches[0].pageY;
+        const canvas = document.getElementById('pdfPage');
+        if(canvas){ pdfX = parseFloat(canvas.dataset.x||0); pdfY = parseFloat(canvas.dataset.y||0); canvas.style.pointerEvents = 'auto'; }
+      }
     } else {
       drag = true; startX = e.touches[0].pageX; startY = e.touches[0].pageY; startImgX = imgX; startImgY = imgY;
     }
@@ -351,6 +369,9 @@ viewer.addEventListener('touchmove', e => {
       pdfX = clamp(pdfX, Math.min(0, vw - cw), 0); pdfY = clamp(pdfY, Math.min(0, vh - ch), 0);
       canvas.style.transform = `translate(${pdfX}px,${pdfY}px) scale(${pdfMode.scale})`;
       canvas.dataset.x = pdfX; canvas.dataset.y = pdfY;
+
+      // ensure canvas receives pointer events when zoomed
+      canvas.style.pointerEvents = 'auto';
     } else {
       zoomLevel = Math.max(autoScale, Math.min(4, zoomLevel * zoomChange));
       imgX = pinchStart.left + (pinchCenter.x * (zoomChange - 1));
@@ -421,6 +442,9 @@ async function renderPDFPage(){
   canvas.style.transform = `translate(${pdfX}px,${pdfY}px) scale(1)`;
   canvas.dataset.x = pdfX; canvas.dataset.y = pdfY;
 
+  // <-- ensure canvas does not block swipe when unzoomed, but accepts pointer when zoomed
+  canvas.style.pointerEvents = (Math.abs(pdfMode.scale - 1) < 0.001) ? 'none' : 'auto';
+
   pageNum.textContent = `PDF Page ${pdfMode.page} / ${pdfMode.total}`; pageInput.value = "";
 }
 
@@ -447,7 +471,7 @@ function resetView(){
   if(pdfMode.active){
     pdfMode.scale = 1; pdfX = 0; pdfY = 0;
     const canvas = document.getElementById('pdfPage');
-    if(canvas){ canvas.style.transform = `translate(0px,0px) scale(1)`; canvas.dataset.x = 0; canvas.dataset.y = 0; }
+    if(canvas){ canvas.style.transform = `translate(0px,0px) scale(1)`; canvas.dataset.x = 0; canvas.dataset.y = 0; canvas.style.pointerEvents = 'none'; }
     renderPDFPage();
   } else {
     zoomLevel = autoScale; imgX = 0; imgY = 0;
@@ -459,9 +483,6 @@ function resetView(){
 /* Minimal change: swipeAllowed checks only zoom state (autoScale or pdf scale == 1).
    This enables swipe when unzoomed. We intentionally DO NOT check 'drag' here
    because your current code sets drag at touchstart which previously blocked swipe. */
-
-let swipeStartX = 0;
-let swipeEndX = 0;
 
 function swipeAllowed() {
   // Images: allow swipe ONLY when zoomLevel equals autoScale
@@ -501,7 +522,7 @@ viewer.addEventListener("touchend", function (e) {
 
 /* ============== INITIALIZATION ============== */
 /* Load first available list by default (optional) */
-// Example: loadSub('C1_T1'); // uncomment to auto-load
+loadSub('C1_T1'); // auto-load the first list so you can test immediately
 
 /* Accessibility: close sidebar on Escape */
 document.addEventListener('keydown', (e) => {
