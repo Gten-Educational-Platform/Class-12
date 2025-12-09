@@ -13,13 +13,30 @@
   @media (max-width:900px){.sidebar {position:fixed; top:0; left:0; height:100vh; transform:translateX(-100%); z-index:999;} .sidebar.open{transform:translateX(0);} }
   #menuBtn {display:none; position:fixed; top:12px; left:12px; background:#0078ff; color:white; border:none; font-size:22px; padding:8px 14px; border-radius:8px; z-index:1000; cursor:pointer;}
   @media(max-width:900px){#menuBtn{display:block;}}
+
   .home-btn {position:fixed; background:#ffcc00; padding:14px 18px; border-radius:50px; color:#000; font-weight:bold; text-decoration:none; z-index:9999; box-shadow:0 0 10px #000;}
-  @media(min-width:901px){.home-btn{top:22px; right:22px; bottom:auto;}} @media(max-width:900px){.home-btn{bottom:18px; right:18px; top:auto;}}
+  @media(min-width:901px){.home-btn{top:22px; right:22px; bottom:auto;}} 
+  @media(max-width:900px){.home-btn{bottom:18px; right:18px; top:auto;}}
+
   .content {flex:1; background:rgba(0,0,0,0.5); padding:20px; overflow-y:auto;}
   .title {text-align:center; font-size:1.6rem; font-weight:bold; margin-bottom:15px; color:#ffd700;}
   .book-grid {display:grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap:20px;}
-  .book-card {background: rgba(255,255,255,0.08); border-radius:15px; padding:15px; text-align:center;}
-  .book-card img {width:100%; height:220px; object-fit:cover; border-radius:12px; margin-bottom:10px;}
+  
+.book-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+  
+.book-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: contain;     /* FIX: perfect auto-fit */
+  background: #00000033;   /* optional clean background */
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+  
   .book-card h3 {margin:5px 0; color:#66ccff;}
   .price {color:#ffd700; font-weight:bold; margin:5px 0;}
   .btn-row {display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
@@ -27,20 +44,25 @@
   .btn.buy {background: linear-gradient(145deg,#3a3a3a,#262626); border:1px solid #ff8800;}
   .btn.primary {background:#0078ff;}
   .btn.ghost {background: transparent; border:1px solid rgba(255,255,255,0.2); font-size:0.85rem;}
+
   .modal-overlay {position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:9999;}
   .modal-box {width:90%; max-width:1000px; background:#222; border-radius:14px; padding:20px; color:white; display:flex; gap:20px; flex-wrap:wrap;}
   .modal-left {flex:1; text-align:center;}
   .modal-right {flex:1; display:flex; flex-direction:column; gap:8px;}
+
   .slider, .pdf-frame {width:100%; height:320px; border-radius:10px; background:black;}
   .thumbs {display:flex; gap:6px; overflow-x:auto; justify-content:center; margin-top:10px;}
   .thumbs img {width:60px; height:60px; object-fit:cover; border-radius:6px; cursor:pointer; opacity:0.9; border:2px solid transparent;}
   .thumbs img.active {border-color:#ffd700; opacity:1;}
+
   .nav-arrow {position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:6px;}
   .nav-left {left:5px;} .nav-right {right:5px;}
   .nav-arrow svg {width:20px; height:20px; fill:#fff;}
+
   .desc {flex:1; overflow:auto; background: rgba(255,255,255,0.05); padding:8px; border-radius:8px; font-size:0.9rem; color:#ddd; display:none;}
   .close-btn {background:red; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:14px;}
   @media (max-width:900px){ .modal-box {flex-direction:column;} .slider, .pdf-frame {height:42vh;} }
+
   .promo {margin:6px 0; font-size:0.9rem; color:#ffcc00;}
   .discounted {color:#00ff00; font-weight:bold;}
 </style>
@@ -60,7 +82,7 @@
 </div>
 
 <div class="content">
-  <div class="title">📚 Study Materials – Class 9 & 10 (Science)</div>
+  <div class="title">📚 Study Materials – Class 9(Science)</div>
   <div class="book-grid" id="bookGrid"></div>
 </div>
 
@@ -69,43 +91,118 @@
     <div class="modal-left">
       <div style="position:relative;">
         <div class="nav-arrow nav-left" id="prevBtn"><svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg></div>
-        <img class="slider" id="sliderImage" src="" alt="Book Image">
+        <img class="slider" id="sliderImage">
         <div class="nav-arrow nav-right" id="nextBtn"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
       </div>
       <div class="thumbs" id="thumbs"></div>
       <iframe id="pdfFrame" class="pdf-frame" src="" style="display:none;"></iframe>
     </div>
+
     <div class="modal-right">
       <h2 id="modalTitle"></h2>
       <div class="price" id="modalPrice"></div>
-      <div class="promo">Click below to get your promo code for 10% discount!</div>
+
+      <div class="promo">Click below to get your promo code!</div>
+
       <div class="desc" id="modalDesc"></div>
+
       <div style="display:flex;gap:6px;flex-wrap:wrap; margin-top:8px;">
         <button id="getPromoBtn" class="btn primary">Get Promo Code</button>
       </div>
+
       <div style="display:flex;gap:6px;flex-wrap:wrap; margin-top:8px;">
         <a id="buyNowBtn" class="btn buy" target="_blank">Buy Now</a>
         <button id="previewBtn" class="btn primary">Preview PDF</button>
-        <button id="descBtn" class="btn ghost" style="font-size:0.85rem;">Description</button>
+        <button id="descBtn" class="btn ghost">Description</button>
       </div>
+
       <button class="close-btn" onclick="closeModal()">Close</button>
     </div>
   </div>
 </div>
 
 <script>
+// Sidebar
 const menuBtn=document.getElementById('menuBtn');
 const sidebar=document.getElementById('sidebar');
 menuBtn.onclick=()=>sidebar.classList.toggle('open');
 document.addEventListener('click',(e)=>{if(!sidebar.contains(e.target)&&e.target!==menuBtn) sidebar.classList.remove('open');});
 
+// Promo Codes
+const promoCodes = {
+  physics: { code:"G10EP-SM10%", discount:10 },
+  chemistry:{ code:"G10EP-SM10%", discount:12 },
+  biology:{ code:"G10EP-SM10%", discount:13 },
+  math:{ code:"No Promo Code", discount:0 }
+};
+
+// Books Data
 const books=[
-  {id:'physics', title:'Physics Study Material', price:499, images:['https://dummyimage.com/400x300/000/fff&text=Physics+1','https://dummyimage.com/400x300/111/fff&text=Physics+2','https://dummyimage.com/400x300/222/fff&text=Physics+3'], pdfLink:'https://drive.google.com/file/d/1dummyPhysics/preview', paymentLink:'https://payments.cashfree.com/forms?code=G10EP', description:'Comprehensive, easy-to-understand Physics notes designed to help students master concepts quickly and score higher with confidence.'},
-  {id:'chemistry', title:'Chemistry Study Material', price:599, images:['https://dummyimage.com/400x300/333/fff&text=Chemistry+1','https://dummyimage.com/400x300/444/fff&text=Chemistry+2','https://dummyimage.com/400x300/555/fff&text=Chemistry+3'], pdfLink:'https://drive.google.com/file/d/1dummyChemistry/preview', paymentLink:'https://payments.cashfree.com/forms/G10EP3', description:'Detailed Chemistry book with step-by-step explanations and solved examples to strengthen fundamentals.'},
-  {id:'biology', title:'Biology Study Material', price:699, images:['https://dummyimage.com/400x300/666/fff&text=Biology+1','https://dummyimage.com/400x300/777/fff&text=Biology+2','https://dummyimage.com/400x300/888/fff&text=Biology+3'], pdfLink:'https://drive.google.com/file/d/1dummyBiology/preview', paymentLink:'https://payments.cashfree.com/forms?code=G10EP2', description:'Clear and concise Biology notes with diagrams and illustrations for better understanding and exam preparation.'}
+  {
+    id:'physics',
+    title:'Physics Study Material',
+    price:100,
+    images:[
+      'https://i.ibb.co/4RLrD78k/2.jpg',
+      'https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png',
+      'https://dummyimage.com/400x300/222/fff&text=Physics+3'
+    ],
+    pdfLink:'https://drive.google.com/file/d/1nG2KCGVmUVBve7IgkZOCndS1zxBp-YgK/preview',
+    paymentLink:'https://payments.cashfree.com/forms/9smsc',
+    description:'A complete Physics study package designed for clarity and concept-building.'
+  },
+
+  {
+    id:'chemistry',
+    title:'Chemistry Study Material',
+    price:100,
+    images:[
+      'https://i.ibb.co/GvWpygMC/3.jpg',
+      'https://dummyimage.com/400x300/444/fff&text=Chemistry+2',
+      'https://dummyimage.com/400x300/555/fff&text=Chemistry+3'
+    ],
+    pdfLink:'https://drive.google.com/file/d/1nG2KCGVmUVBve7IgkZOCndS1zxBp-YgK/preview',
+    paymentLink:'https://payments.cashfree.com/forms/9smsc',
+    description:'Well-structured Chemistry notes with simplified explanations.'
+  },
+
+  
+
+  {
+    id:'biology',
+    title:'Biology Study Material',
+    price:100,
+    images:[
+      'https://i.ibb.co/dw9s6Z8S/4.jpg',
+      'https://dummyimage.com/400x300/777/fff&text=Biology+2',
+      'https://dummyimage.com/400x300/888/fff&text=Biology+3'
+    ],
+    pdfLink:'https://drive.google.com/file/d/1nG2KCGVmUVBve7IgkZOCndS1zxBp-YgK/preview',
+    paymentLink:'https://payments.cashfree.com/forms/9smsc',
+    description:'Easy-to-learn Biology notes with labelled diagrams and flowcharts.'
+  }
 ];
 
+// Render Cards (⭐⭐ IMAGE CLICK FIX ADDED ⭐⭐)
 const bookGrid=document.getElementById('bookGrid');
+function renderCards(){
+  bookGrid.innerHTML='';
+  books.forEach((b,idx)=>{
+    const card=document.createElement('div');
+    card.className='book-card';
+    card.innerHTML=
+      `<img src="${b.images[0]}" alt="${b.title}" onclick="openModal(books[${idx}])">
+       <h3>${b.title}</h3>
+       <div class="price">₹${b.price}</div>
+       <div class="btn-row">
+         <button class="btn primary" data-idx="${idx}" data-action="open">Preview / Buy</button>
+       </div>`;
+    bookGrid.appendChild(card);
+  });
+}
+renderCards();
+
+// Modal Logic
 const modal=document.getElementById('modal');
 const sliderImage=document.getElementById('sliderImage');
 const pdfFrame=document.getElementById('pdfFrame');
@@ -122,52 +219,104 @@ const getPromoBtn=document.getElementById('getPromoBtn');
 
 let currentBook=null, currentIndex=0;
 
-function renderCards(){
-  bookGrid.innerHTML='';
-  books.forEach((b,idx)=>{
-    const card=document.createElement('div');
-    card.className='book-card';
-    card.innerHTML=`<img src="${b.images[0]}" alt="${b.title}"><h3>${b.title}</h3><div class="price">₹${b.price}</div><div class="btn-row"><button class="btn primary" data-idx="${idx}" data-action="open">Preview / Buy</button></div>`;
-    bookGrid.appendChild(card);
-  });
-}
-renderCards();
-
 bookGrid.addEventListener('click',(e)=>{
   const idx=e.target.dataset.idx;
   if(e.target.dataset.action==='open') openModal(books[idx]);
 });
 
 function openModal(book){
-  currentBook=book; currentIndex=0;
+  currentBook=book; 
+  currentIndex=0;
+
   modalTitle.textContent=book.title;
   modalPrice.innerHTML=`₹${book.price}`;
   buyNowBtn.href=book.paymentLink;
+
   sliderImage.src=book.images[currentIndex];
-  pdfFrame.style.display='none'; sliderImage.style.display='block'; thumbs.innerHTML='';
-  modalDesc.style.display='none'; // hide description initially
-  book.images.forEach((src,i)=>{const t=document.createElement('img'); t.src=src; t.dataset.idx=i; t.className=i===0?'active':''; t.addEventListener('click',()=>{currentIndex=i; updateSlider();}); thumbs.appendChild(t);});
+  pdfFrame.style.display='none';
+  sliderImage.style.display='block';
+  thumbs.style.display='flex';
+
+  thumbs.innerHTML='';
+  modalDesc.style.display='none';
+
+  book.images.forEach((src,i)=>{
+    const t=document.createElement('img');
+    t.src=src;
+    t.dataset.idx=i;
+    t.className=i===0?'active':'';
+    t.addEventListener('click',()=>{
+      currentIndex=i;
+      updateSlider();
+    });
+    thumbs.appendChild(t);
+  });
+
   modal.style.display='flex';
 }
 
-function closeModal(){modal.style.display='none'; pdfFrame.src='';}
-function updateSlider(){sliderImage.src=currentBook.images[currentIndex]; Array.from(thumbs.children).forEach(t=>t.classList.toggle('active',Number(t.dataset.idx)===currentIndex));}
-prevBtn.addEventListener('click',()=>{currentIndex=(currentIndex-1+currentBook.images.length)%currentBook.images.length; updateSlider();});
-nextBtn.addEventListener('click',()=>{currentIndex=(currentIndex+1)%currentBook.images.length; updateSlider();});
-previewBtn.addEventListener('click',()=>{pdfFrame.src=currentBook.pdfLink; pdfFrame.style.display='block'; sliderImage.style.display='none'; thumbs.style.display='none';});
+function closeModal(){
+  modal.style.display='none';
+  pdfFrame.src='';
+}
+
+function updateSlider(){
+  sliderImage.src=currentBook.images[currentIndex];
+  Array.from(thumbs.children).forEach(t=>{
+    t.classList.toggle('active', Number(t.dataset.idx)===currentIndex);
+  });
+}
+
+prevBtn.addEventListener('click',()=>{
+  currentIndex=(currentIndex-1+currentBook.images.length)%currentBook.images.length;
+  updateSlider();
+});
+
+nextBtn.addEventListener('click',()=>{
+  currentIndex=(currentIndex+1)%currentBook.images.length;
+  updateSlider();
+});
+
+previewBtn.addEventListener('click',()=>{
+  pdfFrame.src=currentBook.pdfLink;
+  pdfFrame.style.display='block';
+  sliderImage.style.display='none';
+  thumbs.style.display='none';
+});
+
 descBtn.addEventListener('click',()=>{
   modalDesc.style.display='block';
   modalDesc.textContent=currentBook.description;
+
   pdfFrame.style.display='none';
   sliderImage.style.display='block';
   thumbs.style.display='flex';
   modalDesc.scrollIntoView({behavior:'smooth'});
 });
 
+// PROMO BUTTON FIX
 getPromoBtn.addEventListener('click',()=>{
-  const discounted=(currentBook.price*0.9).toFixed(0);
-  modalPrice.innerHTML=`<span style="text-decoration:line-through;">₹${currentBook.price}</span> <span class="discounted">₹${discounted}</span> <span style="margin-left:6px; color:#ffcc00;">(Use promo code "<b>xyz</b>")</span>`;
+
+  const p = promoCodes[currentBook.id];
+  const discount = p.discount;
+
+  let finalPrice = currentBook.price;
+
+  if(discount > 0){
+    finalPrice = currentBook.price - (currentBook.price * (discount / 100));
+  }
+
+  modalPrice.innerHTML = `
+    <span style="text-decoration:line-through;">₹${currentBook.price}</span>
+    <span class="discounted">₹${finalPrice.toFixed(0)}</span>
+    <br><br>
+    <span style="color:#ffcc00">Copy the promo code so you can paste it at the time of payment :
+      <b style="font-size:1.1rem;">${p.code}</b> 
+      
+    </span>
+  `;
 });
 </script>
+
 </body>
 </html>
