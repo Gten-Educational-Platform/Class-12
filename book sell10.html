@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,8 +6,8 @@
 <title>G10 Educational Platform - Study Material Store</title>
 <style>
   body {margin:0; font-family:"Segoe UI",sans-serif; display:flex; height:100vh; overflow:hidden; background:url('https://i.ibb.co/Ps5ykLDJ/We-help-you-grow.jpg') no-repeat center center fixed; background-size:cover; color:white;}
-  .sidebar {width:280px; background:#1a1a2e; padding:20px; overflow-y:auto; transition:transform 0.3s ease;}
-  .sidebar img {width:120px; display:block; margin:0 auto 10px; border-radius:14px;}
+  .sidebar {width:200px; background:#1a1a2e; padding:20px; overflow-y:auto; transition:transform 0.3s ease;}
+  .sidebar img {width:110px; display:block; margin:0 auto 10px; border-radius:14px;}
   .sidebar h2 {text-align:center; color:#00aaff;}
   .sidebar-btn {display:block; background:#0078ff; color:white; text-align:center; padding:10px; margin:8px 0; border-radius:8px; text-decoration:none;}
   @media (max-width:900px){.sidebar {position:fixed; top:0; left:0; height:100vh; transform:translateX(-100%); z-index:999;} .sidebar.open{transform:translateX(0);} }
@@ -19,7 +19,22 @@
   @media(max-width:900px){.home-btn{bottom:18px; right:18px; top:auto;}}
 
   .content {flex:1; background:rgba(0,0,0,0.5); padding:20px; overflow-y:auto;}
-  .title {text-align:center; font-size:1.6rem; font-weight:bold; margin-bottom:15px; color:#ffd700;}
+  .title {text-align:center; font-size:1.6rem; font-weight:bold; margin-bottom:12px; color:#ffd700;}
+
+  /* search bar */
+  .search-row {display:flex; gap:8px; align-items:center; justify-content:center; margin-bottom:14px;}
+  .search-row input[type="search"] {
+    width:420px; max-width:80%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+    outline: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .search-row button {padding:10px 12px; border-radius:8px; background:#0078ff; border:none; color:#fff; cursor:pointer;}
+
   .book-grid {display:grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap:20px;}
   
 .book-card {
@@ -31,8 +46,8 @@
 .book-card img {
   width: 100%;
   height: 260px;
-  object-fit: contain;     /* FIX: perfect auto-fit */
-  background: #00000033;   /* optional clean background */
+  object-fit: contain;
+  background: #00000033;
   border-radius: 12px;
   margin-bottom: 10px;
 }
@@ -44,6 +59,17 @@
   .btn.buy {background: linear-gradient(145deg,#3a3a3a,#262626); border:1px solid #ff8800;}
   .btn.primary {background:#0078ff;}
   .btn.ghost {background: transparent; border:1px solid rgba(255,255,255,0.2); font-size:0.85rem;}
+
+  /* 🔥 UNIQUE DROPDOWN BUTTON COLOR */
+  .dropdown-btn {
+    background: linear-gradient(145deg, #ff9500, #e67e00);
+    color: #fff !important;
+    font-weight: bold;
+    border-radius: 8px;
+  }
+  .dropdown-btn:hover {
+    background: linear-gradient(145deg, #ffa31a, #cc6f00);
+  }
 
   .modal-overlay {position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:9999;}
   .modal-box {width:90%; max-width:1000px; background:#222; border-radius:14px; padding:20px; color:white; display:flex; gap:20px; flex-wrap:wrap;}
@@ -65,6 +91,18 @@
 
   .promo {margin:6px 0; font-size:0.9rem; color:#ffcc00;}
   .discounted {color:#00ff00; font-weight:bold;}
+  
+  .drop-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .drop-content.open {
+    max-height: 500px;
+  }
+
+  .no-results {text-align:center;color:#ddd;padding:14px;font-size:1rem;}
+  
 </style>
 </head>
 <body>
@@ -75,15 +113,64 @@
 <div class="sidebar" id="sidebar">
   <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" />
   <h2>G10 Educational Platform</h2>
+
   <p><b>Location:</b> Jayanagar Chariali, Beltola Bazaar Road, Guwahati</p>
-  <a class="sidebar-btn" href="#">🌐 Visit Website</a>
-  <a class="sidebar-btn" href="#">🖼️ Photo Gallery</a>
-  <a class="sidebar-btn" href="#">📞 Contact Us</a>
+
+  <a class="sidebar-btn" href="https://www.g10educationalplatformindia.co.in" target="_blank">
+    🌐 Visit Website
+  </a>
+
+  <!-- 🟧 DROPDOWN BUTTON WITH SPECIAL COLOR -->
+  <div id="storeToggle" class="sidebar-btn dropdown-btn" style="cursor:pointer;">
+    🏬 Store ▼
+  </div>
+
+  <div id="storeMenu" class="drop-content" style="padding-left:10px; margin-top:5px;">
+    <a class="sidebar-btn" href="https://www.g10educationalplatformindia.co.in">Class 9 Math</a>
+    <a class="sidebar-btn" href="cl9s.html">Class 9 Science</a>
+    <a class="sidebar-btn" href="cl10s.html">Class 10 Science</a>
+    <a class="sidebar-btn" href="cl10m.html">Class 10 Math</a>
+    <a class="sidebar-btn" href="cl11c.html">Class 11 Chemistry</a>
+    <a class="sidebar-btn" href="cl11p.html">Class 11 Physics</a>
+    <a class="sidebar-btn" href="cl11b.html">Class 11 Biology</a>
+    <a class="sidebar-btn" href="cl11m.html">Class 11 Math</a>
+    <a class="sidebar-btn" href="cl12c.html">Class 12 Chemistry</a>
+    <a class="sidebar-btn" href="cl13p.html">Class 12 Physics</a>
+    <a class="sidebar-btn" href="cl14b.html">Class 12 Biology</a>
+    <a class="sidebar-btn" href="cl15m.html">Class 12 Math</a>
+    <a class="sidebar-btn" href="iitjeec.html">IIT-JEE Chemistry</a>
+    <a class="sidebar-btn" href="iitjeep.html">IIT-JEE Physics</a>
+    <a class="sidebar-btn" href="iitjeem.html">IIT-JEE Math</a>
+    <a class="sidebar-btn" href="neetc.html">NEET Chemistry</a>
+    <a class="sidebar-btn" href="neetb.html">NEET Biology</a>
+    <a class="sidebar-btn" href="neetm.html">NEET Physics</a>
+  </div>
+
+  <a class="sidebar-btn" 
+     href="https://gten-educational-platform.github.io/Class-12/photo%20gallelry.html" 
+     target="_blank">
+     🖼️ Photo Gallery
+  </a>
+
+  <a class="sidebar-btn" 
+     href="https://my.unogreen.in/my-digital-card/73x8rq" 
+     target="_blank">
+     📞 Contact Us
+  </a>
 </div>
+
 
 <div class="content">
   <div class="title">📚 Study Materials – Class 9(Science)</div>
+
+  <!-- SEARCH ROW -->
+  <div class="search-row" role="search" aria-label="Search study materials">
+    <input id="searchInput" type="search" placeholder="Search by title (e.g. Physics, Chemistry)..." />
+    <button id="clearSearch">Clear</button>
+  </div>
+
   <div class="book-grid" id="bookGrid"></div>
+  <div id="noResults" class="no-results" style="display:none">No items found.</div>
 </div>
 
 <div class="modal-overlay" id="modal">
@@ -102,7 +189,7 @@
       <h2 id="modalTitle"></h2>
       <div class="price" id="modalPrice"></div>
 
-      <div class="promo">Click below to get your promo code!</div>
+      <div class="promo">Click below to get your promo code! The promo code is only valid for the first 100 customers, so it may not be applicable if you are after the 100th customer</div>
 
       <div class="desc" id="modalDesc"></div>
 
@@ -131,8 +218,8 @@ document.addEventListener('click',(e)=>{if(!sidebar.contains(e.target)&&e.target
 // Promo Codes
 const promoCodes = {
   physics: { code:"G10EP-SM10%", discount:10 },
-  chemistry:{ code:"G10EP-SM10%", discount:12 },
-  biology:{ code:"G10EP-SM10%", discount:13 },
+  chemistry:{ code:"G10EP-SM10%", discount:10 },
+  biology:{ code:"G10EP-SM10%", discount:10 },
   math:{ code:"No Promo Code", discount:0 }
 };
 
@@ -148,7 +235,7 @@ const books=[
       'https://dummyimage.com/400x300/222/fff&text=Physics+3'
     ],
     pdfLink:'https://drive.google.com/file/d/1nG2KCGVmUVBve7IgkZOCndS1zxBp-YgK/preview',
-    paymentLink:'https://payments.cashfree.com/forms/9smsc',
+    paymentLink:'https://payments.cashfree.com/forms/100SM',
     description:'A complete Physics study package designed for clarity and concept-building.'
   },
 
@@ -162,7 +249,7 @@ const books=[
       'https://dummyimage.com/400x300/555/fff&text=Chemistry+3'
     ],
     pdfLink:'https://drive.google.com/file/d/1nG2KCGVmUVBve7IgkZOCndS1zxBp-YgK/preview',
-    paymentLink:'https://payments.cashfree.com/forms/9smsc',
+    paymentLink:'https://payments.cashfree.com/forms/100SM',
     description:'Well-structured Chemistry notes with simplified explanations.'
   },
 
@@ -178,29 +265,58 @@ const books=[
       'https://dummyimage.com/400x300/888/fff&text=Biology+3'
     ],
     pdfLink:'https://drive.google.com/file/d/1nG2KCGVmUVBve7IgkZOCndS1zxBp-YgK/preview',
-    paymentLink:'https://payments.cashfree.com/forms/9smsc',
+    paymentLink:'https://payments.cashfree.com/forms/100SM',
     description:'Easy-to-learn Biology notes with labelled diagrams and flowcharts.'
   }
 ];
 
-// Render Cards (⭐⭐ IMAGE CLICK FIX ADDED ⭐⭐)
+// Render Cards (image click opens modal)
 const bookGrid=document.getElementById('bookGrid');
-function renderCards(){
+const noResults = document.getElementById('noResults');
+
+function renderCards(filter=''){
+  // filter: lowercase string
+  const query = (filter || '').trim().toLowerCase();
   bookGrid.innerHTML='';
-  books.forEach((b,idx)=>{
+
+  const list = books.filter(b => {
+    if(!query) return true;
+    return b.title.toLowerCase().includes(query) || b.id.toLowerCase().includes(query);
+  });
+
+  if(list.length === 0){
+    noResults.style.display = 'block';
+  } else {
+    noResults.style.display = 'none';
+  }
+
+  list.forEach((b,idx)=>{
     const card=document.createElement('div');
     card.className='book-card';
+    // clicking image opens modal (keeps same openModal signature)
     card.innerHTML=
-      `<img src="${b.images[0]}" alt="${b.title}" onclick="openModal(books[${idx}])">
+      `<img src="${b.images[0]}" alt="${b.title}" onclick="openModal(${JSON.stringify(b).replace(/"/g,'&quot;')})">
        <h3>${b.title}</h3>
        <div class="price">₹${b.price}</div>
        <div class="btn-row">
-         <button class="btn primary" data-idx="${idx}" data-action="open">Preview / Buy</button>
+         <button class="btn primary" data-idx="${books.indexOf(b)}" data-action="open">Preview / Buy</button>
        </div>`;
     bookGrid.appendChild(card);
   });
 }
 renderCards();
+
+// SEARCH wiring
+const searchInput = document.getElementById('searchInput');
+const clearSearch = document.getElementById('clearSearch');
+
+searchInput.addEventListener('input', (e) => {
+  renderCards(e.target.value);
+});
+clearSearch.addEventListener('click', () => {
+  searchInput.value = '';
+  renderCards('');
+});
 
 // Modal Logic
 const modal=document.getElementById('modal');
@@ -219,14 +335,21 @@ const getPromoBtn=document.getElementById('getPromoBtn');
 
 let currentBook=null, currentIndex=0;
 
+// support both inline data-idx and image onclick which passes book object
 bookGrid.addEventListener('click',(e)=>{
   const idx=e.target.dataset.idx;
   if(e.target.dataset.action==='open') openModal(books[idx]);
 });
 
+// openModal expects a book object (we changed renderCards image onclick to pass the book object)
 function openModal(book){
-  currentBook=book; 
-  currentIndex=0;
+  // if a JSON string was injected, ensure it's treated as object; if it's reference, it's already object
+  if(typeof book === 'string') {
+    try { book = JSON.parse(book); } catch(e){ /* ignore */ }
+  }
+
+  currentBook = book;
+  currentIndex = 0;
 
   modalTitle.textContent=book.title;
   modalPrice.innerHTML=`₹${book.price}`;
@@ -312,10 +435,31 @@ getPromoBtn.addEventListener('click',()=>{
     <br><br>
     <span style="color:#ffcc00">Copy the promo code so you can paste it at the time of payment :
       <b style="font-size:1.1rem;">${p.code}</b> 
-      
     </span>
   `;
 });
+
+// --- STORE TOGGLE (as before) ---
+const storeToggle = document.getElementById('storeToggle');
+const storeMenu = document.getElementById('storeMenu');
+
+storeToggle.addEventListener('click', (ev) => {
+  ev.stopPropagation();
+  storeMenu.classList.toggle('open');
+});
+
+storeMenu.addEventListener('click', (ev) => ev.stopPropagation());
+
+document.addEventListener('click', () => {
+  storeMenu.classList.remove('open');
+});
+
+// Keep existing simple toggleStoreMenu() function for compatibility with earlier code if used
+function toggleStoreMenu(){
+  const menu = document.getElementById("storeMenu");
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+}
+
 </script>
 
 </body>
