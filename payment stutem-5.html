@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Fee Payment – G10</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: url("https://i.ibb.co/RTjxjG88/class12.jpg") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    width: 100%;
+    max-width: 420px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  }
+
+  .logo { text-align: center; margin-bottom: 10px; }
+  .logo img { max-width: 140px; }
+
+  h2 { text-align: center; margin-bottom: 10px; }
+
+  input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover { background: #1e4ed8; }
+
+  .hidden { display: none; }
+
+  .student-name {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .error {
+    color: red;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .instruction-box {
+    background: #e8f1ff;
+    border-left: 4px solid #2563eb;
+    padding: 10px;
+    font-size: 13px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="logo">
+    <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo">
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>Student Fee Payment</h2>
+
+    <div class="instruction-box">
+      📌 <b>Instruction / নিৰ্দেশনা</b><br>
+      Please enter the registered phone number or email.<br>
+      অনুগ্ৰহ কৰি পঞ্জীয়কৃত ফোন নম্বৰ অথবা ইমেইল লিখক।
+    </div>
+
+    <input type="text" id="loginInput" placeholder="Enter registered phone or email">
+    <button onclick="verifyStudent()">Continue</button>
+    <div id="loginError" class="error"></div>
+  </div>
+
+  <!-- PAYMENT -->
+  <div id="paymentBox" class="hidden">
+    <div class="student-name" id="studentName"></div>
+    <div class="instruction-box" id="paymentInstruction"></div>
+
+    <div id="classBox" class="hidden">
+      <label>Select Subject</label>
+      <select id="classSubject">
+        <option value="">-- Select Subject --</option>
+        <option>Chemistry</option>
+        <option>Physics</option>
+        <option>Math</option>
+        <option>Science</option>
+        <option>Biology</option>
+      </select>
+    </div>
+
+    <div id="monthBox" class="hidden">
+      <label>Select Subject</label>
+      <select id="monthlySubject">
+        <option value="">-- Select Subject --</option>
+        <option>Chemistry</option>
+        <option>Physics</option>
+        <option>Math</option>
+        <option>Science</option>
+        <option>Biology</option>
+        <option>Chemistry & Physics</option>
+        <option>Math & Science</option>
+      </select>
+    </div>
+
+    <button onclick="payNow()">Pay Now</button>
+    <div id="paymentError" class="error"></div>
+  </div>
+
+</div>
+
+<script>
+/* ================= STUDENT DATABASE ================= */
+
+const students = [
+  {
+    name: "Ayman Ahmed",
+    phones: ["9864261140", "9706000009"],
+    email: "ahmedaymanyousuf2017@gmail.com",
+    mode: "class",
+    tuitionType: "Home Tuition",
+    pricing: {
+      "Chemistry": "https://payments.cashfree.com/forms/INVOICE-2",
+      "Physics": "https://payments.cashfree.com/forms/INVOICE-3"
+    }
+  },
+  
+  
+    {
+        name: "Gargi Mohan",
+    phones: ["8822135069", "9435168579"],
+    email: "mohangargi123@gmail.com",
+    mode: "class",
+    tuitionType: "Home Tuition",
+    pricing: {
+      "Chemistry": "https://payments.cashfree.com/forms/INVOICE-2",
+      "Physics": "https://payments.cashfree.com/forms/INVOICE-2"
+    }
+  },
+  
+     {
+        name: "Hridika Mallik",
+    phones: ["6900175095", "6900016205"],
+    email: "hridikabmallik@gmail",
+    mode: "class",
+    tuitionType: "Home Tuition",
+    pricing: {
+      "Chemistry": "https://payments.cashfree.com/forms/INVOICE-2",
+      "Physics": "https://payments.cashfree.com/forms/INVOICE-2"
+    }
+  },    
+
+     {
+        name: "Raktupaul Kashyap",
+    phones: ["8472032973", "8638133342"],
+    email: "pallavikalita50752@gmail.com",
+    mode: "class",
+    tuitionType: "Home Tuition",
+    pricing: {
+      "Chemistry": "https://payments.cashfree.com/forms/INVOICE-2",
+      "Physics": "https://payments.cashfree.com/forms/INVOICE-2"
+    }
+  }, 
+
+	 {
+        name: "Gauri Goswami",
+    phones: ["9435060734", "9706000012"],
+    email: "gauri.goswami2007@gmail.com",
+    mode: "class",
+    tuitionType: "Home Tuition",
+    pricing: {
+      "Chemistry": "https://payments.cashfree.com/forms/INVOICE-3"
+     }
+  },
+  
+  {
+          name: "Piyali Das",
+    phones: ["7086195506", "9706000012"],
+    email: "mohgargi123@gmail.com",
+    mode: "class",
+    tuitionType: "Home Tuition",
+    pricing: {
+      "Math": "https://payments.cashfree.com/forms/INVOICE-5"
+      
+    }
+  },
+  
+  
+  
+  
+  
+  
+  
+  
+  {
+    name: "xxxx Mohan",
+    phones: ["8822135069", "9706000012"],
+    email: "mohangargi123@gmail.com",
+    mode: "class",
+    tuitionType: "Individual Tuition",
+    pricing: {
+      "Chemistry": "https://rzp.io/rzp/G10EP2"
+    }
+  },
+  
+  
+  
+  
+  
+  
+  {
+    name: "Ankita",
+    phones: ["9706000013", "9706000014"],
+    email: "ankita@gmail.com",
+    mode: "class",
+    tuitionType: "Dual Tuition",
+    pricing: {
+      "Physics": "https://rzp.io/rzp/G10EP2"
+    }
+  },
+  
+  
+  
+  
+  
+  
+  {
+    name: "krishtina Saikia",
+    phones: ["6003281700", "9957552046"],
+    email: "krishtinasaikia007@gmail.com",
+    mode: "class",
+    tuitionType: "Online Tuition",
+    pricing: {
+      "Chemistry": "https://payments.cashfree.com/forms/INVOICE-3"
+    }
+  },
+ 
+
+
+
+
+
+
+ {
+    name: "Gaurav Chhetri",
+    phones: ["9435550339", "8638137677"],
+    email: "minecraftaccbro123@gmail.com",
+    mode: "monthly",
+    tuitionType: "Group Tuition",
+    pricing: {
+      "Math & Science": "https://payments.cashfree.com/forms/INVOICE-1"
+    }
+  },
+    {
+    name: "Raj Shekhar Aditya",
+    phones: ["8920425269", "9821795318"],
+    email: "rajsekharaditya13@gmail.com",
+    mode: "monthly",
+    tuitionType: "Group Tuition",
+    pricing: {
+      "Math & Science": "https://payments.cashfree.com/forms/INVOICE-1"
+    }
+  },
+  
+  
+  
+ 
+
+
+
+
+   {
+    name: "Rondeep Kamai",
+    phones: ["8099132681", "9706000011"],
+    email: "rondeepkumai@gmail.com",
+    mode: "monthly",
+    tuitionType: "Super Group Tuition",
+    pricing: {
+      "Chemistry & Physics": "https://payments.cashfree.com/forms/INVOICE-4"
+    }
+  }, 
+   {
+    name: "Rudranshu",
+    phones: ["8638250602", "761098399"],
+    email: "brudraanshu@gmail.com",
+    mode: "monthly",
+    tuitionType: "Super Group Tuition",
+    pricing: {
+      "Chemistry & Physics": "https://payments.cashfree.com/forms/INVOICE-4"
+    }
+  },
+  
+  {
+    name: "Swarndeep paul",
+    phones: ["8753940068", "8011366665"],
+    email: "sujatapaul650@gmail.com",
+    mode: "monthly",
+    tuitionType: "Super Group Tuition",
+    pricing: {
+      "Chemistry & Physics": "https://payments.cashfree.com/forms/INVOICE-4"
+    }
+  }
+];
+
+let currentStudent = null;
+
+/* ================= VERIFY STUDENT ================= */
+
+function verifyStudent() {
+  const input = loginInput.value.trim();
+  loginError.textContent = "";
+
+  for (const s of students) {
+    if (s.email === input || s.phones.includes(input)) {
+
+      const message =
+        "Please confirm student details:\n\n" +
+        "Name: " + s.name + "\n" +
+        "Email: " + s.email + "\n" +
+        "Phone(s): " + s.phones.join(", ") + "\n" +
+        "Type of Tuition: " + s.tuitionType + "\n" +
+        "Payment Mode: " + (s.mode === "monthly" ? "Monthly" : "Class-wise") + "\n\n" +
+        "Press OK to continue or Cancel to go back.";
+
+      if (!confirm(message)) return;
+
+      currentStudent = s;
+
+      loginBox.classList.add("hidden");
+      paymentBox.classList.remove("hidden");
+      studentName.textContent = `Welcome, ${s.name}`;
+
+      if (s.mode === "monthly") {
+        paymentInstruction.innerHTML =
+          "📅 <b>Monthly Fee Payment</b><br>" +
+          "Please select the subject for monthly fee payment.";
+        monthBox.classList.remove("hidden");
+        classBox.classList.add("hidden");
+      } else {
+        paymentInstruction.innerHTML =
+          "📘 <b>Class-wise Fee Payment</b><br>" +
+          "Please select the subject and click Pay Now.";
+        classBox.classList.remove("hidden");
+        monthBox.classList.add("hidden");
+      }
+      return;
+    }
+  }
+
+  loginError.textContent = "Student not found.";
+}
+
+/* ================= PAYMENT ================= */
+
+function payNow() {
+  paymentError.textContent = "";
+  let link = "";
+
+  if (currentStudent.mode === "monthly") {
+    const subject = monthlySubject.value;
+    if (!subject) {
+      paymentError.textContent = "Please select a subject.";
+      return;
+    }
+    link = currentStudent.pricing[subject];
+  } else {
+    const subject = classSubject.value;
+    if (!subject) {
+      paymentError.textContent = "Please select a subject.";
+      return;
+    }
+    link = currentStudent.pricing[subject];
+  }
+
+  if (!link) {
+    paymentError.textContent = "Payment link not available.";
+    return;
+  }
+
+  window.location.href = link;
+}
+</script>
+
+</body>
+</html>
