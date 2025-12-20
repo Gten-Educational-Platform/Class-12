@@ -859,17 +859,24 @@
         "Substitute recursively to get final value 0."
       ]
     },
-    {
-      "q": "If $\\sin(A+B)=\\frac{1}{2}$ and $\\cos(A-B)=\\frac{1}{2}$, find $A$ and $B$.",
-      "options": ["A) 60°, 30°", "B) 45°, 15°", "C) 75°, 15°", "D) 90°, 0°"],
-      "correct": 0,
-      "type": "mcq",
-      "solution_steps": [
-        "$\\sin(A+B)=1/2⇒A+B=30°$ or $150°$.",
-        "$\\cos(A−B)=1/2⇒A−B=60°$ or $300°$.",
-        "Solving $A+B=90°, A−B=30° ⇒ A=60°, B=30°$."
-      ]
-    },
+  {
+  "q": "If $\\sin(A-B)=\\frac{1}{2}$ and $\\cos(A+B)=\\frac{1}{2}$, find $A$ and $B$.",
+  "options": [
+    "A) 60°, 30°",
+    "B) 45°, 15°",
+    "C) 75°, 15°",
+    "D) 90°, 0°"
+  ],
+  "correct": 1,
+  "type": "mcq",
+  "solution_steps": [
+    "$\\sin(A-B)=\\frac{1}{2} \\Rightarrow A-B=30^\\circ$ or $150^\\circ$.",
+    "$\\cos(A+B)=\\frac{1}{2} \\Rightarrow A+B=60^\\circ$ or $300^\\circ$.",
+    "Taking valid angles: $A-B=30^\\circ$ and $A+B=60^\\circ$.",
+    "Solving: $2A=90^\\circ \\Rightarrow A=45^\\circ$, hence $B=15^\\circ$."
+  ]
+},
+
     {
       "q": "The sum of coefficients in the expansion of $(1 - 3x + 2x^2)^{10}$ is:",
       "options": ["A) 0", "B) 1", "C) 1024", "D) 4096"],
@@ -1666,3 +1673,4 @@ function updateTimer() {
   </script>
 </body>
 </html>
+
