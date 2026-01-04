@@ -76,6 +76,8 @@
   .mock { --bg1:#3a3a3a; --bg2:#2a2a2a; --glow-color:#b87333; --glow-color-bright:#ffd700; --border-color:#b87333; --shadow-color:rgba(184,115,51,.25); }
   .science { --bg1:#1b3c59; --bg2:#12273b; --glow-color:#00ffff; --glow-color-bright:#00bfff; --border-color:#00bfff; --shadow-color:rgba(0,191,255,.25); }
   .math { --bg1:#283618; --bg2:#1b2610; --glow-color:#9acd32; --glow-color-bright:#adff2f; --border-color:#9acd32; --shadow-color:rgba(154,205,50,.25); }
+    .other { --bg1:#36181a; --bg2:#3b181c; --glow-color:#db3047; --glow-color-bright:#fc2d3b; --border-color:#cc232e; --shadow-color:rgba(154,205,50,.25); }
+
   .sst { --bg1:#4a1c40; --bg2:#2e112b; --glow-color:#ff69b4; --glow-color-bright:#ffb6c1; --border-color:#ff69b4; --shadow-color:rgba(255,105,180,.25); }
   .english { --bg1:#242038; --bg2:#191528; --glow-color:#9370db; --glow-color-bright:#ba55d3; --border-color:#9370db; --shadow-color:rgba(147,112,219,.25); }
 
@@ -219,6 +221,8 @@
       </div>
     </div>
 
+
+
     <div class="relative">
       <button onclick="toggleDropdown('biology')" class="subject-btn sst">Biology</button>
       <div id="biology" class="dropdown-content">
@@ -228,6 +232,18 @@
         <a href="https://www.g10educationalplatformindia.co.in/courses/CLASS-11-BIOLOGY-PACKAGE-682c3ed148a32245adb0b66b">Complete Course</a>
       </div>
     </div>
+	
+	
+	    <div class="relative">
+      <button onclick="toggleDropdown('otherboard')" class="subject-btn other">Other International Board (CAMBRIDGE) </button>
+      <div id="otherboard" class="dropdown-content">
+       <a href="https://www.g10educationalplatformindia.co.in/courses/">Study Materials (COMING SOON)</a>
+        <a href="https://practice-test-backend-class11-math-gduj.onrender.com">Practice Test</a>
+        <a href="https://www.g10educationalplatforminda.co.in/courses/CLASS-11-MATH-TESTS-682c3aa0e7f90d7dc991d861">Live Class on Demand</a>
+        <a href="https://www.g10educationalplatforminda.co.in/courses/CLASS-11-MATH-TESTS-682c3aa0e7f90d7dc991d861">Complete Course (COMING SOON)</a>
+      </div>
+    </div>
+	
 
     <div class="relative">
       <button onclick="toggleDropdown('pcmb')" class="subject-btn english">Pay your Tuition Fee</button>
@@ -282,4 +298,3 @@ function backToSubjects(){
 </script>
 </body>
 </html>
-
