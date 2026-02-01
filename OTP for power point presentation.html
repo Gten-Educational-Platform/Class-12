@@ -70,6 +70,28 @@ button:hover{opacity:.9}
 #backBtn{top:10px;right:10px}
 #logoutBtn{bottom:10px;right:10px;background:rgba(239,68,68,0.85)}
 
+
+
+
+
+@media (max-width:600px){
+
+  .login-container{
+    min-height:100svh;
+  }
+
+  .float-btn{
+    width:46px !important;
+    height:46px !important;
+    font-size:20px;
+  }
+
+  .acc-btn,.sub-btn{
+    padding:14px;
+    font-size:17px;
+  }
+}
+
 </style>
 </head>
 
@@ -103,7 +125,7 @@ button:hover{opacity:.9}
 <!-- MENU -->
 <div id="menuScreen">
   <div class="menuBox">
-    <h2>📚 Learning Dashboard</h2>
+    <h2> Dashboard</h2>
 <!-- CLASS 9 -->
     <button class="acc-btn" onclick="toggleAcc(this)">Class 9</button>
     <div class="acc-content">
