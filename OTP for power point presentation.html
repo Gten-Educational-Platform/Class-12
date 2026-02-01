@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Secure Learning Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef2f7;font-family:Arial,sans-serif}
+
+/* LOGIN */
+.login-container{display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;padding:25px;width:340px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.15);text-align:center}
+input,button{width:100%;padding:12px;margin:8px 0;font-size:16px}
+button{background:#4f46e5;color:#fff;border:none;border-radius:6px;cursor:pointer}
+button:hover{opacity:.9}
+.hidden{display:none}
+.msg{color:red;font-size:14px}
+
+/* MENU */
+#menuScreen{display:none;min-height:100vh;padding:15px}
+.menuBox{max-width:480px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+.menuBox h2{text-align:center}
+
+/* ACCORDION */
+.acc-btn,.sub-btn{background:#1e293b;color:#fff;padding:12px;border:none;width:100%;border-radius:8px;margin:6px 0;font-size:16px;text-align:left;cursor:pointer}
+.sub-btn{background:#475569}
+.acc-content{display:none;padding-left:8px;margin-top:6px}
+
+.chapter{background:#e5e7eb;padding:10px;border-radius:6px;margin:6px 0}
+.resource-row{display:flex;gap:8px;margin-top:6px}
+.resource-row button{flex:1;padding:8px;font-size:14px}
+.resource-row button:nth-child(1){background:#10b981}
+.resource-row button:nth-child(2){background:#6366f1}
+.resource-row button:nth-child(3){background:#f59e0b}
+
+/* FULLSCREEN PPT */
+#frameContainer{display:none;position:fixed;inset:0;background:#000;z-index:999}
+#frameContainer iframe{width:100vw;height:100vh;border:none}
+
+/* FLOAT BUTTONS */
+.float-btn{
+  position:fixed;
+  z-index:1000;
+  width:38px !important;
+  height:38px !important;
+  min-width:38px !important;
+  max-width:38px !important;
+  padding:0 !important;
+  margin:0 !important;
+  font-size:18px;
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+  transition:0.2s;
+}
+
+.float-btn:hover{
+  background:rgba(0,0,0,0.8);
+  transform:scale(1.05);
+}
+
+#backBtn{top:10px;right:10px}
+#logoutBtn{bottom:10px;right:10px;background:rgba(239,68,68,0.85)}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login-container" id="loginUI">
+  <div class="card">
+    <h2>Email OTP Login</h2>
+    <p><b>OTP will be sent to:</b></p>
+    <p style="color:#4f46e5;font-weight:bold">g10.educational.platform@gmail.com</p>
+
+    <div id="sendBox">
+      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+
+      <p class="msg" id="emailMsg"></p>
+<p id="otpInfo" style="display:none;color:#16a34a;font-size:14px;font-weight:600">
+  ✔ Check your mail
+</p>
+
+    </div>
+
+    <div id="otpBox" class="hidden">
+      <input type="number" id="otp" placeholder="Enter OTP">
+      <button onclick="verifyOTP()">Verify OTP</button>
+      <p class="msg" id="otpMsg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- MENU -->
+<div id="menuScreen">
+  <div class="menuBox">
+    <h2>📚 Learning Dashboard</h2>
+<!-- CLASS 9 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 9</button>
+    <div class="acc-content">
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Science</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1kVW49cXZFuPYhGhPklPnoQYnQzH46ghlRT7dc35a98Q/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASS 10 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 10</button>
+    <div class="acc-content">
+      <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/15U9khA6Mm5PKx8_0TsP2MNrKKs3Y8iI6hKk-Ie0GMk0/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+	  
+    </div>
+
+    <!-- CLASS 11 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 11</button>
+    <div class="acc-content">
+      <div class="chapter"><b>Physics</b>
+        <div class="resource-row">
+          <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/embed')">PPT</button>
+          <button onclick="openLink('#')">Test</button>
+          <button onclick="openLink('#')">Solution</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASS 12 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 12</button>
+    <div class="acc-content">
+      <div class="chapter"><b>Mathematics</b>
+        <div class="resource-row">
+          <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/embed')">PPT</button>
+          <button onclick="openLink('#')">Test</button>
+          <button onclick="openLink('#')">Solution</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IIT-JEE -->
+    <button class="acc-btn" onclick="toggleAcc(this)">IIT-JEE</button>
+    <div class="acc-content">
+      <div class="chapter">
+        <div class="resource-row">
+          <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/embed')">Physics</button>
+          <button onclick="openLink('#')">Chemistry</button>
+          <button onclick="openLink('#')">Maths</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEET -->
+    <button class="acc-btn" onclick="toggleAcc(this)">NEET</button>
+    <div class="acc-content">
+      <div class="chapter">
+        <div class="resource-row">
+          <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/embed')">Biology</button>
+          <button onclick="openLink('#')">Chemistry</button>
+          <button onclick="openLink('#')">Physics</button>
+        </div>
+      </div>
+    </div>
+
+   <!-- EXTRA LINKS -->
+<div style="margin-top:12px;display:flex;gap:8px">
+  <button style="background:#0ea5e9" 
+          onclick="window.open('https://practice-test-backend.onrender.com','_blank')">
+    Administrator
+  </button>
+
+  <button style="background:#22c55e" 
+          onclick="window.open('https://gten-educational-platform.github.io/Class-12/bill 103.html','_blank')">
+    Invoice
+  </button>
+</div>
+
+<button style="background:#ef4444;margin-top:10px" onclick="logout()">Logout</button>
+
+  </div>
+</div>
+
+<!-- FULLSCREEN PPT -->
+<div id="frameContainer">
+  <button id="backBtn" class="float-btn" onclick="backToMenu()">⮌</button>
+  <button id="logoutBtn" class="float-btn" onclick="logout()">⏻</button>
+  <iframe id="mainFrame" allowfullscreen></iframe>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("5Hb6w86d9jhSLBa9y");
+
+const SERVICE_ID="service_ypvhncp";
+const TEMPLATE_ID="template_wvtlep4";
+let OTP=null;
+
+function sendOTP(){
+  const sendBox = document.getElementById("sendBox");
+  const otpBox = document.getElementById("otpBox");
+
+  OTP = Math.floor(100000 + Math.random() * 900000);
+
+  emailjs.send(SERVICE_ID, TEMPLATE_ID, { otp: OTP })
+  .then(() => {
+
+    otpUiFeedback(); // UI change first
+
+    // small delay so message is visible
+    setTimeout(() => {
+      sendBox.classList.add("hidden");
+      otpBox.classList.remove("hidden");
+    }, 800);
+
+  })
+  .catch(() => {
+    emailMsg.textContent = "Failed to send OTP";
+  });
+}
+
+
+
+function verifyOTP(){
+  if(otp.value.trim()!==OTP?.toString()){
+    otpMsg.textContent="Invalid OTP";return;
+  }
+  loginUI.style.display="none";
+  menuScreen.style.display="block";
+}
+
+function openLink(url){
+  menuScreen.style.display="none";
+  frameContainer.style.display="block";
+  mainFrame.src=url;
+}
+
+function backToMenu(){
+  frameContainer.style.display="none";
+  menuScreen.style.display="block";
+  mainFrame.src="";
+}
+
+function logout(){location.reload();}
+
+function toggleAcc(btn){
+  const content=btn.nextElementSibling;
+  const siblings=btn.parentElement.querySelectorAll(".acc-content");
+  siblings.forEach(d=>{if(d!==content) d.style.display="none";});
+  content.style.display=(content.style.display==="block")?"none":"block";
+}
+
+
+
+
+function otpUiFeedback(){
+  const btn = document.getElementById("sendOtpBtn");
+  const info = document.getElementById("otpInfo");
+
+  btn.style.background = "#16a34a";   // green
+  btn.innerText = "OTP Sent";
+  btn.disabled = true;
+
+  info.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
