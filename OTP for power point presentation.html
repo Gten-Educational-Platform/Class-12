@@ -45,10 +45,6 @@ button:hover{opacity:.9}
   z-index:1000;
   width:38px !important;
   height:38px !important;
-  min-width:38px !important;
-  max-width:38px !important;
-  padding:0 !important;
-  margin:0 !important;
   font-size:18px;
   background:rgba(0,0,0,0.55);
   color:#fff;
@@ -61,36 +57,59 @@ button:hover{opacity:.9}
   box-shadow:0 2px 8px rgba(0,0,0,0.4);
   transition:0.2s;
 }
+.float-btn:hover{background:rgba(0,0,0,0.8);transform:scale(1.05)}
 
-.float-btn:hover{
-  background:rgba(0,0,0,0.8);
-  transform:scale(1.05);
+
+/* ACTIVE PEN GLOW */
+.pen-active{
+  background:#22c55e !important;
+  box-shadow:0 0 12px rgba(34,197,94,0.9);
+  transform:scale(1.1);
 }
+
+
+
 
 #backBtn{top:10px;right:10px}
 #logoutBtn{bottom:10px;right:10px;background:rgba(239,68,68,0.85)}
 
-
-
-
-
-@media (max-width:600px){
-
-  .login-container{
-    min-height:100svh;
-  }
-
-  .float-btn{
-    width:46px !important;
-    height:46px !important;
-    font-size:20px;
-  }
-
-  .acc-btn,.sub-btn{
-    padding:14px;
-    font-size:17px;
-  }
+/* DRAW CANVAS */
+#drawCanvas{
+  position:fixed;
+  inset:0;
+  z-index:900;
+  display:none;
+  background:transparent;
 }
+
+/* DRAW TOOL BUTTONS */
+#penBtn{top:60px;right:10px}
+#eraserBtn{top:110px;right:10px}
+#clearBtn{top:160px;right:10px}
+
+
+
+/* COLOR TRAY */
+#colorTray{
+  position:fixed;
+  top:210px;
+  right:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  z-index:1000;
+}
+
+#colorTray span{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  cursor:pointer;
+  border:2px solid #fff;
+  box-shadow:0 0 4px rgba(0,0,0,0.6);
+}
+
+
 
 </style>
 </head>
@@ -106,12 +125,8 @@ button:hover{opacity:.9}
 
     <div id="sendBox">
       <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
-
       <p class="msg" id="emailMsg"></p>
-<p id="otpInfo" style="display:none;color:#16a34a;font-size:14px;font-weight:600">
-  ✔ Check your mail
-</p>
-
+      <p id="otpInfo" style="display:none;color:#16a34a;font-size:14px;font-weight:600">✔ Check your mail</p>
     </div>
 
     <div id="otpBox" class="hidden">
@@ -125,7 +140,7 @@ button:hover{opacity:.9}
 <!-- MENU -->
 <div id="menuScreen">
   <div class="menuBox">
-    <h2> Dashboard</h2>
+    <h2>📚 Learning Dashboard</h2>
 <!-- CLASS 9 -->
     <button class="acc-btn" onclick="toggleAcc(this)">Class 9</button>
     <div class="acc-content">
@@ -134,7 +149,7 @@ button:hover{opacity:.9}
       <div class="acc-content">
         <div class="chapter"><b>Chapter 1</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -246,8 +261,28 @@ button:hover{opacity:.9}
 <div id="frameContainer">
   <button id="backBtn" class="float-btn" onclick="backToMenu()">⮌</button>
   <button id="logoutBtn" class="float-btn" onclick="logout()">⏻</button>
+
+  <button id="penBtn" class="float-btn" onclick="setTool('pen')">✏</button>
+  <button id="eraserBtn" class="float-btn" onclick="setTool('eraser')">🧽</button>
+  <button id="clearBtn" class="float-btn" onclick="clearCanvas()">🗑</button>
+  <div id="colorTray">
+  <span style="background:red" onclick="setColor('red')"></span>
+  <span style="background:blue" onclick="setColor('blue')"></span>
+  <span style="background:green" onclick="setColor('green')"></span>
+  <span style="background:yellow" onclick="setColor('yellow')"></span>
+  <span style="background:white" onclick="setColor('white')"></span>
+  <span class="color-dot" style="background:black" onclick="setColor('black')"></span>
+<span class="color-dot" style="background:maroon" onclick="setColor('maroon')"></span>
+  <span class="color-dot" style="background:navy" onclick="setColor('navy')"></span>
+  <span class="color-dot" style="background:#7CB342" onclick="setColor('#7CB342')"></span> <!-- buff green -->
+</div>
+
+
+  <canvas id="drawCanvas"></canvas>
+
   <iframe id="mainFrame" allowfullscreen></iframe>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
@@ -290,11 +325,22 @@ function verifyOTP(){
   menuScreen.style.display="block";
 }
 
+
+
+
+
 function openLink(url){
+  clearCanvas();   // auto clear on slide change
   menuScreen.style.display="none";
   frameContainer.style.display="block";
   mainFrame.src=url;
 }
+
+
+
+
+
+
 
 function backToMenu(){
   frameContainer.style.display="none";
@@ -323,7 +369,160 @@ function otpUiFeedback(){
   btn.disabled = true;
 
   info.style.display = "block";
+  }
+  
+  
+/* ===== DRAW TOOL ===== */
+const canvas = document.getElementById("drawCanvas");
+const ctx = canvas.getContext("2d");
+
+let drawing = false;
+let tool = "pen";
+let penMode = false;
+let penColor = "red";
+
+function setColor(c){
+  penColor = c;
+  enablePen();   // auto enable pen when color selected
 }
+
+
+
+
+
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+
+
+
+
+function setTool(t){
+  tool = t;
+
+  if(penMode && t === "pen"){
+    disablePen();   // toggle OFF
+  } else {
+    enablePen();    // toggle ON
+  }
+}
+
+
+
+
+
+function enablePen(){
+  penMode = true;
+  canvas.style.display = "block";
+  canvas.style.pointerEvents = "auto";
+  penBtn.classList.add("pen-active");
+}
+
+function disablePen(){
+  penMode = false;
+  canvas.style.pointerEvents = "none";
+  penBtn.classList.remove("pen-active");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+canvas.addEventListener("mousedown", e => {
+  if(!penMode) return;
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(e.clientX, e.clientY);
+});
+
+window.addEventListener("mouseup", () => drawing = false);
+
+canvas.addEventListener("mousemove", e => {
+  if(!drawing || !penMode) return;
+
+  ctx.lineCap = "round";
+  if(tool === "pen"){
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = penColor;
+
+    ctx.lineWidth = 3;
+  } else {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineWidth = 20;
+  }
+
+  ctx.lineTo(e.clientX, e.clientY);
+  ctx.stroke();
+});
+
+
+
+
+
+
+/* ===== MOBILE TOUCH SUPPORT ===== */
+canvas.addEventListener("touchstart", e => {
+  if(!penMode) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(t.clientX, t.clientY);
+}, {passive:false});
+
+canvas.addEventListener("touchmove", e => {
+  if(!drawing || !penMode) return;
+  e.preventDefault();
+  const t = e.touches[0];
+
+  ctx.lineCap = "round";
+  if(tool === "pen"){
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = 3;
+  } else {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineWidth = 20;
+  }
+
+  ctx.lineTo(t.clientX, t.clientY);
+  ctx.stroke();
+}, {passive:false});
+
+window.addEventListener("touchend", () => drawing = false);
+
+
+
+
+
+
+/* CRITICAL FIX — Allow mouse wheel slide change */
+canvas.addEventListener("wheel", e => {
+  canvas.style.pointerEvents = "none";
+  setTimeout(() => canvas.style.pointerEvents = "auto", 50);
+});
+
+function clearCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  disablePen();   // auto disable pen after clear
+}
+
+
 
 </script>
 
