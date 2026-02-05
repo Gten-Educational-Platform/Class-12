@@ -184,7 +184,10 @@ button:hover{opacity:.9}
 #whiteboardCanvas{
   width:100%;
   height:calc(100% - 40px);
+  touch-action: none;
+  display:block;
 }
+
 
 /* PERIODIC TABLE WINDOW */
 
@@ -911,9 +914,12 @@ canvas.addEventListener("touchmove", e => {
 
 
 function resizeWB(){
-  wbCanvas.width = wbCanvas.clientWidth;
-  wbCanvas.height = wbCanvas.clientHeight;
+  const rect = wbCanvas.getBoundingClientRect();
+  wbCanvas.width  = rect.width * window.devicePixelRatio;
+  wbCanvas.height = rect.height * window.devicePixelRatio;
+  wbCtx.setTransform(window.devicePixelRatio,0,0,window.devicePixelRatio,0,0);
 }
+
 window.addEventListener("resize", resizeWB);
 
 function openWhiteboard(){
@@ -961,27 +967,30 @@ window.addEventListener("mouseup", () => wbDrawing = false);
 
 /* ===== WHITEBOARD TOUCH SUPPORT ===== */
 
+/* ===== WHITEBOARD TOUCH DRAW FIX ===== */
+
+function getTouchPos(canvas, e){
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.touches[0];
+  return {
+    x: touch.clientX - rect.left,
+    y: touch.clientY - rect.top
+  };
+}
+
 wbCanvas.addEventListener("touchstart", e => {
   e.preventDefault();
   wbDrawing = true;
-
-  const t = e.touches[0];
-  const rect = wbCanvas.getBoundingClientRect();
-
-  wbLastX = t.clientX - rect.left;
-  wbLastY = t.clientY - rect.top;
-}, {passive:false});
-
+  const pos = getTouchPos(wbCanvas, e);
+  wbLastX = pos.x;
+  wbLastY = pos.y;
+});
 
 wbCanvas.addEventListener("touchmove", e => {
   if(!wbDrawing) return;
   e.preventDefault();
 
-  const t = e.touches[0];
-  const rect = wbCanvas.getBoundingClientRect();
-
-  const x = t.clientX - rect.left;
-  const y = t.clientY - rect.top;
+  const pos = getTouchPos(wbCanvas, e);
 
   wbCtx.lineCap = "round";
   wbCtx.lineJoin = "round";
@@ -997,15 +1006,15 @@ wbCanvas.addEventListener("touchmove", e => {
 
   wbCtx.beginPath();
   wbCtx.moveTo(wbLastX, wbLastY);
-  wbCtx.lineTo(x, y);
+  wbCtx.lineTo(pos.x, pos.y);
   wbCtx.stroke();
 
-  wbLastX = x;
-  wbLastY = y;
-}, {passive:false});
+  wbLastX = pos.x;
+  wbLastY = pos.y;
+});
 
+wbCanvas.addEventListener("touchend", () => wbDrawing = false);
 
-window.addEventListener("touchend", () => wbDrawing = false);
 
 
 
