@@ -251,6 +251,58 @@ button:hover{opacity:.9}
 }
 
 
+
+#calcWindow{
+  position:fixed;
+  width:360px;
+  height:320px;
+  top:90px;
+  left:90px;
+  background:#fff;
+  border-radius:14px;
+  z-index:4000;
+  display:none;
+  box-shadow:0 0 30px rgba(0,0,0,0.7);
+  overflow:hidden;
+  resize:both;
+  min-width:340px;
+  min-height:480px;
+}
+
+
+#calcHeader{
+  height:38px;
+  background:#0ea5e9;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  font-weight:600;
+  cursor:move;
+}
+
+#calcHeader span{
+  cursor:pointer;
+  font-size:18px;
+}
+
+#calcWindow iframe{
+  width:100%;
+  height:calc(100% - 38px);
+  border:none;
+}
+
+@media(max-width:480px){
+  #calcWindow{
+    width:95vw;
+    height:80vh;
+    left:2.5vw;
+    top:10vh;
+  }
+}
+
+
 </style>
 </head>
 
@@ -420,6 +472,10 @@ button:hover{opacity:.9}
 
 <button class="float-btn ptable-btn" style="left:10px; top:260px; background:#a855f7"
         onclick="openFormula('math')">📐</button>
+<button id="calcBtn" class="float-btn ptable-btn"
+        style="left:10px; top:310px; background:#0ea5e9"
+        onclick="openCalculator()">🧮</button>
+
 
 
 
@@ -473,6 +529,15 @@ button:hover{opacity:.9}
 </div>
 
 
+<div id="calcWindow" class="drag-box">
+  <div id="calcHeader" onmousedown="dragStart(event)" ontouchstart="dragStart(event)">
+    🧮 Calculator
+    <span onclick="closeCalculator()">✖</span>
+  </div>
+  <iframe id="calcFrame"></iframe>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 emailjs.init("5Hb6w86d9jhSLBa9y");
@@ -503,6 +568,65 @@ function sendOTP(){
     emailMsg.textContent = "Failed to send OTP";
   });
 }
+
+
+
+
+
+
+let dragItem = null;
+let offsetX = 0;
+let offsetY = 0;
+
+function dragStart(e){
+  dragItem = document.getElementById("calcWindow");
+
+  let rect = dragItem.getBoundingClientRect();
+
+  if(e.touches){
+    offsetX = e.touches[0].clientX - rect.left;
+    offsetY = e.touches[0].clientY - rect.top;
+  } else {
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+  }
+
+  document.addEventListener("mousemove", dragging);
+  document.addEventListener("mouseup", dragEnd);
+  document.addEventListener("touchmove", dragging, {passive:false});
+  document.addEventListener("touchend", dragEnd);
+}
+
+function dragging(e){
+  if(!dragItem) return;
+  e.preventDefault();
+
+  let x,y;
+
+  if(e.touches){
+    x = e.touches[0].clientX;
+    y = e.touches[0].clientY;
+  } else {
+    x = e.clientX;
+    y = e.clientY;
+  }
+
+  dragItem.style.left = (x - offsetX) + "px";
+  dragItem.style.top  = (y - offsetY) + "px";
+}
+
+function dragEnd(){
+  dragItem = null;
+  document.removeEventListener("mousemove", dragging);
+  document.removeEventListener("mouseup", dragEnd);
+  document.removeEventListener("touchmove", dragging);
+  document.removeEventListener("touchend", dragEnd);
+}
+
+
+
+
+
 
 
 
@@ -650,17 +774,13 @@ function changePenSize(delta){
 
 
 /* ===== MOUSE MOVE SUPPORT ===== */
-
-
 canvas.addEventListener("mousedown", e => {
   if(!penMode) return;
   drawing = true;
   lastX = e.clientX;
   lastY = e.clientY;
-
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
 });
+
 
 canvas.addEventListener("mousemove", e => {
   if(!drawing || !penMode) return;
@@ -671,43 +791,35 @@ canvas.addEventListener("mousemove", e => {
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-if(tool === "pen"){
-  ctx.globalCompositeOperation = "source-over";
-  ctx.strokeStyle = penColor;
-  ctx.lineWidth = penSize;   // ✅ FIX
-}
-
-  else {
+  if(tool === "pen"){
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
+    ctx.shadowBlur = 0.4;   // ⭐ micro smooth edge
+    ctx.shadowColor = penColor;
+  } else {
     ctx.globalCompositeOperation = "destination-out";
-	
-	
-	
-	
-	
-	
-    ctx.lineWidth = 20;
-	
-	
+    ctx.lineWidth = eraserSize;
   }
 
-  const midX = (lastX + x) / 2;
-  const midY = (lastY + y) / 2;
-
-  ctx.quadraticCurveTo(lastX, lastY, midX, midY);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(x, y);
   ctx.stroke();
 
   lastX = x;
   lastY = y;
 });
 
+
+
+
+
 window.addEventListener("mouseup", () => {
-  if(drawing){
-    ctx.lineTo(lastX, lastY);
-    ctx.stroke();
-    ctx.closePath();
-  }
   drawing = false;
+  ctx.beginPath();   // 🔥 resets drawing path (VERY IMPORTANT)
 });
+
 
 
 
@@ -750,55 +862,46 @@ document.addEventListener("touchstart", handleTripleTap);
 canvas.addEventListener("touchstart", e => {
   if(!penMode) return;
   e.preventDefault();
+
   drawing = true;
   const t = e.touches[0];
   lastTX = t.clientX;
   lastTY = t.clientY;
-
-  ctx.beginPath();
-  ctx.moveTo(lastTX, lastTY);
 }, {passive:false});
+
+
 
 canvas.addEventListener("touchmove", e => {
   if(!drawing || !penMode) return;
   e.preventDefault();
-  const t = e.touches[0];
 
+  const t = e.touches[0];
   const x = t.clientX;
   const y = t.clientY;
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-if(tool === "pen"){
-  ctx.globalCompositeOperation = "source-over";
-  ctx.strokeStyle = penColor;
-  ctx.lineWidth = penSize;   // ✅ FIX
-}
-
-  else {
+  if(tool === "pen"){
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
+    ctx.shadowBlur = 0.4;
+    ctx.shadowColor = penColor;
+  } else {
     ctx.globalCompositeOperation = "destination-out";
-    ctx.lineWidth = 20;
+    ctx.lineWidth = eraserSize;
   }
 
-  const midX = (lastTX + x) / 2;
-  const midY = (lastTY + y) / 2;
-
-  ctx.quadraticCurveTo(lastTX, lastTY, midX, midY);
+  ctx.beginPath();
+  ctx.moveTo(lastTX, lastTY);
+  ctx.lineTo(x, y);
   ctx.stroke();
 
   lastTX = x;
   lastTY = y;
 }, {passive:false});
 
-window.addEventListener("touchend", () => {
-  if(drawing){
-    ctx.lineTo(lastTX, lastTY);
-    ctx.stroke();
-    ctx.closePath();
-  }
-  drawing = false;
-});
 
 
 
@@ -930,6 +1033,18 @@ function openFormula(type){
     frame.src = "https://byjus.com/maths/formulas/";
 }
 
+
+
+
+function openCalculator(){
+  document.getElementById("calcWindow").style.display = "block";
+  document.getElementById("calcFrame").src = "https://www.desmos.com/scientific";
+}
+
+function closeCalculator(){
+  document.getElementById("calcWindow").style.display = "none";
+  document.getElementById("calcFrame").src = "";
+}
 
 
 
