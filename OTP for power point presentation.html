@@ -928,6 +928,9 @@ function closeWhiteboard(){
 /* whiteboard drawing */
 
 let wbDrawing = false;
+let wbLastX = 0;
+let wbLastY = 0;
+
 
 wbCanvas.addEventListener("mousedown", e => {
   wbDrawing = true;
@@ -956,6 +959,53 @@ wbCanvas.addEventListener("mousemove", e => {
 
 window.addEventListener("mouseup", () => wbDrawing = false);
 
+/* ===== WHITEBOARD TOUCH SUPPORT ===== */
+
+wbCanvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  wbDrawing = true;
+
+  const t = e.touches[0];
+  const rect = wbCanvas.getBoundingClientRect();
+
+  wbLastX = t.clientX - rect.left;
+  wbLastY = t.clientY - rect.top;
+}, {passive:false});
+
+
+wbCanvas.addEventListener("touchmove", e => {
+  if(!wbDrawing) return;
+  e.preventDefault();
+
+  const t = e.touches[0];
+  const rect = wbCanvas.getBoundingClientRect();
+
+  const x = t.clientX - rect.left;
+  const y = t.clientY - rect.top;
+
+  wbCtx.lineCap = "round";
+  wbCtx.lineJoin = "round";
+
+  if(tool === "pen"){
+    wbCtx.globalCompositeOperation = "source-over";
+    wbCtx.strokeStyle = penColor;
+    wbCtx.lineWidth = penSize;
+  } else {
+    wbCtx.globalCompositeOperation = "destination-out";
+    wbCtx.lineWidth = 20;
+  }
+
+  wbCtx.beginPath();
+  wbCtx.moveTo(wbLastX, wbLastY);
+  wbCtx.lineTo(x, y);
+  wbCtx.stroke();
+
+  wbLastX = x;
+  wbLastY = y;
+}, {passive:false});
+
+
+window.addEventListener("touchend", () => wbDrawing = false);
 
 
 
