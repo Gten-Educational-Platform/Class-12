@@ -111,6 +111,146 @@ button:hover{opacity:.9}
 
 
 
+
+#plusBtn{top:210px;right:70px}
+#minusBtn{top:260px;right:70px}
+
+
+
+#sizeLabel{
+  position:fixed;
+  top:218px;
+  right:108px;
+  color:#fff;
+  font-size:13px;
+  font-weight:600;
+  z-index:1000;
+  pointer-events:none;
+  text-shadow:0 0 4px rgba(0,0,0,0.9);
+}
+
+
+
+
+
+#timerBox{
+  position:fixed;
+  top:10px;
+  left:10px;
+  padding:6px 12px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+  border-radius:8px;
+  z-index:1000;
+  letter-spacing:1px;
+  box-shadow:0 0 6px rgba(0,0,0,0.6);
+}
+
+
+
+#whiteboardWindow{
+  position:fixed;
+  top:10px;
+  bottom:40px;
+  left:10%;
+  right:10%;
+  background:#fff;
+  border-radius:12px;
+  z-index:2000;
+  display:none;
+  box-shadow:0 0 30px rgba(0,0,0,0.7);
+}
+
+
+#whiteboardHeader{
+  height:40px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  border-radius:12px 12px 0 0;
+  font-size:15px;
+}
+
+#whiteboardHeader span{
+  cursor:pointer;
+  font-size:18px;
+}
+
+#whiteboardCanvas{
+  width:100%;
+  height:calc(100% - 40px);
+}
+
+/* PERIODIC TABLE WINDOW */
+
+#ptableWindow{
+  position:fixed;
+  inset:20px;
+  background:#fff;
+  border-radius:14px;
+  z-index:3000;
+  display:none;
+  box-shadow:0 0 35px rgba(0,0,0,0.8);
+  overflow:hidden;
+}
+
+#ptableHeader{
+  height:42px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  font-size:15px;
+  font-weight:600;
+}
+
+#ptableHeader span{
+  cursor:pointer;
+  font-size:18px;
+}
+
+#ptableWindow iframe{
+  width:100%;
+  height:calc(100% - 42px);
+  border:none;
+}
+
+/* PERIODIC TABLE BUTTON STYLE */
+
+.ptable-btn{
+  background:linear-gradient(135deg,#f97316,#ea580c);
+  box-shadow:0 0 12px rgba(249,115,22,.8);
+  font-size:19px;
+}
+
+
+/* FORMULA WINDOW */
+
+#formulaWindow{
+  position:fixed;
+  inset:20px;
+  background:#fff;
+  border-radius:14px;
+  z-index:3500;
+  display:none;
+  box-shadow:0 0 35px rgba(0,0,0,0.85);
+  overflow:hidden;
+}
+
+#formulaWindow iframe{
+  width:100%;
+  height:calc(100% - 42px);
+  border:none;
+}
+
+
 </style>
 </head>
 
@@ -136,6 +276,9 @@ button:hover{opacity:.9}
     </div>
   </div>
 </div>
+
+
+
 
 <!-- MENU -->
 <div id="menuScreen">
@@ -265,6 +408,26 @@ button:hover{opacity:.9}
   <button id="penBtn" class="float-btn" onclick="setTool('pen')">✏</button>
   <button id="eraserBtn" class="float-btn" onclick="setTool('eraser')">🧽</button>
   <button id="clearBtn" class="float-btn" onclick="clearCanvas()">🗑</button>
+ <button id="plusBtn" class="float-btn icon-btn" onclick="changePenSize(1)">➕</button>
+<button id="minusBtn" class="float-btn icon-btn" onclick="changePenSize(-1)">➖</button>
+<button id="whiteboardBtn" class="float-btn" style="left:10px; top:60px;" onclick="openWhiteboard()">🧾</button>
+<button id="ptableBtn" class="float-btn ptable-btn" style="left:10px; top:110px;" onclick="openPeriodic()">⚛</button>
+<button class="float-btn ptable-btn" style="left:10px; top:160px; background:#22c55e"
+        onclick="openFormula('chem')">🧪</button>
+
+<button class="float-btn ptable-btn" style="left:10px; top:210px; background:#3b82f6"
+        onclick="openFormula('phy')">⚛</button>
+
+<button class="float-btn ptable-btn" style="left:10px; top:260px; background:#a855f7"
+        onclick="openFormula('math')">📐</button>
+
+
+
+<div id="timerBox">00:00:00</div>
+
+
+<div id="sizeLabel">3</div>
+
   <div id="colorTray">
   <span style="background:red" onclick="setColor('red')"></span>
   <span style="background:blue" onclick="setColor('blue')"></span>
@@ -281,6 +444,32 @@ button:hover{opacity:.9}
   <canvas id="drawCanvas"></canvas>
 
   <iframe id="mainFrame" allowfullscreen></iframe>
+</div>
+
+
+<div id="whiteboardWindow">
+  <div id="whiteboardHeader">
+    Whiteboard
+    <span onclick="closeWhiteboard()">✖</span>
+  </div>
+  <canvas id="whiteboardCanvas"></canvas>
+</div>
+
+<div id="ptableWindow">
+  <div id="ptableHeader">
+    Periodic Table
+    <span onclick="closePeriodic()">✖</span>
+  </div>
+  <iframe src="https://ptable.com/#Properties" frameborder="0"></iframe>
+</div>
+
+
+<div id="formulaWindow">
+  <div id="ptableHeader">
+    Formula Sheet
+    <span onclick="closeFormula()">✖</span>
+  </div>
+  <iframe id="formulaFrame"></iframe>
 </div>
 
 
@@ -374,12 +563,26 @@ function otpUiFeedback(){
   
 /* ===== DRAW TOOL ===== */
 const canvas = document.getElementById("drawCanvas");
+const whiteboardWindow = document.getElementById("whiteboardWindow");
+const wbCanvas = document.getElementById("whiteboardCanvas");
+const wbCtx = wbCanvas.getContext("2d");
+
+let lastX = 0, lastY = 0;
+let lastTX = 0, lastTY = 0;
+
+
 const ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = "high";
+
 
 let drawing = false;
 let tool = "pen";
 let penMode = false;
 let penColor = "red";
+let penSize = 3;
+let eraserSize = 20;
+
 
 function setColor(c){
   penColor = c;
@@ -433,42 +636,110 @@ function disablePen(){
 
 
 
+function changePenSize(delta){
+  penSize += delta;
+
+  if(penSize < 1) penSize = 1;
+  if(penSize > 20) penSize = 20;
+
+  document.getElementById("sizeLabel").innerText = penSize;
+  enablePen();
+}
 
 
 
 
-
-
-
-
+/* ===== MOUSE MOVE SUPPORT ===== */
 
 
 canvas.addEventListener("mousedown", e => {
   if(!penMode) return;
   drawing = true;
-  ctx.beginPath();
-  ctx.moveTo(e.clientX, e.clientY);
-});
+  lastX = e.clientX;
+  lastY = e.clientY;
 
-window.addEventListener("mouseup", () => drawing = false);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+});
 
 canvas.addEventListener("mousemove", e => {
   if(!drawing || !penMode) return;
 
-  ctx.lineCap = "round";
-  if(tool === "pen"){
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = penColor;
+  const x = e.clientX;
+  const y = e.clientY;
 
-    ctx.lineWidth = 3;
-  } else {
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+if(tool === "pen"){
+  ctx.globalCompositeOperation = "source-over";
+  ctx.strokeStyle = penColor;
+  ctx.lineWidth = penSize;   // ✅ FIX
+}
+
+  else {
     ctx.globalCompositeOperation = "destination-out";
+	
+	
+	
+	
+	
+	
     ctx.lineWidth = 20;
+	
+	
   }
 
-  ctx.lineTo(e.clientX, e.clientY);
+  const midX = (lastX + x) / 2;
+  const midY = (lastY + y) / 2;
+
+  ctx.quadraticCurveTo(lastX, lastY, midX, midY);
   ctx.stroke();
+
+  lastX = x;
+  lastY = y;
 });
+
+window.addEventListener("mouseup", () => {
+  if(drawing){
+    ctx.lineTo(lastX, lastY);
+    ctx.stroke();
+    ctx.closePath();
+  }
+  drawing = false;
+});
+
+
+
+
+
+
+/* ===== TRIPLE CLICK / TAP TO DISABLE PEN ===== */
+
+let tapCount = 0;
+let tapTimer = null;
+
+function handleTripleTap(){
+  tapCount++;
+
+  if(tapCount === 1){
+    tapTimer = setTimeout(() => tapCount = 0, 500); // reset after 500ms
+  }
+
+  if(tapCount === 3){
+    disablePen();
+    tapCount = 0;
+    clearTimeout(tapTimer);
+  }
+}
+
+/* Desktop triple click */
+document.addEventListener("click", handleTripleTap);
+
+/* Mobile triple tap */
+document.addEventListener("touchstart", handleTripleTap);
+
+
 
 
 
@@ -479,10 +750,13 @@ canvas.addEventListener("mousemove", e => {
 canvas.addEventListener("touchstart", e => {
   if(!penMode) return;
   e.preventDefault();
-  const t = e.touches[0];
   drawing = true;
+  const t = e.touches[0];
+  lastTX = t.clientX;
+  lastTY = t.clientY;
+
   ctx.beginPath();
-  ctx.moveTo(t.clientX, t.clientY);
+  ctx.moveTo(lastTX, lastTY);
 }, {passive:false});
 
 canvas.addEventListener("touchmove", e => {
@@ -490,23 +764,94 @@ canvas.addEventListener("touchmove", e => {
   e.preventDefault();
   const t = e.touches[0];
 
+  const x = t.clientX;
+  const y = t.clientY;
+
   ctx.lineCap = "round";
-  if(tool === "pen"){
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = penColor;
-    ctx.lineWidth = 3;
-  } else {
+  ctx.lineJoin = "round";
+
+if(tool === "pen"){
+  ctx.globalCompositeOperation = "source-over";
+  ctx.strokeStyle = penColor;
+  ctx.lineWidth = penSize;   // ✅ FIX
+}
+
+  else {
     ctx.globalCompositeOperation = "destination-out";
     ctx.lineWidth = 20;
   }
 
-  ctx.lineTo(t.clientX, t.clientY);
+  const midX = (lastTX + x) / 2;
+  const midY = (lastTY + y) / 2;
+
+  ctx.quadraticCurveTo(lastTX, lastTY, midX, midY);
   ctx.stroke();
+
+  lastTX = x;
+  lastTY = y;
 }, {passive:false});
 
-window.addEventListener("touchend", () => drawing = false);
+window.addEventListener("touchend", () => {
+  if(drawing){
+    ctx.lineTo(lastTX, lastTY);
+    ctx.stroke();
+    ctx.closePath();
+  }
+  drawing = false;
+});
 
 
+
+
+/* ===== WHITEBOARD ===== */
+
+
+
+function resizeWB(){
+  wbCanvas.width = wbCanvas.clientWidth;
+  wbCanvas.height = wbCanvas.clientHeight;
+}
+window.addEventListener("resize", resizeWB);
+
+function openWhiteboard(){
+  whiteboardWindow.style.display = "block";
+  resizeWB();
+}
+
+function closeWhiteboard(){
+  whiteboardWindow.style.display = "none";
+}
+
+/* whiteboard drawing */
+
+let wbDrawing = false;
+
+wbCanvas.addEventListener("mousedown", e => {
+  wbDrawing = true;
+  wbCtx.beginPath();
+  wbCtx.moveTo(e.offsetX, e.offsetY);
+});
+
+wbCanvas.addEventListener("mousemove", e => {
+  if(!wbDrawing) return;
+
+  wbCtx.lineCap = "round";
+  wbCtx.lineJoin = "round";
+
+  if(tool === "pen"){
+    wbCtx.globalCompositeOperation = "source-over";
+    wbCtx.strokeStyle = penColor;
+    wbCtx.lineWidth = penSize;
+  } else {
+    wbCtx.globalCompositeOperation = "destination-out";
+    wbCtx.lineWidth = 20;
+  }
+
+  wbCtx.lineTo(e.offsetX, e.offsetY);
+  wbCtx.stroke();
+});
+
+window.addEventListener("mouseup", () => wbDrawing = false);
 
 
 
@@ -518,13 +863,78 @@ canvas.addEventListener("wheel", e => {
 });
 
 function clearCanvas(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // clear PPT draw canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // clear whiteboard canvas
+  wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+
   disablePen();   // auto disable pen after clear
 }
 
 
 
+
+
+
+/* ===== TIMER ===== */
+
+
+
+let seconds = 0;
+
+function startTimer(){
+  setInterval(() => {
+    seconds++;
+
+    let h = Math.floor(seconds / 3600);
+    let m = Math.floor((seconds % 3600) / 60);
+    let s = seconds % 60;
+
+    timerBox.innerText =
+      String(h).padStart(2,'0') + ":" +
+      String(m).padStart(2,'0') + ":" +
+      String(s).padStart(2,'0');
+  }, 1000);
+}
+
+startTimer();
+
+
+
+
+
+function openPeriodic(){
+  document.getElementById("ptableWindow").style.display = "block";
+}
+
+function closePeriodic(){
+  document.getElementById("ptableWindow").style.display = "none";
+}
+
+function closeFormula(){
+  document.getElementById("formulaWindow").style.display = "none";
+  document.getElementById("formulaFrame").src = "";
+}
+
+
+function openFormula(type){
+  const frame = document.getElementById("formulaFrame");
+  document.getElementById("formulaWindow").style.display = "block";
+
+  if(type === "chem")
+    frame.src = "https://www.g10educationalplatformindia.co.in/";
+  else if(type === "phy")
+    frame.src = "https://byjus.com/physics/formulas/";
+  else
+    frame.src = "https://byjus.com/maths/formulas/";
+}
+
+
+
+
 </script>
+
 
 </body>
 </html>
