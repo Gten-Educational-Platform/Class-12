@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Physics formula & Calculator</title>
+
+<link rel="icon" href="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png">
+
+<!-- MathJax -->
+<script>
+window.MathJax = {
+  tex: {
+    packages: {'[+]': ['ams']},
+    inlineMath: [['\\(','\\)'],['$','$']],
+    displayMath: [['$$','$$'],['\\[','\\]']],
+    processEscapes:true
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+
+body{
+font-family:Segoe UI,Arial;
+padding:20px;
+background:linear-gradient(to right,#f0f4f8,#d9e2ec);
+color:#333;
+}
+
+h1{text-align:center;color:#0b5394;}
+h2,h3{color:#3c78d8;}
+
+input,button,select{
+width:100%;
+padding:8px;
+margin:6px 0;
+border-radius:5px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+background:#3c78d8;
+color:white;
+cursor:pointer;
+border:none;
+}
+button:hover{background:#2e62b4;}
+
+.container{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.section{
+flex:1 1 48%;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.inline-group{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.inline-group > div{flex:1;}
+
+.formula-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+font-size:13px;
+}
+
+.chapter-box{
+background:#f8fbff;
+border-left:4px solid #3c78d8;
+padding:10px;
+border-radius:6px;
+}
+
+.chapter-title{
+font-weight:bold;
+cursor:pointer;
+}
+
+.chapter-formulas{
+display:none;
+margin-top:8px;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.tab-btn{
+padding:8px 15px;
+border:none;
+background:#d9e6f7;
+cursor:pointer;
+border-radius:5px;
+}
+
+.tab-btn.active{
+background:#3c78d8;
+color:white;
+}
+
+.search-box{
+margin-bottom:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" width="40">
+
+<h1>Advanced Physics formula & Calculator</h1>
+
+<div class="container">
+
+<!-- ================= PHYSICS FORMULA ================= -->
+
+<div class="section">
+
+<h2>IIT-JEE Physics Formula Encyclopedia 🚀</h2>
+
+<input class="search-box" id="physicsSearch" placeholder="Search Formula" onkeyup="searchPhysicsFormula()">
+
+<div class="tabs">
+<button class="tab-btn active" onclick="openPhysicsTab(event,'mechanics')">Mechanics</button>
+<button class="tab-btn" onclick="openPhysicsTab(event,'waves')">Waves</button>
+<button class="tab-btn" onclick="openPhysicsTab(event,'electric')">Electricity</button>
+<button class="tab-btn" onclick="openPhysicsTab(event,'modern')">Modern</button>
+</div>
+
+<!-- Mechanics -->
+<div id="mechanics" class="physics-content">
+
+<div class="formula-grid">
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Kinematics</div>
+<div class="chapter-formulas">
+$$ v=u+at $$
+$$ s=ut+\frac12 at^2 $$
+$$ v^2=u^2+2as $$
+</div>
+</div>
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Newton Laws</div>
+<div class="chapter-formulas">
+$$ F=ma $$
+$$ f=\mu N $$
+$$ W=mg $$
+</div>
+</div>
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Work Energy</div>
+<div class="chapter-formulas">
+$$ KE=\frac12 mv^2 $$
+$$ PE=mgh $$
+$$ P=\frac{W}{t} $$
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- Waves -->
+<div id="waves" class="physics-content" style="display:none">
+<div class="formula-grid">
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">SHM</div>
+<div class="chapter-formulas">
+$$ a=-\omega^2 x $$
+$$ T=2\pi \sqrt{\frac{m}{k}} $$
+</div>
+</div>
+</div>
+</div>
+
+<!-- Electricity -->
+<div id="electric" class="physics-content" style="display:none">
+<div class="formula-grid">
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Current Electricity</div>
+<div class="chapter-formulas">
+$$ V=IR $$
+$$ P=VI $$
+$$ R=\rho\frac{L}{A} $$
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modern -->
+<div id="modern" class="physics-content" style="display:none">
+<div class="formula-grid">
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Photoelectric</div>
+<div class="chapter-formulas">
+$$ E=hf $$
+$$ KE=hf-\phi $$
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ================= DIMENSION ANALYSER ================= -->
+
+<div class="section">
+
+<h2>Dimensional Analyser 📐</h2>
+
+<input id="dimensionInput" placeholder="Enter Physical Quantity (force, energy, velocity etc)">
+<button onclick="calculateDimension()">Analyse</button>
+
+<div id="dimensionResult"></div>
+
+</div>
+
+<!-- ================= UNIT CONVERTER ================= -->
+
+<div class="section">
+
+<h2>5. Unit Converter</h2>
+
+<select id="conversionType" onchange="populateUnits()">
+<option value="">Select Category</option>
+<option value="mass">Mass</option>
+<option value="length">Length</option>
+<option value="volume">Volume</option>
+<option value="temperature">Temperature</option>
+</select>
+
+<div class="inline-group">
+<div><input id="fromValue" placeholder="Value"></div>
+<div><select id="fromUnit"></select></div>
+<div><select id="toUnit"></select></div>
+</div>
+
+<button onclick="convertUnits()">Convert</button>
+<div id="unitConversionResult"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function toggleFormula(el){
+const box=el.nextElementSibling;
+box.style.display=box.style.display==="block"?"none":"block";
+MathJax.typeset();
+}
+
+function openPhysicsTab(evt,tab){
+document.querySelectorAll(".physics-content").forEach(x=>x.style.display="none");
+document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
+document.getElementById(tab).style.display="block";
+evt.currentTarget.classList.add("active");
+}
+
+function searchPhysicsFormula(){
+let input=document.getElementById("physicsSearch").value.toLowerCase();
+document.querySelectorAll(".chapter-box").forEach(box=>{
+box.style.display=box.innerText.toLowerCase().includes(input)?"block":"none";
+});
+}
+
+/* ================= DIMENSION ANALYSER ================= */
+
+const dimensionMap={
+velocity:"[L T^-1]",
+acceleration:"[L T^-2]",
+force:"[M L T^-2]",
+energy:"[M L^2 T^-2]",
+power:"[M L^2 T^-3]",
+pressure:"[M L^-1 T^-2]",
+density:"[M L^-3]"
+};
+
+function calculateDimension(){
+let input=document.getElementById("dimensionInput").value.toLowerCase();
+if(dimensionMap[input]){
+dimensionResult.innerHTML="Dimensional Formula = $$"+dimensionMap[input]+"$$";
+MathJax.typeset();
+}else{
+dimensionResult.innerHTML="Not Found";
+}
+}
+
+/* ================= UNIT CONVERTER ================= */
+
+const unitMap={
+mass:{g:1,kg:1000},
+length:{m:1,cm:0.01},
+volume:{L:1,mL:0.001},
+temperature:{C:"C",K:"K"}
+};
+
+function populateUnits(){
+let type=conversionType.value;
+fromUnit.innerHTML="";
+toUnit.innerHTML="";
+if(!unitMap[type]) return;
+Object.keys(unitMap[type]).forEach(u=>{
+fromUnit.add(new Option(u,u));
+toUnit.add(new Option(u,u));
+});
+}
+
+function convertUnits(){
+let type=conversionType.value;
+let val=parseFloat(fromValue.value);
+let from=fromUnit.value;
+let to=toUnit.value;
+
+if(type==="temperature"){
+let r=from==="C"?val+273.15:val-273.15;
+unitConversionResult.innerHTML="Converted="+r.toFixed(3);
+return;
+}
+
+let base=val*unitMap[type][from];
+let res=base/unitMap[type][to];
+unitConversionResult.innerHTML="Converted="+res.toExponential(4);
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Chemistry formula & Calculator</title>
+<link rel="icon" href="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" type="image/png">
+ 
+
+<!-- MathJax Configuration -->
+<script>
+window.MathJax = {
+  tex: {
+    packages: {'[+]': ['ams']},
+    inlineMath: [['\\(','\\)'], ['$', '$']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+ <style>
+ 
+ .formula-grid{
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:10px;
+  font-size:13px;
+}
+
+.chapter-box{
+  background:#f8fbff;
+  border-left:4px solid #3c78d8;
+  padding:10px;
+  border-radius:6px;
+}
+
+ 
+ 
+ 
+ 
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #f0f4f8, #d9e2ec);
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #0b5394;
+    }
+    h2, h3 {
+      color: #3c78d8;
+    }
+    input, button, select {
+      font-size: 1rem;
+      padding: 8px;
+      margin: 6px 0;
+      display: block;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #3c78d8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2e62b4;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .section {
+      flex: 1 1 48%;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #result, #conversionResult, #equivalentResult, #charges, #nfactorList {
+      margin-top: 10px;
+      background-color: #eef5fc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .inline-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .inline-group > div {
+      flex: 1;
+    }
+	
+	<!-- ADD THIS CSS BELOW YOUR EXISTING STYLE -->
+
+<style>
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.tab-btn{
+  padding:8px 15px;
+  border:none;
+  background:#d9e6f7;
+  cursor:pointer;
+  border-radius:5px;
+}
+
+.tab-btn.active{
+  background:#3c78d8;
+  color:white;
+}
+
+.search-box{
+  width:100%;
+  padding:8px;
+  margin-bottom:15px;
+  border-radius:5px;
+  border:1px solid #ccc;
+}
+
+.formula-content{
+  display:none;
+}
+
+.chapter-title{
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.chapter-formulas{
+  display:none;
+  margin-top:8px;
+}
+
+</style>
+
+	
+	
+  </style>
+</head>
+<body>
+<div style="text-align: left;">
+  <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="Logo" style="max-width: 30px; height: auto; margin-bottom: 4px;">
+</div>
+  <h1>Advanced Chemistry Calculator ⚗️</h1>
+  <div class="container">
+    <div class="section">
+	<h2>IIT-JEE Chemistry Formula Encyclopedia</h2>
+
+<input class="search-box" type="text" id="formulaSearch" placeholder="🔍 Search Formula..." onkeyup="searchFormula()">
+
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab('physical')">Physical</button>
+<button class="tab-btn" onclick="openTab('organic')">Organic</button>
+<button class="tab-btn" onclick="openTab('inorganic')">Inorganic</button>
+</div>
+
+<!-- PHYSICAL CHEMISTRY -->
+<div id="physical" class="formula-content" style="display:block">
+
+<div class="formula-grid">
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Mole Concept</div>
+<div class="chapter-formulas">
+$$ n = \frac{w}{M} $$
+$$ N = nN_A $$
+$$ PV = nRT $$
+$$ d = \frac{PM}{RT} $$
+</div>
+</div>
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Thermodynamics</div>
+<div class="chapter-formulas">
+$$ \Delta U = q + w $$
+$$ w = -P\Delta V $$
+$$ \Delta G = \Delta H - T\Delta S $$
+</div>
+</div>
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Electrochemistry</div>
+<div class="chapter-formulas">
+$$ E_{cell}=E^\circ-\frac{0.059}{n}\log Q $$
+$$ \Delta G^\circ = -nFE^\circ $$
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- ORGANIC CHEMISTRY -->
+<div id="organic" class="formula-content">
+
+<div class="formula-grid">
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">GOC</div>
+<div class="chapter-formulas">
+Inductive Effect : $$ I \rightarrow $$
+Resonance Energy : $$ E_r = E_{actual} - E_{resonance} $$
+</div>
+</div>
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Hydrocarbons</div>
+<div class="chapter-formulas">
+Alkene General Formula : $$ C_nH_{2n} $$
+Alkyne General Formula : $$ C_nH_{2n-2} $$
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- INORGANIC CHEMISTRY -->
+<div id="inorganic" class="formula-content">
+
+<div class="formula-grid">
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Atomic Structure</div>
+<div class="chapter-formulas">
+$$ E_n = -\frac{13.6}{n^2} $$
+$$ \lambda = \frac{h}{mv} $$
+</div>
+</div>
+
+<div class="chapter-box">
+<div class="chapter-title" onclick="toggleFormula(this)">Chemical Bonding</div>
+<div class="chapter-formulas">
+Formal Charge :
+$$ FC = V - L - \frac{B}{2} $$
+</div>
+</div>
+
+</div>
+</div>
+
+
+
+	
+	
+      <h2>2. Molar Mass Calculator</h2>
+      <input type="text" id="formula" placeholder="Enter formula (e.g., CuSO4.5H2O, K4[Fe(CN)6])">
+      <button onclick="calculateMolarMass()">Calculate</button>
+      <div id="result"></div>
+      <div id="charges"></div>
+      <div id="nfactorList"></div>
+    </div>
+
+    <div class="section">
+      <h2>3. Mole Conversions</h2>
+      <div class="inline-group">
+        <div><input type="number" id="molesInput" placeholder="Moles"></div>
+        <div><input type="number" id="molarMassInput" placeholder="Molar Mass (g/mol)"></div>
+        <div><input type="number" id="volumeInput" placeholder="Volume (L @ STP)"></div>
+        <div><input type="number" id="particlesInput" placeholder="Number of Particles"></div>
+      </div>
+      <button onclick="convertMoles()">Convert</button>
+      <div id="conversionResult"></div>
+    </div>
+
+    <div class="section">
+      <h2>4. Number of Equivalents</h2>
+      <h3>Method 1: Using Charge (Coulombs)</h3>
+      <input type="number" id="chargeInput" placeholder="Charge in Coulombs">
+      <button onclick="calculateEquivalentsByCharge()">Calculate</button>
+
+      <h3>Method 2: Using Mass and n-factor</h3>
+      <input type="number" id="massInput" placeholder="Mass of substance (g)">
+      <input type="number" id="molarMassEqInput" placeholder="Molar mass (g/mol)">
+      <input type="number" id="nFactorInput" placeholder="n-factor">
+      <button onclick="calculateEquivalentsByNFactor()">Calculate</button>
+
+      <div id="equivalentResult"></div>
+    </div>
+  </div>
+<div class="section">
+  <h2>5. Unit Converter</h2>
+  <select id="conversionType" onchange="populateUnits()">
+    <option value="">-- Select Category --</option>
+    <option value="mass">Mass</option>
+    <option value="length">Length</option>
+    <option value="volume">Volume</option>
+    <option value="pressure">Pressure</option>
+    <option value="energy">Energy</option>
+    <option value="temperature">Temperature</option>
+    <option value="charge">Charge</option>
+    <option value="light">Light (Wavelength)</option>
+    <option value="mole">Mole</option>
+  </select>
+  <div class="inline-group">
+    <div><input type="number" id="fromValue" placeholder="Enter value"></div>
+    <div><select id="fromUnit"></select></div>
+    <div><select id="toUnit"></select></div>
+  </div>
+  <button onclick="convertUnits()">Convert</button>
+  <div id="unitConversionResult"></div>
+</div>
+<div class="section">
+ 
+
+  <script>
+    const periodicTable = {
+      H: { mass: 1.008, charge: [+1, -1] },
+      O: { mass: 15.999, charge: [-2] },
+      S: { mass: 32.06, charge: [+4, +6] },
+      Cu: { mass: 63.55, charge: [+1, +2] },
+      Fe: { mass: 55.85, charge: [+2, +3] },
+      K: { mass: 39.098, charge: [+1] },
+      C: { mass: 12.011, charge: [-4, +2, +4] },
+      N: { mass: 14.007, charge: [-3, +3, +5] },
+      Na: { mass: 22.990, charge: [+1] },
+      Cl: { mass: 35.45, charge: [-1, +1, +5, +7] },
+    };
+
+    const nFactorDetails = {
+  "H2SO4": {
+    n: [2, 1],
+    reactions: [
+      "H2SO4 → 2H⁺ + SO4²⁻ (n = 2)",
+      "H2SO4 → H⁺ + HSO4⁻ (n = 1)"
+    ]
+  },
+  "H3PO4": {
+    n: [3, 2, 1],
+    reactions: [
+      "H3PO4 → 3H⁺ + PO4³⁻ (n = 3)",
+      "H3PO4 → 2H⁺ + HPO4²⁻ (n = 2)",
+      "H3PO4 → H⁺ + H2PO4⁻ (n = 1)"
+    ]
+  },
+  "NaOH": {
+    n: [1],
+    reactions: ["NaOH → Na⁺ + OH⁻ (n = 1)"]
+  },
+  "Ca(OH)2": {
+    n: [2],
+    reactions: ["Ca(OH)₂ → Ca²⁺ + 2OH⁻ (n = 2)"]
+  },
+  "KMnO4": {
+    n: [5, 3, 1],
+    reactions: [
+      "Acidic: KMnO₄ → Mn²⁺ (n = 5)",
+      "Neutral: KMnO₄ → MnO₂ (n = 3)",
+      "Basic: KMnO₄ → MnO₄²⁻ (n = 1)"
+    ]
+  },
+  "Fe": {
+    n: [2, 3],
+    reactions: [
+      "Fe → Fe²⁺ + 2e⁻",
+      "Fe → Fe³⁺ + 3e⁻"
+    ]
+  },
+  "Cl2": {
+    n: [1, 2, 5],
+    reactions: [
+      "Cl₂ + 2e⁻ → 2Cl⁻ (n = 2)",
+      "Cl₂ + H₂O → Cl⁻ + HOCl (n = 1)",
+      "Cl₂ + H₂O → Cl⁻ + HClO₃ (n = 5)"
+    ]
+  },
+  "AlCl3": {
+    n: [3],
+    reactions: ["AlCl₃ → Al³⁺ + 3Cl⁻ (n = 3)"]
+  },
+  "Cr2O7": {
+    n: [6],
+    reactions: ["Cr₂O₇²⁻ → 2Cr³⁺ (n = 6)"]
+  },
+  "HNO3": {
+    n: [1, 3],
+    reactions: [
+      "HNO₃ → H⁺ + NO₃⁻ (acid reaction, n = 1)",
+      "HNO₃ → NO (redox, n = 3)"
+    ]
+  },
+  "MnO2": {
+    n: [1, 2],
+    reactions: [
+      "MnO₂ → Mn³⁺ (n = 1, mild oxidation)",
+      "MnO₂ → Mn²⁺ (n = 2, strong acid)"
+    ]
+  },
+  "Na2CO3": {
+    n: [2],
+    reactions: ["Na₂CO₃ → 2Na⁺ + CO₃²⁻ (n = 2 for base equivalents)"]
+  },
+  "Ba(OH)2": {
+    n: [2],
+    reactions: ["Ba(OH)₂ → Ba²⁺ + 2OH⁻ (n = 2)"]
+  },
+  "CH3COOH": {
+    n: [1],
+    reactions: ["CH₃COOH → CH₃COO⁻ + H⁺ (n = 1)"]
+  }
+};
+
+    function calculateMolarMass() {
+      const formula = document.getElementById('formula').value.replace(/·/g, '.');
+      const elementRegex = /([A-Z][a-z]?)(\d*)/g;
+      const groupRegex = /[\[(]([^\[\]()]+)[\])](\d*)/g;
+      const hydrateSplit = formula.split('.');
+      let totalMass = 0;
+      let breakdown = "";
+
+      hydrateSplit.forEach(part => {
+        let localFormula = part;
+        while (groupRegex.test(localFormula)) {
+          localFormula = localFormula.replace(groupRegex, (_, inner, qty) => {
+            return inner.replace(elementRegex, (m, el, count) => {
+              const n = parseInt(count || '1') * parseInt(qty || '1');
+              return el + n;
+            });
+          });
+        }
+
+        let match;
+        while ((match = elementRegex.exec(localFormula)) !== null) {
+          const el = match[1];
+          const count = parseInt(match[2] || '1');
+          const data = periodicTable[el];
+          if (!data) continue;
+          const mass = data.mass * count;
+          totalMass += mass;
+          breakdown += `${el} (${count} × ${data.mass}) = ${mass.toFixed(3)} g/mol<br>`;
+        }
+      });
+
+      document.getElementById('result').innerHTML = `<b>Total Molar Mass:</b> ${totalMass.toFixed(3)} g/mol<br><br><b>Breakdown:</b><br>${breakdown}`;
+
+      const usedElements = formula.match(/[A-Z][a-z]?/g);
+      const unique = [...new Set(usedElements)];
+      const charges = unique.map(e => {
+        const ch = periodicTable[e]?.charge;
+        return ch ? `${e}: ${ch.join(', ')}` : `${e}: ?`;
+      }).join('<br>');
+      document.getElementById('charges').innerHTML = `<b>Element Charges:</b><br>${charges}`;
+
+      const cleanedFormula = formula.replace(/\s+/g, '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '');
+      const nf = nFactorDetails[cleanedFormula];
+      if (nf) {
+        const list = nf.n.map((n, i) => `<li>n = ${n}: ${nf.reactions[i]}</li>`).join('');
+        document.getElementById('nfactorList').innerHTML = `<b>Possible n-factors & Reactions:</b><ul>${list}</ul>`;
+      } else {
+        document.getElementById('nfactorList').innerHTML = `<b>n-factor:</b> Not available`;
+      }
+    }
+
+    function convertMoles() {
+      const mol = parseFloat(document.getElementById("molesInput").value);
+      const mm = parseFloat(document.getElementById("molarMassInput").value);
+      const vol = parseFloat(document.getElementById("volumeInput").value);
+      const part = parseFloat(document.getElementById("particlesInput").value);
+      const NA = 6.022e23;
+      const result = [];
+
+      if (!isNaN(mol)) {
+        if (!isNaN(mm)) result.push(`Mass: ${(mol * mm).toFixed(3)} g`);
+        result.push(`Volume @ STP: ${(mol * 22.4).toFixed(3)} L`);
+        result.push(`Particles: ${(mol * NA).toExponential(3)}`);
+      } else if (!isNaN(part)) {
+        const m = part / NA;
+        result.push(`Moles: ${m.toExponential(3)}`);
+      } else if (!isNaN(vol)) {
+        const m = vol / 22.4;
+        result.push(`Moles: ${m.toFixed(3)}`);
+      }
+
+      document.getElementById("conversionResult").innerHTML = result.join("<br>");
+    }
+
+    function calculateEquivalentsByCharge() {
+      const q = parseFloat(document.getElementById("chargeInput").value);
+      if (!isNaN(q)) {
+        const equivalents = q / 96485;
+        document.getElementById("equivalentResult").innerHTML = `Equivalents (charge method): ${equivalents.toExponential(3)}`;
+      }
+    }
+
+    function calculateEquivalentsByNFactor() {
+      const mass = parseFloat(document.getElementById("massInput").value);
+      const mm = parseFloat(document.getElementById("molarMassEqInput").value);
+      const n = parseFloat(document.getElementById("nFactorInput").value);
+      if (!isNaN(mass) && !isNaN(mm) && !isNaN(n)) {
+        const eq = mass / (mm / n);
+        document.getElementById("equivalentResult").innerHTML += `<br>Equivalents (n-factor method): ${eq.toFixed(3)}`;
+      }
+    }
+const unitMap = {
+  mass: { g: 1, kg: 1000, mg: 0.001, lb: 453.592 },
+  length: { m: 1, cm: 0.01, mm: 0.001, km: 1000, inch: 0.0254, ft: 0.3048 },
+  volume: { L: 1, mL: 0.001, cm3: 0.001, m3: 1000 },
+  pressure: { atm: 1, Pa: 1/101325, kPa: 1/101.325, bar: 1/1.01325, torr: 1/760 },
+  energy: { J: 1, kJ: 1000, cal: 4.184, kcal: 4184, eV: 1.602e-19 },
+  temperature: { C: 'C', K: 'K', F: 'F' },
+  charge: { C: 1, mC: 0.001, μC: 1e-6 },
+  light: { nm: 1e-9, μm: 1e-6, m: 1 },
+  mole: { mol: 1, mmol: 0.001 }
+};
+
+function populateUnits() {
+  const type = document.getElementById('conversionType').value;
+  const fromSelect = document.getElementById('fromUnit');
+  const toSelect = document.getElementById('toUnit');
+  fromSelect.innerHTML = '';
+  toSelect.innerHTML = '';
+
+  if (!unitMap[type]) return;
+
+  Object.keys(unitMap[type]).forEach(u => {
+    fromSelect.add(new Option(u, u));
+    toSelect.add(new Option(u, u));
+  });
+}
+
+function convertUnits() {
+  const type = document.getElementById('conversionType').value;
+  const from = document.getElementById('fromUnit').value;
+  const to = document.getElementById('toUnit').value;
+  const value = parseFloat(document.getElementById('fromValue').value);
+
+  if (isNaN(value) || !type || !from || !to) return;
+
+  if (type === 'temperature') {
+    let result;
+    if (from === 'C') result = to === 'K' ? value + 273.15 : to === 'F' ? (value * 9/5) + 32 : value;
+    if (from === 'K') result = to === 'C' ? value - 273.15 : to === 'F' ? (value - 273.15) * 9/5 + 32 : value;
+    if (from === 'F') result = to === 'C' ? (value - 32) * 5/9 : to === 'K' ? ((value - 32) * 5/9) + 273.15 : value;
+    document.getElementById('unitConversionResult').innerHTML = `Converted: ${result.toFixed(3)} ${to}`;
+  } else {
+    const base = value * unitMap[type][from];
+    const converted = base / unitMap[type][to];
+    document.getElementById('unitConversionResult').innerHTML = `Converted: ${converted.toExponential(5)} ${to}`;
+  }
+}
+
+
+
+function toggleFormula(element){
+  const content = element.nextElementSibling;
+  content.style.display = content.style.display === "block" ? "none" : "block";
+  MathJax.typeset();
+}
+
+function openTab(tabName){
+  document.querySelectorAll(".formula-content").forEach(el=>{
+    el.style.display="none";
+  });
+
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  document.getElementById(tabName).style.display="block";
+  event.target.classList.add("active");
+}
+
+function searchFormula(){
+  const input = document.getElementById("formulaSearch").value.toLowerCase();
+  document.querySelectorAll(".chapter-box").forEach(box=>{
+    const text = box.innerText.toLowerCase();
+    box.style.display = text.includes(input) ? "block" : "none";
+  });
+}
+
+
+  </script>
+</body>
+</html>
