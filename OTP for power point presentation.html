@@ -44,7 +44,13 @@ button:hover{opacity:.9}
 .resource-row button:nth-child(3){background:#f59e0b}
 
 /* FULLSCREEN PPT */
-#frameContainer{display:none;position:fixed;inset:0;background:#000;z-index:999}
+#frameContainer{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#ffffff;
+  z-index:999
+}
 #frameContainer iframe{width:100vw;height:100vh;border:none}
 
 /* FLOAT BUTTONS */
@@ -120,15 +126,23 @@ button:hover{opacity:.9}
 
 
 
-#plusBtn{top:210px;right:70px}
-#minusBtn{top:260px;right:70px}
+#plusBtn{
+  bottom:110px;   /* Adjust if needed */
+  left:10px;
+}
+
+#minusBtn{
+  bottom:60px;    /* Adjust if needed */
+  left:10px;
+}
+
 
 
 
 #sizeLabel{
   position:fixed;
-  top:218px;
-  right:108px;
+  bottom:210px;   /* Above zoom display */
+  left:10px;
   color:#fff;
   font-size:13px;
   font-weight:600;
@@ -136,6 +150,7 @@ button:hover{opacity:.9}
   pointer-events:none;
   text-shadow:0 0 4px rgba(0,0,0,0.9);
 }
+
 
 
 
@@ -357,6 +372,11 @@ button:hover{opacity:.9}
 
     <div id="sendBox">
       <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+	  <button style="background:#22c55e"
+        onclick="window.open('https://gten-educational-platform.github.io/Class-12/bill 103.html','_blank')">
+  🧾 Invoice
+</button>
+
       <p class="msg" id="emailMsg"></p>
       <p id="otpInfo" style="display:none;color:#16a34a;font-size:14px;font-weight:600">✔ Check your mail</p>
     </div>
@@ -605,10 +625,7 @@ button:hover{opacity:.9}
     </div>
 	   </div>
 
-
-
-
-
+ 
 
     <!-- CLASS 10 -->
     <button class="acc-btn" onclick="toggleAcc(this)">Class 10</button>
@@ -927,7 +944,7 @@ button:hover{opacity:.9}
 
 
 
-      <button class="sub-btn" onclick="toggleAcc(this)">Chemistryh</button>
+      <button class="sub-btn" onclick="toggleAcc(this)">Chemistry</button>
       <div class="acc-content">
         <div class="chapter"><b>Chapter 1 Some Basic Concepts of Chemistry: </b>
           <div class="resource-row">
@@ -1019,14 +1036,14 @@ button:hover{opacity:.9}
       <div class="acc-content">
         <div class="chapter"><b>Chapter 1 Units and Measurements:  </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/16Eo5hLmyF3xu7xO2uA_zI8x2jTyhOMRH6ue1J4HIXNI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
         </div>
 		        <div class="chapter"><b>Chapter 2 Motion in a Straight Line: </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/15ICBTwH707uPzWdh9HVTEm3wgCB3gCq1D2UFMSSB4Mg/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1035,7 +1052,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 3 Motion in a Plane : </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1V7t3vSHWufJBw6t9tzYn33IxYqk6O-KIuZPc-DIjJdI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1044,7 +1061,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 4 Laws of Motion:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1_f626Y_Azi5Uj7Y8pg5v-qv0xmM_LLGKOHlXQOL__Ec/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1053,7 +1070,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 5 Work, Energy and Power :</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1h3OCmekoNplB5-UdcNuLBjazHYkDo6PE9ytRRgp5DHo/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1062,7 +1079,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 6  System of Particles and Rotational Motion :</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1QOvK5xT8rKFJNqYk_mwIcITpY2dVKC_fXWU48zXKQac/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1071,7 +1088,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 7 Gravitation:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1eaCFkfbkNZEVrzWPRtupMlVIm3KjXcM9coUKdPSMgoI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1080,7 +1097,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 8 Mechanical Properties of Solids :</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/17aWL4CpI0cmMO0w9p3B5BfpW-CRrEJ3kz47xZJkZH1c/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1089,7 +1106,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 9 Mechanical Properties of Fluids:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1JPLbUo8HPAADPfUtBru9NJEGSsLlEEcuj95a5QZcXP8/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1098,7 +1115,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 10 Thermal Properties of Matter:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/15NJj-uGt4-BBKwet9WhVEIXdi6jCCESVqwtbgaTV2jw/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1107,7 +1124,7 @@ button:hover{opacity:.9}
 	  
 	  	  		        <div class="chapter"><b>Chapter 11 Thermodynamics:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1nYcbr35IVB3ltGRsHj4Xx2bGoDwUu-k6Ix4nqeo4F-M/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1115,7 +1132,7 @@ button:hover{opacity:.9}
 		
 			  	  		        <div class="chapter"><b>Chapter 12 Kinetic Theory:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1AlQFZ7y2N8zbxaMfohH6G7bbcBt05JMbdEGzgStPTzI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1123,7 +1140,7 @@ button:hover{opacity:.9}
 		
 			  	  		        <div class="chapter"><b>Chapter 13 Oscillations:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1K9rQuGfjLNAsTiWhYFpvXW0ppwXQTkNxzEM-UZxpPnU/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1132,20 +1149,21 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 14 Waves: </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1FKhljHmn6ga7VF5Vyxxl4Fos658GCc_rXhRi6SsDhRg/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
         </div>
     </div>
 	   </div>
-	
-	
-	
-	
-	
+   
 
-    <!-- CLASS 12 -->
+
+
+
+
+
+   <!-- CLASS 12 -->
     <button class="acc-btn" onclick="toggleAcc(this)">Class 12</button>
     <div class="acc-content">
       <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
@@ -1309,14 +1327,14 @@ button:hover{opacity:.9}
       <div class="acc-content">
         <div class="chapter"><b>Chapter 1 Electric Charges and Fields:  </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1CnzBSxNaYNj7MW42OS3Hcrvd9pT_vO9epcrm_hLFr_Q/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
         </div>
 		        <div class="chapter"><b>Chapter 2 Electrostatic Potential and Capacitance: </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1pqRLjkzSkZyo0WlVGHaUolF2qjksaXC97AD4zKIJdm0/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1325,7 +1343,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 3 Current Electricity: </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1MIoifFUYJMGqXz0IRjtYT7XmZvNROJqIJ-LSLr2-pmM/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1334,7 +1352,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 4 Moving Charges and Magnetism:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1IwKtwPxVNNNnyIn0YJcM1txQTQqpCwmsOMnFiqX-RTI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1343,7 +1361,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 5 Magnetism and Matter :</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1JLqaiGomSVkjrXsjqIYso8EjnciCnVcBjuO7rvul7kk/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1352,7 +1370,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 6 Electromagnetic Induction:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1bhPnxHKpkTrwol_xRfH6j3FzvD-QHUCzhS3wMyNna2Q/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1361,7 +1379,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 7 Alternating Current:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1TwiiT65XNA-acyqksawUHazcd2XxCIoGuFvEa0S4Xlo/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1370,7 +1388,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 8 Electromagnetic Waves:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1ea3DOZmdvmq_zcJ4Y_XylhAbiC9eqMRcYGGptRs2Tqg/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1379,7 +1397,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 9 Ray Optics and Optical Instruments:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1XMA0OZd7r2H92s9Y5FFw6l9V-6aiXQljAhP2EJBWFt0/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1388,7 +1406,7 @@ button:hover{opacity:.9}
 	  
 	  		        <div class="chapter"><b>Chapter 10 Wave Optics:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1SdSJaDG8qmUNJRjIgghUT-mgrUepze8gy3n2bNTwBAw/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1397,7 +1415,7 @@ button:hover{opacity:.9}
 	  
 	  	  		        <div class="chapter"><b>Chapter 11 Dual Nature of Radiation and Matter:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1tmPNVK2iEZN_Q56sAXEhRd23O-4ZzmY8QMK-_-OINlQ/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1405,7 +1423,7 @@ button:hover{opacity:.9}
 		
 			  	  		        <div class="chapter"><b>Chapter 12 Atoms:</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1G99Bu_og0sO4R9LWfa_P-FNmohkeDBOPcehPLPTaxRI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
@@ -1414,23 +1432,22 @@ button:hover{opacity:.9}
 		
 			  	  		        <div class="chapter"><b>Chapter 13 Nuclei :</b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1jnxfLfomZMU6jioioTraW7-IqeW_jfv87NsgeMsvvhI/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
         </div>
      
 	  
-	  		        <div class="chapter"><b>Chapter 15 Semiconductor Electronics : </b>
+	  		        <div class="chapter"><b>Chapter 14 Semiconductor Electronics : </b>
           <div class="resource-row">
-            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1N6Uj0iW8gOQDQwYTlNqb8sjSb5hAu9AoZVL83p3SmKc/preview')">PPT</button>
             <button onclick="openLink('#')">Test</button>
             <button onclick="openLink('#')">Solution</button>
           </div>
         </div>
     </div>
 	   </div>
-
 
 
 
@@ -1569,7 +1586,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 1 Electric Charges & Fields:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1kwk_7kRafrgvVXk0NsZbcNM4Mg6kWTEiC7wGs3hKOYA/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1bKgrRbBnC6Tk5OvLTJtOlaFLns7tmaBf-9xE4mShNdQ/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1577,7 +1594,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 2 Electric Potential & Capacitance:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/14ZhcUUunk0LJliCt9ppq9teSbGg5j5LcD8BIZ-vId4g/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1fTtbIldUzqOD8SyRQ8o9-s3q6tww-DwRqaukJy2yQCE/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1585,7 +1602,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 3 Current Electricity:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1_QTRseWxs2o82VzFH7UQk5R2LgpJont3MjlYAmY3Wvc/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1KabWbA7VsaOy24oCb-qEARnq2K6nGXBeuRmTreJ8S3w/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1593,7 +1610,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 4 Moving Charges & Magnetism:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1i4bjMxyTl7APyOgW7VgzSJXZF1-06aFRlogtyKDiH4M/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1-4mSd51839tyw9vcITgLo6Vxjz0kFxsjbFYjNg54gPQ/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1601,7 +1618,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 5 Magnetism & Matter:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1wZRErku3vYnBbVl00NSA2dogia6IYm1b4kHKDMxjDBI/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/13fCnHX0rb0cAwa3DdORqoA9_sY9zx6tOyenSDiVIgG8/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1609,7 +1626,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 6 Electromagnetic Induction:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1J0ZjsAIxqXGKACFYR6KVCT749IoU4CpfH1J7jAgxWng/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/14NiRP6XYFMfXLe_Y-nSbLKNvwHL_cBe0_tQ7vsjTTmY/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1617,7 +1634,7 @@ button:hover{opacity:.9}
 
     <div class="chapter"><b>Chapter 7 Alternating Current: </b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1hOgKpXs_4_FcTAoibLuI3n9aMmfyD1FcYvcc2rUniXk/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1WSu677hFuNAULTJ99oHNXhlE-h6XvN4NOLy-SWclPVg/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1625,7 +1642,7 @@ button:hover{opacity:.9}
 	
     <div class="chapter"><b>Chapter 8 Electromagnetic Waves: </b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1tXveosDEj2eiBJXprT3oTCk-2rQde0QHfT2RgBmy4QY/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1zXvE3fSEt-ioeMPSMectn-T1SOc6WBKWAmcausE4cbI/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1633,7 +1650,7 @@ button:hover{opacity:.9}
 	
     <div class="chapter"><b>Chapter 9 Ray Optics & Optical Instruments:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1sWUGNb0hwaeMF8bVDM5z89nyb9ekkPRNRkKcveGZoik/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1oQTrtFTo9doaIC7_XGVOWhGPDn6fCD2ByQry5_WR-4o/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1641,7 +1658,7 @@ button:hover{opacity:.9}
 	
 	<div class="chapter"><b>Chapter 10 Wave Optics:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1VXwjJJDjWnXozN2K5xIgsqY6kEkt_na7mu2A4wQHNsk/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1FGkwlUExzQ5kATjba-V7BmUTI3IYNEtrXaup3Yc1hFc/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1649,7 +1666,7 @@ button:hover{opacity:.9}
 	
 	<div class="chapter"><b>Chapter 11 Dual Nature of Radiation & Matter: </b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1bPI7B2_pZDjoBcO09TYX2-gtjcleUBb0k2Im65KHzWM/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1UWCQvtp8Nk6a36shk6hpwDsGpbAs_chtmlT6O6k67Bo/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1657,7 +1674,7 @@ button:hover{opacity:.9}
 	
 	<div class="chapter"><b>Chapter 12 Atoms: </b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1U1m-6i8TM7kAueK8gODJnzhP_WaVIgcn9e5IhDRL61U/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/12j9k3RUGnxKo_9R1NOisNePx5MmoHd7LstjAY64Mp90/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -1665,7 +1682,15 @@ button:hover{opacity:.9}
 	
 	<div class="chapter"><b>Chapter 13 Nuclei: </b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/12wdA0Uc4dUjfmtYoM1ggbXSrGMCnV-b-7BMPj5GQ_d0/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1hi4BHAEZnq-9QEWqONacLyt759zHztYyQW7hgdd101g/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	<div class="chapter"><b>Chapter 14 Semis=conductors </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1_lwbsouX11LBSJlwdRrYIh5KrtUCezLscEDa9W-7ck8/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -2396,6 +2421,10 @@ button:hover{opacity:.9}
 <button id="calcBtn" class="float-btn ptable-btn"
         style="left:10px; top:310px; background:#0ea5e9"
         onclick="openCalculator()">🧮</button>
+<button id="clearLeftBtn" 
+        class="float-btn" 
+        style="left:10px; top:360px; background:#ef4444"
+        onclick="clearCanvas()">🗑</button>
 
 
 
@@ -2671,11 +2700,26 @@ function enablePen(){
   penBtn.classList.add("pen-active");
 }
 
+
+
+
+
+
+
+
 function disablePen(){
   penMode = false;
   canvas.style.pointerEvents = "none";
   penBtn.classList.remove("pen-active");
+
+  // 🔥 FIX: Return focus to slide iframe so Next works instantly
+  mainFrame.focus();
 }
+
+
+
+
+
 
 
 
@@ -2936,25 +2980,104 @@ wbCanvas.addEventListener("touchend", () => wbDrawing = false);
 
 
 
-/* CRITICAL FIX — Allow mouse wheel slide change */
-canvas.addEventListener("wheel", e => {
-  canvas.style.pointerEvents = "none";
-  setTimeout(() => canvas.style.pointerEvents = "auto", 50);
+
+
+
+
+
+/* ===== PERFECT SLIDE + PEN CONTROL ===== */
+
+let blockOnce = false;
+
+/* Mouse wheel */
+document.addEventListener("wheel", e => {
+  if(penMode && !blockOnce){
+    disablePen();
+    blockOnce = true;
+    return;
+  }
+  blockOnce = false;
+}, {passive:true});
+
+/* Keyboard navigation */
+document.addEventListener("keydown", e => {
+
+  const navKeys = ["ArrowRight","ArrowLeft","PageDown","PageUp"," ","Enter"];
+
+  if(!navKeys.includes(e.key)) return;
+
+  // 🔥 If long press timer already started → don't disable pen
+  if(nextHoldTimer || prevHoldTimer) return;
+
+  if(penMode){
+    disablePen();
+  }
+
 });
 
-function clearCanvas(){
-  // clear PPT draw canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // clear whiteboard canvas
-  wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
-
-  disablePen();   // auto disable pen after clear
-}
 
 
 
+/* ===== LONG PRESS NEXT = RE-ACTIVATE PEN ===== */
 
+let nextHoldTimer = null;
+let longPressTriggered = false;
+
+document.addEventListener("keydown", e => {
+
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){
+
+    if(nextHoldTimer) return;   // already running
+
+    longPressTriggered = false;
+
+    nextHoldTimer = setTimeout(() => {
+      longPressTriggered = true;
+      enablePen();   // 🔥 long press → pen ON
+    }, 600);  // 600ms = long press
+  }
+
+});
+
+/* ===== LONG PRESS PREVIOUS = CLEAR ALL (KEEP PEN ACTIVE) ===== */
+
+/* ===== LONG PRESS PREVIOUS = CLEAR ALL ===== */
+
+let prevHoldTimer = null;
+
+document.addEventListener("keydown", e => {
+
+  if(["ArrowLeft","PageUp"].includes(e.key)){
+
+    if(prevHoldTimer) return;
+
+    prevHoldTimer = setTimeout(() => {
+      clearCanvas();   // uses your working function
+    }, 600);
+
+  }
+
+});
+
+document.addEventListener("keyup", e => {
+
+  if(["ArrowLeft","PageUp"].includes(e.key)){
+    clearTimeout(prevHoldTimer);
+    prevHoldTimer = null;
+  }
+
+});
+
+
+
+document.addEventListener("keyup", e => {
+
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){
+    clearTimeout(nextHoldTimer);
+    nextHoldTimer = null;
+  }
+
+});
 
 
 /* ===== TIMER ===== */
@@ -3023,6 +3146,15 @@ function closeCalculator(){
   document.getElementById("calcFrame").src = "";
 }
 
+function clearCanvas(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+
+  enablePen();
+  canvas.style.pointerEvents = "auto";
+}
+
+
 
 
 </script>
@@ -3030,5 +3162,4 @@ function closeCalculator(){
 
 </body>
 </html>
-
 
