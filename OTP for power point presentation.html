@@ -2793,28 +2793,7 @@ window.addEventListener("mouseup", () => {
 
 /* ===== TRIPLE CLICK / TAP TO DISABLE PEN ===== */
 
-let tapCount = 0;
-let tapTimer = null;
 
-function handleTripleTap(){
-  tapCount++;
-
-  if(tapCount === 1){
-    tapTimer = setTimeout(() => tapCount = 0, 500); // reset after 500ms
-  }
-
-  if(tapCount === 3){
-    disablePen();
-    tapCount = 0;
-    clearTimeout(tapTimer);
-  }
-}
-
-/* Desktop triple click */
-document.addEventListener("click", handleTripleTap);
-
-/* Mobile triple tap */
-document.addEventListener("touchstart", handleTripleTap);
 
 
 
@@ -3162,4 +3141,5 @@ function clearCanvas(){
 
 </body>
 </html>
+
 
