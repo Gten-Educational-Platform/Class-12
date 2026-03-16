@@ -356,7 +356,9 @@ button:hover{opacity:.9}
 
 
 
-
+.float-btn:focus{
+outline:none;
+}
 
 </style>
 </head>
@@ -2521,9 +2523,6 @@ function sendOTP(){
 
 
 
-
-
-
 let dragItem = null;
 let offsetX = 0;
 let offsetY = 0;
@@ -2575,11 +2574,6 @@ function dragEnd(){
 
 
 
-
-
-
-
-
 function verifyOTP(){
   if(otp.value.trim()!==OTP?.toString()){
     otpMsg.textContent="Invalid OTP";return;
@@ -2589,18 +2583,16 @@ function verifyOTP(){
 }
 
 
-
-
-
 function openLink(url){
-  clearCanvas();   // auto clear on slide change
+  clearCanvas();
   menuScreen.style.display="none";
   frameContainer.style.display="block";
   mainFrame.src=url;
+
+  setTimeout(()=>{
+    mainFrame.focus();
+  },500);
 }
-
-
-
 
 
 
@@ -2619,8 +2611,6 @@ function toggleAcc(btn){
   siblings.forEach(d=>{if(d!==content) d.style.display="none";});
   content.style.display=(content.style.display==="block")?"none":"block";
 }
-
-
 
 
 function otpUiFeedback(){
@@ -2664,19 +2654,21 @@ function setColor(c){
 }
 
 
-
-
-
-
 function resizeCanvas(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width  = window.innerWidth * ratio;
+  canvas.height = window.innerHeight * ratio;
+
+  canvas.style.width  = window.innerWidth + "px";
+  canvas.style.height = window.innerHeight + "px";
+
+  ctx.setTransform(ratio,0,0,ratio,0,0);
 }
+
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
-
-
-
 
 
 function setTool(t){
@@ -2690,21 +2682,12 @@ function setTool(t){
 }
 
 
-
-
-
 function enablePen(){
   penMode = true;
   canvas.style.display = "block";
   canvas.style.pointerEvents = "auto";
   penBtn.classList.add("pen-active");
 }
-
-
-
-
-
-
 
 
 function disablePen(){
@@ -2715,15 +2698,6 @@ function disablePen(){
   // 🔥 FIX: Return focus to slide iframe so Next works instantly
   mainFrame.focus();
 }
-
-
-
-
-
-
-
-
-
 
 function changePenSize(delta){
   penSize += delta;
@@ -2755,21 +2729,26 @@ canvas.addEventListener("mousemove", e => {
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
 
   if(tool === "pen"){
     ctx.globalCompositeOperation = "source-over";
     ctx.strokeStyle = penColor;
     ctx.lineWidth = penSize;
-    ctx.shadowBlur = 0.4;   // ⭐ micro smooth edge
+    ctx.shadowBlur = 0.4;
     ctx.shadowColor = penColor;
   } else {
     ctx.globalCompositeOperation = "destination-out";
     ctx.lineWidth = eraserSize;
   }
 
+  const midX = (lastX + x) / 2;
+  const midY = (lastY + y) / 2;
+
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
-  ctx.lineTo(x, y);
+  ctx.quadraticCurveTo(midX, midY, x, y);
   ctx.stroke();
 
   lastX = x;
@@ -2786,20 +2765,7 @@ window.addEventListener("mouseup", () => {
 });
 
 
-
-
-
-
-
 /* ===== TRIPLE CLICK / TAP TO DISABLE PEN ===== */
-
-
-
-
-
-
-
-
 
 
 /* ===== MOBILE TOUCH SUPPORT ===== */
@@ -2982,14 +2948,21 @@ document.addEventListener("wheel", e => {
 document.addEventListener("keydown", e => {
 
   const navKeys = ["ArrowRight","ArrowLeft","PageDown","PageUp"," ","Enter"];
-
   if(!navKeys.includes(e.key)) return;
 
-  // 🔥 If long press timer already started → don't disable pen
-  if(nextHoldTimer || prevHoldTimer) return;
+  // ⭐ IMPORTANT: stop drawing immediately
+  drawing = false;
 
   if(penMode){
-    disablePen();
+
+    canvas.style.pointerEvents = "none";
+
+    mainFrame.focus();
+
+    setTimeout(()=>{
+      canvas.style.pointerEvents = "auto";
+    },30);
+
   }
 
 });
@@ -3141,5 +3114,4 @@ function clearCanvas(){
 
 </body>
 </html>
-
 
