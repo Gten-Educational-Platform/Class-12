@@ -2615,15 +2615,24 @@ function verifyOTP(){
 }
 
 
+let timerStarted = false;
+
 function openLink(url){
   clearCanvas();
   menuScreen.style.display="none";
   frameContainer.style.display="block";
   mainFrame.src=url;
 
-  setTimeout(()=>{
-    mainFrame.focus();
-  },500);
+  currentSlide = 1;
+  document.getElementById("slideInput").value = 1;
+
+  setTimeout(()=>{ mainFrame.focus(); },500);
+
+  // ✅ START TIMER ONLY ONCE
+  if(!timerStarted){
+    startTimer();
+    timerStarted = true;
+  }
 }
 
 
@@ -3069,6 +3078,23 @@ document.addEventListener("keyup", e => {
 
 
 let seconds = 0;
+let nextAlert = 30; // first alert at 1 hour (3600 sec)
+
+function beep(times = 3, gap = 400){
+  let count = 0;
+
+  const playBeep = () => {
+    if(count >= times) return;
+
+    const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+    audio.play();
+
+    count++;
+    setTimeout(playBeep, gap); // delay between beeps
+  };
+
+  playBeep();
+}
 
 function startTimer(){
   setInterval(() => {
@@ -3082,10 +3108,21 @@ function startTimer(){
       String(h).padStart(2,'0') + ":" +
       String(m).padStart(2,'0') + ":" +
       String(s).padStart(2,'0');
-  }, 1000);
+
+    // 🔔 ALERT LOGIC
+ if(seconds === nextAlert){
+
+  beep(); // 3 beeps
+
+  // 🎨 color change (permanent after first alert)
+  timerBox.style.background = "#ef4444";
+
+  // ⏱ next alerts
+  nextAlert += 900; // or 60 for testing
 }
 
-startTimer();
+  }, 1000);
+}
 
 
 
