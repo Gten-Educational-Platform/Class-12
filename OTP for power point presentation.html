@@ -2427,7 +2427,39 @@ outline:none;
         class="float-btn" 
         style="left:10px; top:360px; background:#ef4444"
         onclick="clearCanvas()">🗑</button>
+<input type="number" id="slideInput" placeholder="#"
+  style="
+    position:fixed;
+    top:460px;   /* just below color panel */
+    right:10px;
+    width:55px;
+    height:28px;
+    font-size:14px;
+    z-index:1000;
+    padding:3px;
+    border-radius:6px;
+    border:none;
+    text-align:center;
+    box-shadow:0 0 6px rgba(0,0,0,0.5);
+  ">
 
+<button onclick="goToSlide()"
+  style="
+    position:fixed;
+    top:490px;
+    right:10px;
+    width:55px;
+    height:28px;
+    font-size:13px;
+    z-index:1000;
+    border:none;
+    border-radius:6px;
+    background:#22c55e;
+    color:#fff;
+    cursor:pointer;
+  ">
+Go
+</button>
 
 
 
@@ -3106,7 +3138,16 @@ function clearCanvas(){
   canvas.style.pointerEvents = "auto";
 }
 
+function goToSlide(){
+  const slideNum = document.getElementById("slideInput").value;
 
+  if(slideNum === "") return;
+
+  let base = mainFrame.src.split('#')[0];
+
+  // 🔥 NO -1 → exact number
+  mainFrame.src = base + "#slide=" + slideNum;
+}
 
 
 </script>
