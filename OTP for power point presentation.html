@@ -3078,7 +3078,8 @@ document.addEventListener("keyup", e => {
 
 
 let seconds = 0;
-let nextAlert = 3600; // first alert at 1 hour (3600 sec)
+let nextAlert = 3600; // first alert at 1 hour
+let firstAlertDone = false;
 
 function beep(times = 3, gap = 400){
   let count = 0;
@@ -3090,14 +3091,16 @@ function beep(times = 3, gap = 400){
     audio.play();
 
     count++;
-    setTimeout(playBeep, gap); // delay between beeps
+    setTimeout(playBeep, gap);
   };
 
   playBeep();
 }
 
 function startTimer(){
+
   setInterval(() => {
+
     seconds++;
 
     let h = Math.floor(seconds / 3600);
@@ -3110,16 +3113,23 @@ function startTimer(){
       String(s).padStart(2,'0');
 
     // 🔔 ALERT LOGIC
- if(seconds === nextAlert){
+    if(seconds === nextAlert){
 
-  beep(); // 3 beeps
+      if(!firstAlertDone){
+        // 🔴 FIRST ALERT (1 hour)
+        beep(3); // 3 beeps
+        timerBox.style.background = "#ef4444"; // red
+        firstAlertDone = true;
 
-  // 🎨 color change (permanent after first alert)
-  timerBox.style.background = "#ef4444";
+      } else {
+        // 🟡 NEXT ALERTS (every 15 min)
+        beep(1); // 1 beep
+        timerBox.style.background = "#eab308"; // yellow
+      }
 
-  // ⏱ next alerts
-  nextAlert += 900; // or 60 for testing
-}
+      // ⏱ next alert after 15 min
+      nextAlert += 900;
+    }
 
   }, 1000);
 }
