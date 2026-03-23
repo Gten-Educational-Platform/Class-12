@@ -523,15 +523,8 @@ function selectOption(type){
     link = "https://payments.cashfree.com/forms/PTSM";
   }
 
-  // 🔥 UNIVERSAL FIX (PC + MOBILE)
-  if(window.innerWidth <= 768){
-  document.body.style.zoom = "200%";
-  // 📱 MOBILE → FORCE FULL WIDTH EXPERIENCE
-  window.open(link, "_self");
-} else {
-  // 💻 PC → keep same
+  // ✅ BEST METHOD (Mobile + PC)
   window.location.href = link;
-}
 }
 
 
@@ -553,6 +546,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+
 
 </script>
 
