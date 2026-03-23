@@ -105,11 +105,12 @@ input, button{
 /* INPUT */
 input{
   width:100%;
-  padding:12px;
+  padding:11px;
   margin:10px 0;
   border-radius:8px;
   border:1px solid #ccc;
-  font-size:15px;
+  font-size:16px; /* keep 16px to prevent zoom */
+  box-sizing:border-box; /* 🔥 important */
 }
 
 /* BUTTON */
@@ -318,13 +319,15 @@ button:disabled{
 .otpBoxes{
   display:flex;
   justify-content:center;
-  gap:10px;
+  gap:8px;
   margin:15px 0;
 }
 
 .otpBoxes input{
-  width:40px;
-  height:45px;
+  width:12vw;        /* 🔥 responsive */
+  max-width:40px;    /* limit on big screens */
+  height:12vw;
+  max-height:45px;
   text-align:center;
   font-size:18px;
   border:1px solid #ccc;
@@ -372,9 +375,9 @@ button:disabled{
 
   <div class="section">
     <h4>💰 Pricing</h4>
-    <p>Study Material: ₹90</p>
-    <p>Practice Test: ₹300</p>
-    <p>Combo: ₹275 (coming soon)</p>
+    <p>Study Material: ₹300</p>
+    <p>Practice Test: ₹500</p>
+    <p>Combo: ₹700</p>
   </div>
 
   <div class="section">
@@ -517,7 +520,7 @@ function selectOption(type){
     link = "https://payments.cashfree.com/forms/SMonly";
   }
   else{
-    link = "https://payments.cashfree.com/forms/PTSMXXXXXXXXXX";
+    link = "https://payments.cashfree.com/forms/PTSM";
   }
 
   // 🔥 UNIVERSAL FIX (PC + MOBILE)
