@@ -346,7 +346,7 @@ button:disabled{
     <h2>OTP Login</h2>
 
     <input type="email" id="email" placeholder="Enter your email">
-    <button onclick="sendOTP()">Send OTP</button>
+    <button id="otpBtn" onclick="sendOTP()">Send OTP</button>
 
 <div id="otpArea" style="display:none">
   <div class="otpBoxes">
@@ -375,9 +375,9 @@ button:disabled{
 
   <div class="section">
     <h4>💰 Pricing</h4>
-    <p>Study Material: ₹300</p>
-    <p>Practice Test: ₹500</p>
-    <p>Combo: ₹700</p>
+    <p>Study Material: ₹300 MRP</p>
+    <p>Practice Test: ₹500 MRP</p>
+    <p>Combo: ₹700 MRP</p>
   </div>
 
   <div class="section">
@@ -450,12 +450,32 @@ let OTP = null;
 /* SEND OTP */
 function sendOTP(){
   const email = document.getElementById("email").value;
+  const btn = document.getElementById("otpBtn");
 
   if(!email){
     msg.innerText = "Enter email first";
     return;
   }
 
+  // 🔒 Disable button instantly
+  btn.disabled = true;
+
+  let timeLeft = 120; // seconds
+  btn.innerText = "Wait " + timeLeft + "s";
+
+  // ⏳ Countdown timer
+  const timer = setInterval(() => {
+    timeLeft--;
+    btn.innerText = "Wait " + timeLeft + "s";
+
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.innerText = "Send OTP";
+    }
+  }, 1000);
+
+  // 🔢 Generate OTP
   OTP = Math.floor(100000 + Math.random() * 900000);
 
   emailjs.send(SERVICE_ID, TEMPLATE_ID, {
@@ -468,6 +488,11 @@ function sendOTP(){
   })
   .catch(()=>{
     msg.innerText = "Failed to send OTP";
+    
+    // ❗ Re-enable button if failed
+    clearInterval(timer);
+    btn.disabled = false;
+    btn.innerText = "Send OTP";
   });
 }
 
