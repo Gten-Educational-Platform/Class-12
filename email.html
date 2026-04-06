@@ -396,6 +396,13 @@ button:disabled{
     <span style="color:#dc2626; font-weight:bold;"> ₹350</span>
     <span style="color:#dc2626; font-size:12px;"> (Save ₹450</span>
   </p>
+  
+  <p>
+  🔥 Mega Combo Pack (Class 9,10 (math and Science) Class 11,12,IIT-JEE, NEET (physics & Chemistry): 
+  <span style="text-decoration:line-through; color:#888;">₹1600</span>
+  <span style="color:#dc2626; font-weight:bold;"> ₹650</span>
+  <span style="color:#dc2626; font-size:12px;"> (Save ₹950)</span>
+</p>
 
 </div>
 
@@ -439,6 +446,11 @@ button:disabled{
   <button class="btn3" onclick="selectOption('Both')">
     Combo Pack
   </button>
+  
+  <button class="btn1" onclick="selectOption('Mega')">
+  🔥 Mega Combo Pack
+</button>
+
 </div>
 
 <!-- FRAME -->
@@ -562,15 +574,18 @@ function selectOption(type){
 
   let link = "";
 
-  if(type === "Practice Test"){
-    link = "https://payments.cashfree.com/forms/PTonly";
-  }
-  else if(type === "Study Material"){
-    link = "https://payments.cashfree.com/forms/SMonly";
-  }
-  else{
-    link = "https://payments.cashfree.com/forms/PTSM";
-  }
+if(type === "Practice Test"){
+  link = "https://payments.cashfree.com/forms/PTonly";
+}
+else if(type === "Study Material"){
+  link = "https://payments.cashfree.com/forms/SMonly";
+}
+else if(type === "Both"){
+  link = "https://payments.cashfree.com/forms/PTSM";
+}
+else if(type === "Mega"){
+  link = "https://payments.cashfree.com/forms/MEGACOMBO1";
+}
 
   // ✅ BEST METHOD (Mobile + PC)
   window.location.href = link;
