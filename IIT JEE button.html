@@ -96,7 +96,7 @@
   }
 
   .back-btn {
-    position:absolute;top:20px;right:30px;
+    position:absolute;top:27px;right:30px;
     background:linear-gradient(145deg,#243b55,#141e30);
     color:#fff;border:1px solid rgba(65,105,225,.8);
     padding:10px 18px;border-radius:10px;font-weight:bold;cursor:pointer;
@@ -115,12 +115,12 @@
     .sidebar{position:fixed;height:100%;transform:translateX(-100%);z-index:20;}
     .sidebar.active{transform:translateX(0);}
     .menu-btn{
-      display:block;position:absolute;top:15px;left:15px;
+      display:block;position:absolute;top:25px;left:15px;
       background:#B87333;color:white;border:none;padding:8px 12px;
       border-radius:6px;cursor:pointer;z-index:21;
     }
     .back-btn{
-      top:12px;right:12px;
+      top:25px;right:12px;
       padding:6px 10px;font-size:0.8rem;border-radius:8px;
     }
     .main-logo{width:60px;}
@@ -147,6 +147,227 @@
     box-shadow:none;
     padding:0;
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ /* ================= RIGHT SIDE BUTTONS ================= */
+
+/* DEFAULT (PC) */
+.right-buttons{
+  position:absolute;
+  top:70px;
+  right:30px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:10;
+}
+
+/* COMMON BUTTON STYLE */
+/* COMMON BUTTON STYLE */
+.action-btn{
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  border:none;
+  color:#fff;
+  transition:0.25s;
+  box-shadow:0 5px 0 #111, 0 10px 20px rgba(0,0,0,0.4);
+}
+
+/* PRACTICE BUTTON */
+.practice-btn{
+  background:linear-gradient(145deg,#16a34a,#065f46);
+}
+
+/* BUY BUTTON */
+.buy-btn{
+  background:linear-gradient(145deg,#B87333,#8B5A2B);
+}
+
+/* ================= PC VIEW ================= */
+
+/* Top button (near back button) */
+.top-button{
+  position:absolute;
+  top:70px;
+  right:30px;
+  z-index:10;
+}
+
+/* Bottom button */
+.bottom-button{
+  position:absolute;
+  bottom:30px;
+  right:30px;
+  z-index:10;
+}
+
+/* ================= MOBILE VIEW ================= */
+@media (max-width:768px){
+
+  /* Free Practice → just below back button */
+  .top-button{
+    position:fixed;
+    top:60px;   /* 👈 adjust if needed */
+    right:12px;
+  }
+
+  /* Buy Hard Copy → bottom */
+  .bottom-button{
+    position:fixed;
+    bottom:20px;
+    right:12px;
+  }
+
+  .action-btn{
+    padding:7px 10px;
+    font-size:12px;
+  }
+
+  /* dropdown opens upward */
+  .buy-dropdown{
+    bottom:110%;
+    top:auto;
+  }
+}
+
+@keyframes greenGlow{
+  0%{box-shadow:0 0 8px rgba(34,197,94,.6);}
+  50%{box-shadow:0 0 16px rgba(34,197,94,1);}
+  100%{box-shadow:0 0 8px rgba(34,197,94,.6);}
+}
+
+/* BUY BUTTON (Golden Glow) */
+.buy-btn{
+  background:linear-gradient(145deg,#B87333,#8B5A2B);
+  animation:goldGlow 4s infinite;
+}
+
+@keyframes goldGlow{
+  0%{box-shadow:0 0 10px rgba(184,115,51,.6);}
+  50%{box-shadow:0 0 18px rgba(255,215,0,.9);}
+  100%{box-shadow:0 0 10px rgba(184,115,51,.6);}
+}
+
+/* DROPDOWN */
+.buy-dropdown{
+  display:none;
+  position:absolute;
+  right:0;
+
+  /* ❌ REMOVE THIS */
+  /* top:110%; */
+
+  /* ✅ ADD THIS */
+  bottom:110%;
+
+  background:rgba(0,0,0,0.9);
+  border:1px solid #B87333;
+  border-radius:8px;
+  min-width:200px;
+  overflow:hidden;
+}
+
+.buy-dropdown a{
+  display:block;
+  padding:10px;
+  color:#fff;
+  text-decoration:none;
+}
+
+.buy-dropdown a:hover{
+  background:#B87333;
+}
+
+/* ================= MOBILE FIX ================= */
+@media (max-width:768px){
+
+  .right-buttons{
+    position:fixed;      /* move to bottom */
+    bottom:20px;
+    right:12px;
+    top:auto;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+  }
+
+  /* Order control */
+  .practice-btn{
+    order:1;   /* top */
+  }
+
+  .dropdown-wrap{
+    order:2;   /* below */
+  }
+
+  .action-btn{
+    padding:7px 10px;
+    font-size:12px;
+    border-radius:8px;
+  }
+
+  /* dropdown opens upward */
+  .buy-dropdown{
+    bottom:110%;
+    top:auto;
+  }
+}
+
+/* ================= MOVING NOTICE BAR ================= */
+
+.notice-bar{
+  width:100%;
+  overflow:hidden;
+  background:#ffff66;
+  padding:1px 0;
+  margin-top:-19px;      /* 👈 moves notice slightly upward */
+  margin-bottom:6px;
+  border-radius:4px;
+}
+
+.notice-text{
+  white-space:nowrap;
+  color:#ff0000; /* red text */
+  font-size:12px;
+  font-weight:bold;
+  display:inline-block;
+  animation:scrollNotice 20s linear infinite;
+}
+
+@keyframes scrollNotice{
+  from{transform:translateX(40%);}
+  to{transform:translateX(-100%);}
+}
+  
+  
+  
+  
+  
+  
+  
+  
 </style>
 </head>
 <body>
@@ -172,6 +393,25 @@
   <button class="back-btn" onclick="window.location.href='https://www.g10educationalplatformindia.co.in/'">🏠 Back to Home</button>
 
   <div id="main-section">
+  
+  
+    
+  
+  
+    
+  <div class="notice-bar">
+  <div class="notice-text">
+  📢 Our website is currently under development. Study materials are being uploaded regularly. 
+  If you require any specific chapter, practice test, or question, please call 9706380357. 
+  We will upload it on priority.
+  </div>
+</div>
+  
+  
+  
+  
+  
+  
     <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" class="main-logo" />
     <h2 style="text-align:center;color:#B87333;margin-bottom:20px;">IIT-JEE - Subjects</h2>
 
@@ -246,6 +486,52 @@
   </div>
 </div>
 
+
+
+
+
+
+
+
+
+<!-- Right Side Buttons -->
+<!-- ✅ TOP BUTTON (Free Practice) -->
+<div class="top-button">
+  <button class="action-btn practice-btn"
+    onclick="window.open('https://practice-test-backend-class-10-science-h42o.onrender.com','_blank')">
+    🧪 Free Practice Test
+  </button>
+</div>
+
+<!-- ✅ BOTTOM BUTTON (Buy Hard Copy) -->
+<div class="bottom-button">
+  <div class="dropdown-wrap">
+    <button class="action-btn buy-btn" onclick="toggleBuyDropdown()">
+      🛒 Buy Hard Copy ▼
+    </button>
+
+    <div id="buyDropdown" class="buy-dropdown">
+      <a href="#">🚚 Home Delivery</a>
+      <a href="#">🏫 Collect from Centre</a>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
 function toggleDropdown(id){
   document.querySelectorAll('.dropdown-content').forEach(d=>{
@@ -273,10 +559,30 @@ function backToSubjects(){
   document.getElementById("calendar-section").style.display="none";
   document.getElementById("main-section").style.display="block";
 }
+
+
+
+
+
+
+
+
+
+
+
+function toggleBuyDropdown(){
+  const dd = document.getElementById("buyDropdown");
+  dd.style.display = (dd.style.display === "block") ? "none" : "block";
+}
+
+
+
+
+
+
 </script>
 </body>
 </html>
-
 
 
 
