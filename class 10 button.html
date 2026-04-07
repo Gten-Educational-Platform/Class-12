@@ -89,7 +89,7 @@
   }
 
   .back-btn {
-    position:absolute;top:20px;right:30px;
+    position:absolute;top:27px;right:30px;
     background:linear-gradient(145deg,#243b55,#141e30);
     color:#fff;border:1px solid rgba(65,105,225,.8);
     padding:10px 18px;border-radius:10px;font-weight:bold;cursor:pointer;
@@ -108,12 +108,12 @@
     .sidebar{position:fixed;height:100%;transform:translateX(-100%);z-index:20;}
     .sidebar.active{transform:translateX(0);}
     .menu-btn{
-      display:block;position:absolute;top:15px;left:15px;
+      display:block;position:absolute;top:25px;left:15px;
       background:#B87333;color:white;border:none;padding:8px 12px;
       border-radius:6px;cursor:pointer;z-index:21;
     }
     .back-btn{
-      top:12px;right:12px;
+      top:25px;right:12px;
       padding:6px 10px;font-size:0.8rem;border-radius:8px;
     }
     .main-logo{width:60px;}
@@ -325,6 +325,31 @@
   }
 }
 
+/* ================= MOVING NOTICE BAR ================= */
+
+.notice-bar{
+  width:100%;
+  overflow:hidden;
+  background:#ffff66;
+  padding:1px 0;
+  margin-top:-19px;      /* 👈 moves notice slightly upward */
+  margin-bottom:6px;
+  border-radius:4px;
+}
+
+.notice-text{
+  white-space:nowrap;
+  color:#ff0000; /* red text */
+  font-size:12px;
+  font-weight:bold;
+  display:inline-block;
+  animation:scrollNotice 20s linear infinite;
+}
+
+@keyframes scrollNotice{
+  from{transform:translateX(40%);}
+  to{transform:translateX(-100%);}
+}
   
   
   
@@ -380,6 +405,19 @@
   <button class="back-btn" onclick="window.location.href='https://www.g10educationalplatformindia.co.in/'">🏠 Back to Home</button>
 
   <div id="main-section">
+  
+  
+  <div class="notice-bar">
+  <div class="notice-text">
+  📢 Our website is currently under development. Study materials are being uploaded regularly. 
+  If you require any specific chapter, practice test, or question, please call 9706380357. 
+  We will upload it on priority.
+  </div>
+</div>
+  
+  
+  
+  
     <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" alt="G10 Logo" class="main-logo" />
 	
 	
@@ -422,7 +460,7 @@
     <div class="relative">
       <button onclick="toggleDropdown('sst')" class="subject-btn">Social Science</button>
       <div id="sst" class="dropdown-content">
-        <a href="https://class-9-and-10-sst-sm.onrender.com">Study Materials </a>
+        <a href="#">Study Materials Coming Soon</a>
         <a href="#">Test Coming Soon</a>
         <a href="#">Live Class on Demand Coming Soon</a>
         <a href="#">Complete Course Coming Soon</a>
