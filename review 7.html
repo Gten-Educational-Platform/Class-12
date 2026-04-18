@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>G10EP Reviews</title>
+<title>G10 Educational Platform Reviews</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body{
   font-family: Arial;
@@ -10,6 +13,7 @@ body{
   margin:0;
   padding:20px;
 }
+
 .container{
   max-width:600px;
   margin:auto;
@@ -18,15 +22,18 @@ body{
   border-radius:10px;
   box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
-input, textarea{
+
+input, textarea, select{
   width:100%;
   padding:10px;
   margin:8px 0;
   border:1px solid #ccc;
   border-radius:5px;
+  font-size:16px;
 }
+
 button{
-  padding:10px 15px;
+  padding:8px 11px;
   background:#007bff;
   color:white;
   border:none;
@@ -34,6 +41,20 @@ button{
   cursor:pointer;
   margin:5px 0;
 }
+
+/* ✅ SUBMIT BUTTON GREEN */
+button.submit-btn{
+  background:#28a745 !important;
+  font-size:18px;
+  padding:14px 20px;
+  font-weight:bold;
+}
+
+/* ✅ FILTER BUTTONS GRAY */
+button.filter-btn{
+  background:#6c757d !important;
+}
+
 .review{
   background:#fafafa;
   padding:10px;
@@ -41,11 +62,13 @@ button{
   border-left:4px solid #007bff;
   border-radius:5px;
 }
+
 .review-header{
   display:flex;
   align-items:center;
   gap:10px;
 }
+
 .avatar{
   width:45px;
   height:45px;
@@ -53,175 +76,331 @@ button{
   object-fit:cover;
   border:2px solid #007bff;
 }
-.stars span{
-  font-size:20px;
-  cursor:pointer;
-  color:#ccc;
-}
-.stars span.active{
-  color:gold;
-}
+
 .like-btn{
   margin-top:5px;
   background:#28a745;
 }
+
+.floating-stats{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#007bff;
+  color:white;
+  padding:10px;
+  border-radius:8px;
+  z-index:999;
+  font-size:14px;
+}
+
+.top-area{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+#topReviewBox{
+  flex:1;
+  background:#fff3cd;
+  border-left:6px solid gold;
+  padding:10px;
+  border-radius:8px;
+  max-height:180px;
+  overflow:auto;
+}
+
+#roleChart{
+  width:120px !important;
+  height:120px !important;
+}
+
+@media (max-width:768px){
+  body{padding:10px;}
+  .container{max-width:100%;padding:20px;}
+}
 </style>
 </head>
+
 <body>
 
+<div class="floating-stats">
+  <div id="totalReviews">Total: 0</div>
+  <div id="avgRating">⭐ 0.0</div>
+</div>
+
 <div class="container">
-  <h2>⭐ G10EP Reviews</h2>
 
-  <input id="name" placeholder="Student Name">
-  <textarea id="message" placeholder="Write your review..."></textarea>
+<h2>⭐ G10EP Reviews</h2>
 
-  <p><b>Profile Photo (Camera / Upload)</b></p>
+<div class="top-area">
+  <canvas id="roleChart"></canvas>
+  <div id="topReviewBox"></div>
+</div>
 
-  <button onclick="document.getElementById('cameraInput').click()">📸 Take Photo</button>
-  <button onclick="document.getElementById('galleryInput').click()">📁 Upload Photo</button>
+<button class="filter-btn" onclick="setFilter('all')">All Review</button>
+<button class="filter-btn" onclick="setFilter('student')">Student Review</button>
+<button class="filter-btn" onclick="setFilter('parent')">Parent Review</button>
+<button class="filter-btn" onclick="setFilter('teacher')">Teacher Review</button>
 
-  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
-  <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+<input id="name" placeholder="Name">
 
-  <div class="stars" id="starSelect">
-    <span onclick="setRating(1)">★</span>
-    <span onclick="setRating(2)">★</span>
-    <span onclick="setRating(3)">★</span>
-    <span onclick="setRating(4)">★</span>
-    <span onclick="setRating(5)">★</span>
-  </div>
+<select id="role">
+  <option value="student">Student</option>
+  <option value="parent">Parent</option>
+  <option value="teacher">Teacher</option>
+</select>
 
-  <button class="submit-btn" onclick="submitReview()">Submit Review</button>
+<textarea id="message" placeholder="Write your review..."></textarea>
 
-  <h3>All Reviews</h3>
-  <div id="reviews"></div>
+<p><b>Profile Photo</b></p>
+
+<button onclick="document.getElementById('cameraInput').click()">📸 Take Photo</button>
+<button onclick="document.getElementById('galleryInput').click()">📁 Upload Photo</button>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+<input type="file" id="galleryInput" accept="image/*" style="display:none;">
+
+<button class="submit-btn" onclick="submitReview()">Submit Review</button>
+
+<h3>All Reviews</h3>
+<div id="reviews"></div>
+
 </div>
 
 <script>
+
 const dbURL = "https://g10ep-reviews-default-rtdb.firebaseio.com/reviews.json";
 const IMGBB_KEY = "de06c0547ba684b42daa90da75d0314a";
 
-let selectedRating = 0;
+let currentFilter = "all";
+let showAllTop = false;
 
-function setRating(r){
-  selectedRating = r;
-  let stars = document.querySelectorAll(".stars span");
-  stars.forEach((s,i)=>{
-    s.classList.toggle("active", i < r);
-  });
+function setFilter(t){
+  currentFilter = t;
+  loadReviews();
 }
 
 function getFile(){
-  return document.getElementById("cameraInput").files[0] || 
+  return document.getElementById("cameraInput").files[0] ||
          document.getElementById("galleryInput").files[0];
 }
 
 function uploadImage(file){
-  return new Promise((resolve, reject)=>{
-    let formData = new FormData();
-    formData.append("image", file);
+  let form = new FormData();
+  form.append("image", file);
 
-    fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-      method: "POST",
-      body: formData
-    })
-    .then(res=>res.json())
-    .then(data=>resolve(data.data.url))
-    .catch(err=>reject(err));
+  return fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`,{
+    method:"POST",
+    body:form
+  })
+  .then(r=>r.json())
+  .then(d=>d.data.url);
+}
+
+function loadReviews(){
+
+fetch(dbURL)
+.then(r=>r.json())
+.then(data=>{
+
+  updateStats(data);
+  showTopReview(data);
+  updateChart(data);
+
+  let out="";
+
+  for(let k in data){
+    let r=data[k];
+
+    if(!r.role) r.role="student";
+
+    if(currentFilter!=="all" && r.role!==currentFilter) continue;
+
+    let stars="";
+    for(let i=0;i<5;i++){
+      stars += i<r.rating?"★":"☆";
+    }
+
+    out+=`
+    <div class="review" id="rev-${k}">
+      <div class="review-header">
+        ${r.profileImage
+? `<img class="avatar" src="${r.profileImage}">`
+: `<div class="avatar" style="
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#007bff;
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+">
+    ${r.name ? r.name.charAt(0).toUpperCase() : "?"}
+  </div>`
+}
+        <div>
+          <b style="cursor:pointer;color:blue"
+             onclick="document.getElementById('rev-${k}').scrollIntoView({behavior:'smooth'})">
+            ${r.name}
+          </b>
+          (${r.role})<br>
+          <small>${r.time}</small>
+        </div>
+      </div>
+
+      <!-- ✅ FIXED: MESSAGE ALWAYS VISIBLE -->
+      <p>${r.message || ""}</p>
+
+      <div>${stars}</div>
+
+      <button class="like-btn">
+        👍 Like (${r.likes||0})
+      </button>
+    </div>`;
+  }
+
+  document.getElementById("reviews").innerHTML=out;
+});
+}
+
+function showTopReview(data){
+
+  let arr=[];
+
+  for(let k in data){
+    let r=data[k];
+    if(r.rating) arr.push({...r,id:k});
+  }
+
+  arr.sort((a,b)=>b.rating-a.rating);
+
+  let show = showAllTop ? arr : arr.slice(0,3);
+
+  let html = `<b>🏆 Top Reviews</b><br><br>`;
+
+  show.forEach(r=>{
+
+    let stars="";
+    for(let i=0;i<5;i++){
+      stars += i<r.rating?"★":"☆";
+    }
+
+    html+=`
+      <div style="margin-bottom:6px;">
+        <b style="cursor:pointer;color:blue"
+           onclick="document.getElementById('rev-${r.id}').scrollIntoView({behavior:'smooth'})">
+          ${r.name}
+        </b>
+        (${r.role||"student"})<br>
+        ${stars}
+      </div>
+    `;
+  });
+
+  html+=`
+    <button onclick="toggleTop()">
+      ${showAllTop ? "Hide" : "See More"}
+    </button>
+  `;
+
+  document.getElementById("topReviewBox").innerHTML=html;
+}
+
+function toggleTop(){
+  showAllTop=!showAllTop;
+  loadReviews();
+}
+
+let chart;
+
+function updateChart(data){
+
+  let s=0,p=0,t=0;
+
+  for(let k in data){
+    let r=data[k];
+    if(!r.role) r.role="student";
+
+    if(r.role==="student") s++;
+    else if(r.role==="parent") p++;
+    else t++;
+  }
+
+  if(chart) chart.destroy();
+
+  chart=new Chart(document.getElementById("roleChart"),{
+    type:"pie",
+    data:{
+      labels:["Student","Parent","Teacher"],
+      datasets:[{
+        data:[s,p,t],
+        backgroundColor:["#4CAF50","#FF9800","#2196F3"]
+      }]
+    }
   });
 }
 
-function submitReview(){
-  let name = document.getElementById("name").value;
-  let message = document.getElementById("message").value;
-  let file = getFile();
+function updateStats(data){
 
-  if(name === "" || message === "" || selectedRating === 0){
-    alert("Please fill all fields + rating");
+  let total=0,sum=0,count=0;
+
+  for(let k in data){
+    let r=data[k];
+    total++;
+    if(r.rating){
+      sum+=r.rating;
+      count++;
+    }
+  }
+
+  document.getElementById("totalReviews").innerText="Total: "+total;
+  document.getElementById("avgRating").innerText="⭐ "+(count?(sum/count).toFixed(1):0);
+}
+
+function submitReview(){
+
+  let name=document.getElementById("name").value;
+  let message=document.getElementById("message").value;
+  let role=document.getElementById("role").value;
+  let file=getFile();
+
+  if(!name || !message){
+    alert("Fill all fields");
     return;
   }
 
   if(file){
     uploadImage(file).then(url=>{
-      saveReview(name,message,url);
+      saveReview(name,message,role,url);
     });
-  } else {
-    saveReview(name,message,"");
+  }else{
+    saveReview(name,message,role,"");
   }
 }
 
-function saveReview(name,message,img){
-  fetch(dbURL, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
+function saveReview(name,message,role,img){
+
+  fetch(dbURL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
       name,
       message,
-      rating: selectedRating,
-      likes: 0,
-      profileImage: img,
-      time: new Date().toLocaleString()
+      role,
+      rating:0,
+      likes:0,
+      profileImage:img,
+      time:new Date().toLocaleString()
     })
   });
 
-  document.getElementById("name").value = "";
-  document.getElementById("message").value = "";
-  document.getElementById("cameraInput").value = "";
-  document.getElementById("galleryInput").value = "";
-  selectedRating = 0;
-  setRating(0);
-
-  alert("Review submitted!");
+  alert("Submitted!");
 }
 
-function likeReview(id, currentLikes){
-  fetch(`https://g10ep-reviews-default-rtdb.firebaseio.com/reviews/${id}.json`, {
-    method: "PATCH",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({likes: currentLikes + 1})
-  });
-}
-
-function loadReviews(){
-  fetch(dbURL)
-  .then(res=>res.json())
-  .then(data=>{
-    let output = "";
-
-    for(let key in data){
-      let r = data[key];
-
-      let stars = "";
-      for(let i=0;i<5;i++){
-        stars += i < r.rating ? "★" : "☆";
-      }
-
-      output += `
-        <div class="review">
-          <div class="review-header">
-            <img class="avatar" src="${r.profileImage || 'https://via.placeholder.com/45'}">
-            <div>
-              <b>${r.name}</b><br>
-              <small>${r.time}</small>
-            </div>
-          </div>
-
-          <p>${r.message}</p>
-          <div>${stars}</div>
-
-          <button class="like-btn" onclick="likeReview('${key}', ${r.likes || 0})">
-            👍 Like (${r.likes || 0})
-          </button>
-        </div>
-      `;
-    }
-
-    document.getElementById("reviews").innerHTML = output;
-  });
-}
-
-setInterval(loadReviews, 3000);
+setInterval(loadReviews,3000);
 loadReviews();
+
 </script>
 
 </body>
