@@ -15,12 +15,43 @@ body{
 }
 
 .container{
-  max-width:600px;
+  width:100%;
+  max-width:700px;
   margin:auto;
   background:white;
   padding:20px;
   border-radius:10px;
   box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+/* MOBILE FULL SCREEN FIX */
+@media (max-width:768px){
+  body{
+    padding:5px;
+  }
+
+  .container{
+    width:100%;
+    max-width:100%;
+    padding:15px;
+    border-radius:0;
+  }
+
+  h2{
+    font-size:20px;
+  }
+
+  .review{
+    font-size:15px;
+  }
+
+  input, textarea, select{
+    font-size:15px;
+  }
+
+  button{
+    font-size:14px;
+  }
 }
 
 input, textarea, select{
@@ -124,6 +155,8 @@ button.filter-btn{
 
 <body>
 
+
+	 
 <div class="floating-stats">
   <div id="totalReviews">Total: 0</div>
   <div id="avgRating">⭐ 0.0</div>
@@ -161,10 +194,47 @@ button.filter-btn{
 <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
 <input type="file" id="galleryInput" accept="image/*" style="display:none;">
 
-<button class="submit-btn" onclick="submitReview()">Submit Review</button>
+<!-- Submit button already above this -->
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+
+  <!-- LEFT: SUBMIT BUTTON -->
+  <button class="submit-btn" onclick="submitReview()">
+    Submit Review
+  </button>
+
+  <!-- RIGHT: LOGO -->
+  <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png"
+       onclick="toggleAdminPanel()"
+       style="width:80px;height:80px;cursor:pointer;border-radius:6px;">
+
+</div>
+
+<!-- ✅ ADMIN PANEL (PUT HERE) -->
+<div id="adminPanel" style="display:none;margin:10px 0;padding:10px;background:#eee;border-radius:8px;">
+
+  <input id="adminPass" type="password"
+         placeholder="Admin Password"
+         style="width:70%;padding:8px;">
+
+  <button onclick="verifyAdmin()">Unlock Admin</button>
+
+  <div id="adminStatus" style="margin-top:5px;color:red;"></div>
+
+</div>
 
 <h3>All Reviews</h3>
+
 <div id="reviews"></div>
+
+<!-- 🔥 PAGINATION AT BOTTOM -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:15px;padding:10px 0;border-top:1px solid #ddd;">
+
+  <button onclick="prevPage()">⬅ Prev</button>
+
+  <div id="pageInfo" style="font-weight:bold;"></div>
+
+  <button onclick="nextPage()">Next ➡</button>
 
 </div>
 
@@ -175,6 +245,12 @@ const IMGBB_KEY = "de06c0547ba684b42daa90da75d0314a";
 
 let currentFilter = "all";
 let showAllTop = false;
+let currentPage = 1;
+let reviewsPerPage = 5;
+let allReviewsData = {};
+
+let isAdmin = false;
+const ADMIN_PASSWORD = "1234"; // change this password
 
 function setFilter(t){
   currentFilter = t;
@@ -201,44 +277,50 @@ function uploadImage(file){
 function loadReviews(){
 
 fetch(dbURL)
-.then(r=>r.json())
-.then(data=>{
+.then(r => r.json())
+.then(data => {
+
+  // store globally for pagination
+  allReviewsData = data;
 
   updateStats(data);
   showTopReview(data);
   updateChart(data);
 
-  let out="";
+  let out = "";
 
   for(let k in data){
-    let r=data[k];
+    let r = data[k];
 
-    if(!r.role) r.role="student";
+    if(!r.role) r.role = "student";
 
-    if(currentFilter!=="all" && r.role!==currentFilter) continue;
+    if(currentFilter !== "all" && r.role !== currentFilter) continue;
 
-    let stars="";
-    for(let i=0;i<5;i++){
-      stars += i<r.rating?"★":"☆";
+    let stars = "";
+    for(let i = 0; i < 5; i++){
+      stars += i < r.rating ? "★" : "☆";
     }
 
-    out+=`
+    out += `
     <div class="review" id="rev-${k}">
+      
       <div class="review-header">
+        
         ${r.profileImage
-? `<img class="avatar" src="${r.profileImage}">`
-: `<div class="avatar" style="
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#007bff;
-    color:white;
-    font-weight:bold;
-    font-size:18px;
-">
-    ${r.name ? r.name.charAt(0).toUpperCase() : "?"}
-  </div>`
-}
+          ? `<img class="avatar" src="${r.profileImage}">`
+          : `<div class="avatar" style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              background:#007bff;
+              color:white;
+              font-weight:bold;
+              font-size:18px;
+            ">
+              ${r.name ? r.name.charAt(0).toUpperCase() : "?"}
+            </div>`
+        }
+
         <div>
           <b style="cursor:pointer;color:blue"
              onclick="document.getElementById('rev-${k}').scrollIntoView({behavior:'smooth'})">
@@ -249,19 +331,58 @@ fetch(dbURL)
         </div>
       </div>
 
-      <!-- ✅ FIXED: MESSAGE ALWAYS VISIBLE -->
       <p>${r.message || ""}</p>
+
+      ${r.adminComment ? `
+        <div style="margin-top:8px;background:#d1ffd1;padding:6px;border-radius:5px;">
+          🛑 Admin: ${r.adminComment}
+        </div>
+      ` : ""}
 
       <div>${stars}</div>
 
       <button class="like-btn">
-        👍 Like (${r.likes||0})
+        👍 Like (${r.likes || 0})
       </button>
+
+      ${isAdmin ? `
+        <div style="margin-top:8px;">
+          <input id="cmt-${k}" placeholder="Write admin comment"
+            style="width:70%;padding:5px;">
+          <button onclick="addComment('${k}')">Reply</button>
+        </div>
+      ` : ""}
+${isAdmin ? `
+  <button onclick="editReview('${k}')">✏️ Edit</button>
+` : ""}
     </div>`;
   }
 
-  document.getElementById("reviews").innerHTML=out;
+  document.getElementById("reviews").innerHTML = out;
+
 });
+}
+
+function editReview(id){
+
+  let r = allReviewsData[id]; // get fresh data
+
+  let newName = prompt("Edit Name:", r.name);
+  let newMessage = prompt("Edit Message:", r.message);
+
+  if(newName === null || newMessage === null) return;
+
+  fetch(dbURL.replace(".json","/" + id + ".json"), {
+    method: "PATCH",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: newName,
+      message: newMessage
+    })
+  }).then(() => {
+    alert("✅ Review updated!");
+    loadReviews();
+  });
 }
 
 function showTopReview(data){
@@ -401,6 +522,142 @@ function saveReview(name,message,role,img){
 setInterval(loadReviews,3000);
 loadReviews();
 
+
+
+function verifyAdmin(){
+  let pass = document.getElementById("adminPass").value;
+
+  if(pass === ADMIN_PASSWORD){
+    isAdmin = true;
+
+    document.getElementById("adminStatus").innerHTML =
+      "✅ Admin Mode Activated";
+
+    document.getElementById("adminPanel").style.display = "none";
+
+    // 🔥 IMPORTANT: refresh current page view
+    renderPage();
+
+  } else {
+    isAdmin = false;
+
+    document.getElementById("adminStatus").innerHTML =
+      "❌ Wrong Password";
+  }
+}
+
+
+function addComment(id){
+
+  let text = document.getElementById("cmt-" + id).value;
+
+  if(!text) return;
+
+  fetch(dbURL.replace(".json","/" + id + ".json"),{
+    method:"PATCH",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      adminComment:text
+    })
+  });
+
+  alert("Comment added!");
+}
+
+
+function toggleAdminPanel(){
+  let panel = document.getElementById("adminPanel");
+
+  if(panel.style.display === "none"){
+    panel.style.display = "block";
+  }else{
+    panel.style.display = "none";
+  }
+}
+
+
+function renderPage(){
+
+  let data = allReviewsData;
+
+  let filtered = [];
+
+  for(let k in data){
+    let r = data[k];
+
+    if(!r.role) r.role="student";
+
+    if(currentFilter!=="all" && r.role!==currentFilter) continue;
+
+    filtered.push({id:k, ...r});
+  }
+
+  let totalPages = Math.ceil(filtered.length / reviewsPerPage);
+
+  if(currentPage > totalPages) currentPage = totalPages || 1;
+
+  let start = (currentPage-1)*reviewsPerPage;
+  let end = start + reviewsPerPage;
+
+  let pageItems = filtered.slice(start,end);
+
+  let out="";
+
+  pageItems.forEach(r=>{
+
+    let stars="";
+    for(let i=0;i<5;i++){
+      stars += i<r.rating?"★":"☆";
+    }
+
+    out+=`
+    <div class="review" id="rev-${r.id}">
+      <div class="review-header">
+        ${r.profileImage
+        ? `<img class="avatar" src="${r.profileImage}">`
+        : `<div class="avatar" style="display:flex;align-items:center;justify-content:center;background:#007bff;color:white;font-weight:bold;font-size:18px;">
+            ${r.name ? r.name.charAt(0).toUpperCase() : "?"}
+          </div>`
+        }
+
+        <div>
+          <b style="cursor:pointer;color:blue"
+             onclick="document.getElementById('rev-${r.id}').scrollIntoView({behavior:'smooth'})">
+            ${r.name}
+          </b>
+          (${r.role})<br>
+          <small>${r.time}</small>
+        </div>
+      </div>
+
+      <p>${r.message || ""}</p>
+
+      <div>${stars}</div>
+
+      <button class="like-btn">
+        👍 Like (${r.likes||0})
+      </button>
+    </div>`;
+  });
+
+  document.getElementById("reviews").innerHTML = out;
+
+  // update page info
+  document.getElementById("pageInfo").innerText =
+    `Page ${currentPage} of ${totalPages || 1}`;
+}
+
+function nextPage(){
+  currentPage++;
+  renderPage();
+}
+
+function prevPage(){
+  if(currentPage > 1){
+    currentPage--;
+    renderPage();
+  }
+}
 </script>
 
 </body>
