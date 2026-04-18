@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G10 Fee Structure</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#f4f6fb;
+  padding:20px;
+  text-align:center;
+}
+
+/* LOGO */
+.logo{
+  width:120px;
+  margin-bottom:10px;
+}
+
+/* TITLE */
+h1{
+  color:#0d47a1;
+}
+
+/* GRID */
+.fee-container{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:20px;
+  max-width:1000px;
+  margin:20px auto;
+}
+
+/* BOX */
+.fee-box{
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  text-align:left;
+}
+
+.fee-box h3{
+  text-align:center;
+  color:#0d47a1;
+}
+
+.fee-box ul{
+  padding-left:18px;
+}
+
+/* BUTTON */
+.enroll-btn{
+  display:block;
+  margin-top:15px;
+  padding:12px;
+  text-align:center;
+  background:#00c853;
+  color:#fff;
+  text-decoration:none;
+  border-radius:25px;
+  font-weight:bold;
+}
+
+/* FLOATING BUTTONS */
+.home-btn, .whatsapp-float{
+  position:fixed;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  color:#fff;
+  text-decoration:none;
+}
+
+.home-btn{
+  top:20px;
+  left:20px;
+  background:#2196f3;
+}
+
+.whatsapp-float{
+  bottom:20px;
+  right:20px;
+  background:#25d366;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .fee-container{
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGO -->
+<img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" class="logo">
+
+<h1>G10 EDUCATIONAL PLATFORM</h1>
+<h2>Fee Structure</h2>
+
+<div class="fee-container">
+
+  <!-- 1 GROUP -->
+  <div class="fee-box">
+    <h3>1️⃣ Group Coaching</h3>
+    <ul>
+      <li>Simple Group: ₹1000 / month</li>
+      <li>Super Group (9–10 + Foundation): ₹2500 / month</li>
+      <li>Super Group (11–12 + Support): ₹2500 / month</li>
+      <li>Competitive Group: ₹2500 / month</li>
+    </ul>
+    <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Group Coaching')">Enroll Now</a>
+  </div>
+
+  <!-- 2 INDIVIDUAL -->
+  <div class="fee-box">
+    <h3>2️⃣ Individual / Dual Coaching</h3>
+    <ul>
+      <li>Class 9–10: ₹800 / class</li>
+      <li>Class 11–12 (CBSE/SEBA): ₹800 / class</li>
+      <li>ICSE/IB/Cambridge: ₹900 / class</li>
+      <li>IIT-JEE / NEET: ₹900 / class</li>
+    </ul>
+    <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Individual Coaching')">Enroll Now</a>
+  </div>
+
+  <!-- 3 HOME -->
+  <div class="fee-box">
+    <h3>3️⃣ Home Tuition</h3>
+    <ul>
+      <li>Class 9–10: ₹850 / class</li>
+      <li>Class 11–12: ₹900 / class</li>
+      <li>ICSE/IB/Cambridge: ₹1000 / class</li>
+      <li>IIT-JEE / NEET: ₹1000 / class</li>
+    </ul>
+    <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Home Tuition')">Enroll Now</a>
+  </div>
+
+  <!-- 4 ONLINE -->
+  <div class="fee-box">
+    <h3>4️⃣ Online Coaching</h3>
+    <ul>
+      <li><strong>IIT-JEE PCM Combo (Group):</strong> ₹4000 / year</li>
+      <li>Physics (Group): ₹2000 / year</li>
+      <li>Chemistry (Group): ₹2000 / year</li>
+      <li>Math (Group): ₹2000 / year</li>
+      <br>
+      <li>Individual IIT-JEE Online Coaching: ₹800 / class</li>
+      <li>Individual NEET Online Coaching: ₹800 / class</li>
+      <li>Individual Class 11–12 Online Coaching: ₹800 / class</li>
+      <li>Individual Class 9–10 Online Coaching: ₹700 / class</li>
+    </ul>
+    <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Online Coaching')">Enroll Now</a>
+  </div>
+
+</div>
+
+<!-- FLOATING HOME -->
+<a href="https://www.g10educationalplatformindia.co.in/" class="home-btn">🏠</a>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/919706380357" class="whatsapp-float">💬</a>
+
+<script>
+function sendToWhatsApp(type){
+
+  let name = prompt("Enter Student Name:");
+  if(!name) return;
+
+  let studentClass = prompt("Enter Class (9,10,11,12,Dropper):");
+  if(!studentClass) return;
+
+  let message = `Hello Sir,
+My Name is ${name}
+Class: ${studentClass}
+
+I want to enroll in:
+Coaching Type: ${type}
+
+Please guide me.`;
+
+  let url = "https://wa.me/919706380357?text=" + encodeURIComponent(message);
+
+  window.open(url, '_blank');
+}
+</script>
+
+</body>
+</html>
