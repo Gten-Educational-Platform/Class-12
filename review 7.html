@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>G10 Educational Platform Reviews</title>
+<style>
+body{
+  font-family: Arial;
+  background:#f2f2f2;
+  margin:0;
+  padding:20px;
+}
+.container{
+  max-width:600px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+button{
+  padding:10px 15px;
+  background:#007bff;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  margin:5px 0;
+}
+.review{
+  background:#fafafa;
+  padding:10px;
+  margin-top:10px;
+  border-left:4px solid #007bff;
+  border-radius:5px;
+}
+.review-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #007bff;
+}
+.stars span{
+  font-size:20px;
+  cursor:pointer;
+  color:#ccc;
+}
+.stars span.active{
+  color:gold;
+}
+.like-btn{
+  margin-top:5px;
+  background:#28a745;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>⭐ G10EP Reviews</h2>
+
+  <input id="name" placeholder="Student Name">
+  <textarea id="message" placeholder="Write your review..."></textarea>
+
+  <p><b>Profile Photo (Camera / Upload)</b></p>
+
+  <button onclick="document.getElementById('cameraInput').click()">📸 Take Photo</button>
+  <button onclick="document.getElementById('galleryInput').click()">📁 Upload Photo</button>
+
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+  <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+
+  <div class="stars" id="starSelect">
+    <span onclick="setRating(1)">★</span>
+    <span onclick="setRating(2)">★</span>
+    <span onclick="setRating(3)">★</span>
+    <span onclick="setRating(4)">★</span>
+    <span onclick="setRating(5)">★</span>
+  </div>
+
+  <button onclick="submitReview()">Submit Review</button>
+
+  <h3>All Reviews</h3>
+  <div id="reviews"></div>
+</div>
+
+<script>
+const dbURL = "https://g10ep-reviews-default-rtdb.firebaseio.com/reviews.json";
+const IMGBB_KEY = "de06c0547ba684b42daa90da75d0314a";
+
+let selectedRating = 0;
+
+function setRating(r){
+  selectedRating = r;
+  let stars = document.querySelectorAll(".stars span");
+  stars.forEach((s,i)=>{
+    s.classList.toggle("active", i < r);
+  });
+}
+
+function getFile(){
+  return document.getElementById("cameraInput").files[0] || 
+         document.getElementById("galleryInput").files[0];
+}
+
+function uploadImage(file){
+  return new Promise((resolve, reject)=>{
+    let formData = new FormData();
+    formData.append("image", file);
+
+    fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+      method: "POST",
+      body: formData
+    })
+    .then(res=>res.json())
+    .then(data=>resolve(data.data.url))
+    .catch(err=>reject(err));
+  });
+}
+
+function submitReview(){
+  let name = document.getElementById("name").value;
+  let message = document.getElementById("message").value;
+  let file = getFile();
+
+  if(name === "" || message === "" || selectedRating === 0){
+    alert("Please fill all fields + rating");
+    return;
+  }
+
+  if(file){
+    uploadImage(file).then(url=>{
+      saveReview(name,message,url);
+    });
+  } else {
+    saveReview(name,message,"");
+  }
+}
+
+function saveReview(name,message,img){
+  fetch(dbURL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name,
+      message,
+      rating: selectedRating,
+      likes: 0,
+      profileImage: img,
+      time: new Date().toLocaleString()
+    })
+  });
+
+  document.getElementById("name").value = "";
+  document.getElementById("message").value = "";
+  document.getElementById("cameraInput").value = "";
+  document.getElementById("galleryInput").value = "";
+  selectedRating = 0;
+  setRating(0);
+
+  alert("Review submitted!");
+}
+
+function likeReview(id, currentLikes){
+  fetch(`https://g10ep-reviews-default-rtdb.firebaseio.com/reviews/${id}.json`, {
+    method: "PATCH",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({likes: currentLikes + 1})
+  });
+}
+
+function loadReviews(){
+  fetch(dbURL)
+  .then(res=>res.json())
+  .then(data=>{
+    let output = "";
+
+    for(let key in data){
+      let r = data[key];
+
+      let stars = "";
+      for(let i=0;i<5;i++){
+        stars += i < r.rating ? "★" : "☆";
+      }
+
+      output += `
+        <div class="review">
+          <div class="review-header">
+            <img class="avatar" src="${r.profileImage || 'https://via.placeholder.com/45'}">
+            <div>
+              <b>${r.name}</b><br>
+              <small>${r.time}</small>
+            </div>
+          </div>
+
+          <p>${r.message}</p>
+          <div>${stars}</div>
+
+          <button class="like-btn" onclick="likeReview('${key}', ${r.likes || 0})">
+            👍 Like (${r.likes || 0})
+          </button>
+        </div>
+      `;
+    }
+
+    document.getElementById("reviews").innerHTML = output;
+  });
+}
+
+setInterval(loadReviews, 3000);
+loadReviews();
+</script>
+
+</body>
+</html>
