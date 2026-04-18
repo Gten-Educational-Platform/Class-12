@@ -190,7 +190,8 @@ Please guide me.`;
 
   let url = "https://wa.me/919706380357?text=" + encodeURIComponent(message);
 
-  window.open(url, '_blank');
+  // ✅ FIX: redirect instead of popup
+  window.location.href = url;
 }
 </script>
 
