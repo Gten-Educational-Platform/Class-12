@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -107,11 +107,6 @@ h1{
 <h1>G10 EDUCATIONAL PLATFORM</h1>
 <h2>Fee Structure</h2>
 
-<!-- ✅ ADD HERE -->
-<div style="margin:20px;">
-  <input id="name" placeholder="Enter Name" style="padding:10px;margin:5px;">
-  <input id="class" placeholder="Enter Class" style="padding:10px;margin:5px;">
-</div>
 <div class="fee-container">
 
   <!-- 1 GROUP -->
@@ -154,10 +149,10 @@ h1{
   <div class="fee-box">
     <h3>4️⃣ Online Coaching</h3>
     <ul>
-      <li><strong>IIT-JEE PCM Combo (Class Room):</strong> ₹4000 / year</li>
-      <li>Physics (Class Room): ₹2000 / year</li>
-      <li>Chemistry (Class Room): ₹2000 / year</li>
-      <li>Math (Class Room): ₹2000 / year</li>
+      <li><strong>IIT-JEE PCM Combo (Class room):</strong> ₹4000 / year</li>
+      <li>Physics (Class room): ₹2000 / year</li>
+      <li>Chemistry (class room): ₹2000 / year</li>
+      <li>Math (Class room): ₹2000 / year</li>
       <br>
       <li>Individual IIT-JEE Online Coaching: ₹800 / class</li>
       <li>Individual NEET Online Coaching: ₹800 / class</li>
@@ -178,13 +173,11 @@ h1{
 <script>
 function sendToWhatsApp(type){
 
-  let name = document.getElementById("name").value.trim();
-  let studentClass = document.getElementById("class").value.trim();
+  let name = prompt("Enter Student Name:");
+  if(!name) return;
 
-  if(!name || !studentClass){
-    alert("Please enter Name and Class first");
-    return;
-  }
+  let studentClass = prompt("Enter Class (9,10,11,12,Dropper):");
+  if(!studentClass) return;
 
   let message = `Hello Sir,
 My Name is ${name}
@@ -197,8 +190,8 @@ Please guide me.`;
 
   let url = "https://wa.me/919706380357?text=" + encodeURIComponent(message);
 
-  // ✅ ALWAYS WORKS (no block)
-  window.location.assign(url);
+  // ✅ FIX: redirect instead of popup
+  window.location.href = url;
 }
 </script>
 
