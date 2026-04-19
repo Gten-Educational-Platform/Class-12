@@ -150,6 +150,37 @@ button.filter-btn{
   body{padding:10px;}
   .container{max-width:100%;padding:20px;}
 }
+
+.header-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.stats-inline{
+  display:flex;
+  gap:10px;
+  background:#007bff;
+  color:white;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:14px;
+}
+
+/* mobile fix */
+@media (max-width:768px){
+  .header-bar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .stats-inline{
+    width:100%;
+    justify-content:space-between;
+  }
+}
 </style>
 </head>
 
@@ -157,14 +188,18 @@ button.filter-btn{
 
 
 	 
-<div class="floating-stats">
-  <div id="totalReviews">Total: 0</div>
-  <div id="avgRating">⭐ 0.0</div>
-</div>
+
 
 <div class="container">
 
-<h2>⭐ G10EP Reviews</h2>
+<div class="header-bar">
+  <h2>⭐ G10EP Reviews</h2>
+
+  <div class="stats-inline">
+    <div id="totalReviews">Total: 0</div>
+    <div id="avgRating">⭐ 0.0</div>
+  </div>
+</div>
 
 <div class="top-area">
   <canvas id="roleChart"></canvas>
