@@ -615,7 +615,7 @@ function saveReview(name,message,role,img){
       rating:selectedRating, // ⭐ FIXED
       likes:0,
       profileImage:img,
-      time:new Date().toLocaleString()
+      time: Date.now()
     })
   });
 
@@ -690,15 +690,18 @@ function renderPage(){
 
   let filtered = [];
 
-  for(let k in data){
-    let r = data[k];
+for(let k in data){
+  let r = data[k];
 
-    if(!r.role) r.role="student";
+  if(!r.role) r.role="student";
 
-    if(currentFilter!=="all" && r.role!==currentFilter) continue;
+  if(currentFilter!=="all" && r.role!==currentFilter) continue;
 
-    filtered.push({id:k, ...r});
-  }
+  filtered.push({id:k, ...r});
+}
+
+// ✅ NEW LINE: Latest review first
+filtered.sort((a, b) => b.time - a.time);
 
   let totalPages = Math.ceil(filtered.length / reviewsPerPage);
 
@@ -734,7 +737,7 @@ function renderPage(){
             ${r.name}
           </b>
           (${r.role})<br>
-          <small>${r.time}</small>
+          <small>${new Date(r.time).toLocaleString()}</small>
         </div>
       </div>
 
