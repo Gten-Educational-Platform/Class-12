@@ -26,15 +26,19 @@ body{
 
 /* MOBILE FULL SCREEN FIX */
 @media (max-width:768px){
+
   body{
-    padding:5px;
+    padding:0; /* remove outer gap */
+    background:#f2f2f2;
   }
 
   .container{
     width:100%;
     max-width:100%;
-    padding:15px;
-    border-radius:0;
+    margin:0;
+    padding:12px;   /* tighter but usable */
+    border-radius:0; /* full screen look */
+    box-shadow:none; /* cleaner mobile feel */
   }
 
   h2{
@@ -52,7 +56,22 @@ body{
   button{
     font-size:14px;
   }
+
+  .top-area{
+    flex-direction:column;
+  }
+
+  #roleChart{
+    width:100% !important;
+    height:auto !important;
+  }
+
+  #topReviewBox{
+    width:100%;
+  }
 }
+
+
 
 input, textarea, select{
   width:100%;
@@ -146,10 +165,6 @@ button.filter-btn{
   height:120px !important;
 }
 
-@media (max-width:768px){
-  body{padding:10px;}
-  .container{max-width:100%;padding:20px;}
-}
 
 .header-bar{
   display:flex;
