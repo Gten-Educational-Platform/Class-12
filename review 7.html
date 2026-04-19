@@ -11,7 +11,7 @@ body{
   font-family: Arial;
   background:#f2f2f2;
   margin:0;
-  padding:50px;
+  padding:30px;
 }
 
 .container{
@@ -19,7 +19,7 @@ body{
   max-width:700px;
   margin:auto;
   background:white;
-  padding:30px;
+  padding:50px;
   border-radius:10px;
   box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
@@ -28,18 +28,20 @@ body{
 @media (max-width:768px){
 
   body{
-    padding:0; /* remove outer gap */
-    background:#f2f2f2;
+    padding:0;
+    margin:0;
   }
 
   .container{
-    width:100%;
-    max-width:100%;
+    width:100vw;        /* 👈 FULL SCREEN WIDTH */
+    max-width:100vw;    /* 👈 override 700px */
     margin:0;
-    padding:12px;   /* tighter but usable */
-    border-radius:0; /* full screen look */
-    box-shadow:none; /* cleaner mobile feel */
+    padding:20px 16px;   /* 👈 increase usable space */
+    border-radius:0;
+    box-shadow:none;
+    box-sizing:border-box; /* 👈 IMPORTANT FIX */
   }
+}
 
   h2{
     font-size:20px;
