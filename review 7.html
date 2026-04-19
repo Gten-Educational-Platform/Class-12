@@ -450,19 +450,31 @@ function setRating(r){
 
 function editReview(id){
 
-  let r = allReviewsData[id]; // get fresh data
+  let r = allReviewsData[id];
 
   let newName = prompt("Edit Name:", r.name);
   let newMessage = prompt("Edit Message:", r.message);
 
-  if(newName === null || newMessage === null) return;
+  // ⭐ NEW: rating edit
+  let newRating = prompt("Edit Rating (1-5):", r.rating);
+
+  if(newName === null || newMessage === null || newRating === null) return;
+
+  newRating = parseInt(newRating);
+
+  // validation
+  if(newRating < 1 || newRating > 5 || isNaN(newRating)){
+    alert("Rating must be between 1 and 5");
+    return;
+  }
 
   fetch(dbURL.replace(".json","/" + id + ".json"), {
     method: "PATCH",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       name: newName,
-      message: newMessage
+      message: newMessage,
+      rating: newRating   // ⭐ UPDATED
     })
   }).then(() => {
     alert("✅ Review updated!");
