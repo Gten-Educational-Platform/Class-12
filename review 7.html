@@ -252,6 +252,16 @@ button.filter-btn{
 
 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
 
+<p><b>Rate Us ⭐</b></p>
+<div id="starRating" style="font-size:28px;cursor:pointer;">
+  <span onclick="setRating(1)">☆</span>
+  <span onclick="setRating(2)">☆</span>
+  <span onclick="setRating(3)">☆</span>
+  <span onclick="setRating(4)">☆</span>
+  <span onclick="setRating(5)">☆</span>
+</div>
+
+
   <!-- LEFT: SUBMIT BUTTON -->
   <button class="submit-btn" onclick="submitReview()">
     Submit Review
@@ -417,6 +427,27 @@ ${isAdmin ? `
 });
 }
 
+
+let selectedRating = 0;
+
+
+
+
+function setRating(r){
+  selectedRating = r;
+
+  let stars = document.querySelectorAll("#starRating span");
+
+  stars.forEach((s, i) => {
+    s.innerText = i < r ? "★" : "☆";
+  });
+}
+
+
+
+
+
+
 function editReview(id){
 
   let r = allReviewsData[id]; // get fresh data
@@ -545,6 +576,12 @@ function submitReview(){
     return;
   }
 
+  // ⭐ IMPORTANT VALIDATION
+  if(selectedRating === 0){
+    alert("Please give star rating ⭐");
+    return;
+  }
+
   if(file){
     uploadImage(file).then(url=>{
       saveReview(name,message,role,url);
@@ -563,7 +600,7 @@ function saveReview(name,message,role,img){
       name,
       message,
       role,
-      rating:0,
+      rating:selectedRating, // ⭐ FIXED
       likes:0,
       profileImage:img,
       time:new Date().toLocaleString()
@@ -571,6 +608,11 @@ function saveReview(name,message,role,img){
   });
 
   alert("Submitted!");
+
+  // reset rating UI
+  selectedRating = 0;
+  document.querySelectorAll("#starRating span")
+    .forEach(s => s.innerText = "☆");
 }
 
 setInterval(loadReviews,3000);
