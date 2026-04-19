@@ -25,7 +25,7 @@ body{
   box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-/* MOBILE FULL SCREEN FIX */
+/* ================= MOBILE FIX ================= */
 @media (max-width:768px){
 
   body{
@@ -35,43 +35,44 @@ body{
   }
 
   .container{
-    width:100vw;
-    max-width:none;
+    width:100%;
+    max-width:100%;
     margin:0;
-    padding:40px 20px;
+    padding:25px 16px;
     border-radius:0;
     box-shadow:none;
+    box-sizing:border-box;
   }
-}
 
   h2{
-    font-size:20px;
+    font-size:26px !important;
   }
 
   .review{
-    font-size:15px;
+    font-size:18px !important;
   }
 
   input, textarea, select{
-    font-size:15px;
+    font-size:18px !important;
   }
 
   button{
-    font-size:14px;
+    font-size:16px !important;
   }
 
-  .top-area{
-    flex-direction:column;
-  }
-
-  #roleChart{
-    width:100% !important;
-    height:auto !important;
+  .stats-inline{
+    font-size:16px !important;
   }
 
   #topReviewBox{
     width:100%;
   }
+
+  .header-bar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
 }
 
 
