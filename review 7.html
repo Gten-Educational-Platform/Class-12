@@ -391,7 +391,7 @@ fetch(dbURL)
             ${r.name}
           </b>
           (${r.role})<br>
-          <small>${r.time}</small>
+          <small>${new Date(r.time).toLocaleString()}</small>
         </div>
       </div>
 
@@ -690,18 +690,24 @@ function renderPage(){
 
   let filtered = [];
 
-for(let k in data){
-  let r = data[k];
+  for(let k in data){
+    let r = data[k];
 
-  if(!r.role) r.role="student";
+    if(!r.role) r.role="student";
 
-  if(currentFilter!=="all" && r.role!==currentFilter) continue;
+    if(currentFilter!=="all" && r.role!==currentFilter) continue;
 
-  filtered.push({id:k, ...r});
-}
+    filtered.push({id:k, ...r});
+  }
 
-// ✅ NEW LINE: Latest review first
-filtered.sort((a, b) => b.time - a.time);
+  // ⭐ ADD HERE (IMPORTANT)
+  filtered.sort((a, b) => {
+
+    let tA = typeof a.time === "number" ? a.time : new Date(a.time).getTime();
+    let tB = typeof b.time === "number" ? b.time : new Date(b.time).getTime();
+
+    return tB - tA;
+  });
 
   let totalPages = Math.ceil(filtered.length / reviewsPerPage);
 
