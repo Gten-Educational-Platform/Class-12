@@ -12,7 +12,8 @@ body{
   font-family: Arial;
   background:#f2f2f2;
   margin:0;
-  padding:20px;
+  padding:0;
+  overflow-x:hidden;
 }
 
 .container{
@@ -35,14 +36,19 @@ body{
     overflow-x:hidden;
   }
 
-  .container{
-    width:100% !important;
-    max-width:100% !important;
-    margin:0 !important;
-    padding:10px !important;
-    border-radius:0 !important;
-    box-shadow:none !important;
+   .container{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:10px;
+    border-radius:0;
+    box-shadow:none;
   }
+
+  body{
+    padding:0;
+  }
+}
 
   .header-bar{
     flex-direction:column;
