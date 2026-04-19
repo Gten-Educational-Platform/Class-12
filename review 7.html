@@ -422,7 +422,7 @@ ${isAdmin ? `
     </div>`;
   }
 
-  document.getElementById("reviews").innerHTML = out;
+renderPage();
 
 });
 }
@@ -627,7 +627,7 @@ function saveReview(name,message,role,img){
     .forEach(s => s.innerText = "☆");
 }
 
-setInterval(loadReviews,3000);
+
 loadReviews();
 
 
@@ -747,8 +747,8 @@ function renderPage(){
 </button>
     </div>`;
   });
-
   document.getElementById("reviews").innerHTML = out;
+  
 
   // update page info
   document.getElementById("pageInfo").innerText =
@@ -756,8 +756,18 @@ function renderPage(){
 }
 
 function nextPage(){
-  currentPage++;
-  renderPage();
+
+  let filtered = Object.values(allReviewsData).filter(r => {
+    if(!r.role) r.role = "student";
+    return currentFilter === "all" || r.role === currentFilter;
+  });
+
+  let totalPages = Math.ceil(filtered.length / reviewsPerPage);
+
+  if(currentPage < totalPages){
+    currentPage++;
+    renderPage();
+  }
 }
 
 function prevPage(){
