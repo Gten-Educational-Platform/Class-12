@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>G10 Educational Platform Reviews</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -28,33 +29,29 @@ body{
 @media (max-width:768px){
 
   body{
-    padding:0; /* remove outer gap */
+    padding:0 !important;
+    margin:0;
     background:#f2f2f2;
+    overflow-x:hidden;
   }
 
   .container{
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 !important;
+    padding:10px !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+  }
+
+  .header-bar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .stats-inline{
     width:100%;
-    max-width:100%;
-    margin:0;
-    padding:12px;   /* tighter but usable */
-    border-radius:0; /* full screen look */
-    box-shadow:none; /* cleaner mobile feel */
-  }
-
-  h2{
-    font-size:20px;
-  }
-
-  .review{
-    font-size:15px;
-  }
-
-  input, textarea, select{
-    font-size:15px;
-  }
-
-  button{
-    font-size:14px;
+    justify-content:space-between;
   }
 
   .top-area{
