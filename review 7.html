@@ -405,9 +405,9 @@ fetch(dbURL)
 
       <div>${stars}</div>
 
-      <button class="like-btn">
-        👍 Like (${r.likes || 0})
-      </button>
+     <button class="like-btn" onclick="likeReview('${k}')">
+  👍 Like (${r.likes || 0})
+</button>
 
       ${isAdmin ? `
         <div style="margin-top:8px;">
@@ -742,9 +742,9 @@ function renderPage(){
 
       <div>${stars}</div>
 
-      <button class="like-btn">
-        👍 Like (${r.likes||0})
-      </button>
+      <button class="like-btn" onclick="likeReview('${r.id}')">
+  👍 Like (${r.likes || 0})
+</button>
     </div>`;
   });
 
@@ -765,6 +765,30 @@ function prevPage(){
     currentPage--;
     renderPage();
   }
+}
+
+function likeReview(id){
+
+  let key = "liked_" + id;
+
+  if(localStorage.getItem(key)){
+    alert("You already liked this review");
+    return;
+  }
+
+  let currentLikes = allReviewsData[id].likes || 0;
+
+  fetch(dbURL.replace(".json","/" + id + ".json"), {
+    method: "PATCH",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      likes: currentLikes + 1
+    })
+  })
+  .then(() => {
+    localStorage.setItem(key, "yes");
+    loadReviews();
+  });
 }
 </script>
 
