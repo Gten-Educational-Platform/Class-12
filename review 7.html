@@ -77,9 +77,14 @@ input, textarea, select{
   width:100%;
   padding:10px;
   margin:8px 0;
-  border:1px solid #ccc;
+  border:1px solid #555;   /* ✅ darker border */
   border-radius:5px;
   font-size:16px;
+}
+input:focus, textarea:focus, select:focus{
+  border-color:#007bff;
+  outline:none;
+  box-shadow:0 0 5px rgba(0,123,255,0.5);
 }
 
 button{
@@ -222,6 +227,19 @@ button.filter-btn{
   font-size:12px;
   padding:4px 8px;
 }
+
+.row{
+  display:flex;
+  gap:10px;
+}
+
+.row input{
+  flex:2;   /* name bigger */
+}
+
+.row select{
+  flex:1;   /* role smaller */
+}
 </style>
 </head>
 
@@ -252,14 +270,16 @@ button.filter-btn{
 <button class="filter-btn" onclick="setFilter('parent')">Parent Review</button>
 <button class="filter-btn" onclick="setFilter('teacher')">Teacher Review</button>
 
-<input id="name" placeholder="Name">
-
-<select id="role" required>
-  <option value="" disabled selected>-- Select Role --</option>
-  <option value="student">🎓 Student</option>
-<option value="parent">👨‍👩‍👧 Parent</option>
-<option value="teacher">👨‍🏫 Teacher</option>
-</select>
+<div class="row">
+  <input id="name" placeholder="Name">
+  
+  <select id="role" required>
+    <option value="" disabled selected>-- Select Role --</option>
+    <option value="student">🎓 Student</option>
+    <option value="parent">👨‍👩‍👧 Parent</option>
+    <option value="teacher">👨‍🏫 Teacher</option>
+  </select>
+</div>
 
 <textarea id="message" placeholder="Write your review..."></textarea>
 
