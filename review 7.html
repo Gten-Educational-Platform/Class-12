@@ -245,10 +245,11 @@ button.filter-btn{
 
 <input id="name" placeholder="Name">
 
-<select id="role">
-  <option value="student">Student</option>
-  <option value="parent">Parent</option>
-  <option value="teacher">Teacher</option>
+<select id="role" required>
+  <option value="" disabled selected>-- Select Role --</option>
+  <option value="student">🎓 Student</option>
+<option value="parent">👨‍👩‍👧 Parent</option>
+<option value="teacher">👨‍🏫 Teacher</option>
 </select>
 
 <textarea id="message" placeholder="Write your review..."></textarea>
@@ -607,6 +608,12 @@ function submitReview(){
   let name = document.getElementById("name").value;
   let message = document.getElementById("message").value;
   let role = document.getElementById("role").value;
+  if(!role){
+  alert("Please select your role");
+  btn.disabled = false;
+  btn.innerText = "Submit Review";
+  return;
+}
   let file = getFile();
 
   // ❗ FIX HERE
