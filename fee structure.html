@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -38,6 +38,7 @@ h1{
   background:#fff;
   padding:20px;
   border-radius:15px;
+  border:2px solid #666; /* 🔥 darker border */
   box-shadow:0 10px 25px rgba(0,0,0,0.1);
   text-align:left;
 }
@@ -47,8 +48,22 @@ h1{
   color:#0d47a1;
 }
 
-.fee-box ul{
-  padding-left:18px;
+/* TABLE INSIDE BOX */
+.fee-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.fee-table td{
+  border-bottom:1px solid #ddd;
+  padding:8px;
+  font-size:14px;
+}
+
+.fee-table td:last-child{
+  text-align:right;
+  font-weight:bold;
 }
 
 /* BUTTON */
@@ -96,79 +111,290 @@ h1{
     grid-template-columns: 1fr;
   }
 }
+.note-box{
+  background:#fff8e1;
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
+  font-size:13px;
+}
+
+.note-box p{
+  margin:0 0 5px 0;
+  font-weight:bold;
+  color:#e65100;
+}
+
+.note-box ol{
+  padding-left:18px;
+  margin:0;
+}
+
+.note-box li{
+  margin-bottom:5px;
+}
+
+/* PRINT BUTTON */
+.print-btn{
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  background:#0d47a1;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  z-index:1000;
+}
+
+/* PRINT MODE */
+@media print{
+
+  body{
+    background:#fff;
+    padding:0;
+  }
+
+  .print-btn,
+  .home-btn,
+  .whatsapp-float,
+  .enroll-btn{
+    display:none; /* hide buttons */
+  }
+
+  .fee-container{
+    display:block; /* one column for print */
+  }
+
+
+
+
+
+
+.fee-box{
+  box-shadow:none;
+  border:2px solid #000;   /* DARK BORDER */
+  padding:10px;
+  page-break-inside:avoid;
+}
+
+  h1, h2{
+    text-align:center;
+  }
+}
+
+@page{
+  size: A4 landscape;
+  margin:10mm;
+}
+
+
+.call-btn{
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  color:#fff;
+  background:#ff9800;
+  text-decoration:none;
+  z-index:1000;
+}
+
+
+@media print{
+
+  body{
+    background:#fff;
+    padding:0;
+    font-size:11px; /* reduce overall size */
+  }
+    *{
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+.call-btn{
+  display:none !important;
+  visibility:hidden !important;
+}
+  .fee-box{
+    border:2px solid #000 !important;
+  }
+    .print-btn{
+    display:none !important;
+    position:static;
+  }
+
+  h1{
+    font-size:18px;
+    margin:5px 0;
+  }
+
+  h2{
+    font-size:14px;
+    margin:5px 0 10px;
+  }
+
+  .print-btn,
+  .home-btn,
+  .whatsapp-float,
+  .enroll-btn{
+    display:none;
+  }
+
+  .fee-container{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr); /* keep 2 columns */
+    gap:10px;
+  }
+
+  .fee-box{
+    box-shadow:none;
+    border:1px solid #ccc;
+    padding:10px;
+    page-break-inside:avoid;
+  }
+
+  .fee-box h3{
+    font-size:13px;
+    margin:5px 0;
+  }
+
+  .fee-table td{
+    padding:4px;
+    font-size:10px;
+  }
+
+  .note-box{
+    font-size:9px;
+    padding:6px;
+  }
+
+.logo{
+  width:100px !important;
+  display:block;
+  margin:0 auto 5px;
+}
+
+.print-footer{
+  display:block;
+  position:fixed;
+  bottom:5px;
+  left:0;
+  width:100%;
+  text-align:center;
+  font-size:10px;
+  border-top:1px solid #000;
+  padding-top:5px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- LOGO -->
 <img src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png" class="logo">
 
 <h1>G10 EDUCATIONAL PLATFORM</h1>
 <h2>Fee Structure</h2>
+<button onclick="window.print()" class="print-btn">🖨️ </button>
 
 <div class="fee-container">
 
-  <!-- 1 GROUP -->
-  <div class="fee-box">
-    <h3>1️⃣ Group Coaching</h3>
-    <ul>
-      <li>Simple Group: ₹1000 / month</li>
-      <li>Super Group (9–10 + Foundation): ₹2500 / month</li>
-      <li>Super Group (11–12 + Support): ₹2500 / month</li>
-      <li>Competitive Group: ₹2500 / month</li>
-    </ul>
-    <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Group Coaching')">Enroll Now</a>
-  </div>
+  <!-- GROUP -->
+ <div class="fee-box">
+  <h3>1️⃣ Group Coaching</h3>
+  <table class="fee-table">
+    <tr><td>Simple Group (Monthly)</td><td>₹1000 / month</td></tr>
+    <tr><td>Simple Group (One-Time)</td><td>₹10,000 / year</td></tr>
+<tr><td colspan="2"><hr></td></tr>
+    <tr><td>Super Group (9–10 + Foundation)</td><td>₹2500 / month</td></tr>
+    <tr><td>Super Group (One-Time)</td><td>₹25,000 / year</td></tr>
+<tr><td colspan="2"><hr></td></tr>
+    <tr><td>Super Group (11–12 + Support IIT-JEE|NEET)</td><td>₹2500 / month</td></tr>
+    <tr><td>Super Group (One-Time)</td><td>₹25,000 / year</td></tr>
+<tr><td colspan="2"><hr></td></tr>
+    <tr><td>Competitive Group</td><td>₹2500 / month</td></tr>
+    <tr><td>Competitive Group (One-Time)</td><td>₹25,000 / year</td></tr>
+  </table>
+  <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Group Coaching')">Enroll Now</a>
+</div>
 
-  <!-- 2 INDIVIDUAL -->
+  <!-- INDIVIDUAL -->
   <div class="fee-box">
     <h3>2️⃣ Individual / Dual Coaching</h3>
-    <ul>
-      <li>Class 9–10: ₹800 / class</li>
-      <li>Class 11–12 (CBSE/SEBA): ₹800 / class</li>
-      <li>ICSE/IB/Cambridge: ₹900 / class</li>
-      <li>IIT-JEE / NEET: ₹900 / class</li>
-    </ul>
+    <table class="fee-table">
+      <tr><td>Class 9–10</td><td>₹800 / class</td></tr>
+      <tr><td>Class 11–12 (CBSE/SEBA)</td><td>₹800 / class</td></tr>
+      <tr><td>ICSE/IB/Cambridge</td><td>₹900 / class</td></tr>
+      <tr><td>IIT-JEE / NEET</td><td>₹900 / class</td></tr>
+	<tr><td colspan="2"><hr></td></tr>  
+	  <tr><td>Doubt Clearing Class (On Demand)</td><td>₹1000 / class</td></tr>
+    </table>
     <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Individual Coaching')">Enroll Now</a>
+	<div class="note-box">
+  <p><strong>Note:</strong></p>
+  <ol>
+    <li>For regular students, we fully provide board syllabus, and for drop students, we provide an advanced, dedicated IIT-JEE preparation course.</li>
+    <li>In Dual Coaching, the fee is shared equally by both students:<br>
+      Board Coaching: ₹400/450 per class per student<br>
+      IIT-JEE / NEET Coaching: ₹450 per class per student
+    </li>
+  </ol>
+</div>
   </div>
 
-  <!-- 3 HOME -->
+  <!-- HOME -->
   <div class="fee-box">
     <h3>3️⃣ Home Tuition</h3>
-    <ul>
-      <li>Class 9–10: ₹850 / class</li>
-      <li>Class 11–12: ₹900 / class</li>
-      <li>ICSE/IB/Cambridge: ₹1000 / class</li>
-      <li>IIT-JEE / NEET: ₹1000 / class</li>
-    </ul>
+    <table class="fee-table">
+      <tr><td>Class 9–10</td><td>₹850 / class</td></tr>
+      <tr><td>Class 11–12</td><td>₹900 / class</td></tr>
+      <tr><td>ICSE/IB/Cambridge</td><td>₹1000 / class</td></tr>
+      <tr><td>IIT-JEE / NEET</td><td>₹1000 / class</td></tr>
+    </table>
     <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Home Tuition')">Enroll Now</a>
+	<div class="note-box">
+  <p><strong>Note:</strong></p>
+  <ul>
+    <li>For regular students, we fully provide board syllabus, and for drop students, we provide an advanced, dedicated IIT-JEE preparation course.</li>
+    <li>Fee may increase if distance is more than 3 KM.</li>
+  </ul>
+</div>
   </div>
 
-  <!-- 4 ONLINE -->
+  <!-- ONLINE -->
   <div class="fee-box">
     <h3>4️⃣ Online Coaching</h3>
-    <ul>
-      <li><strong>IIT-JEE PCM Combo (Class room):</strong> ₹4000 / year</li>
-      <li>Physics (Class room): ₹2000 / year</li>
-      <li>Chemistry (class room): ₹2000 / year</li>
-      <li>Math (Class room): ₹2000 / year</li>
-      <br>
-      <li>Individual IIT-JEE Online Coaching: ₹800 / class</li>
-      <li>Individual NEET Online Coaching: ₹800 / class</li>
-      <li>Individual Class 11–12 Online Coaching: ₹800 / class</li>
-      <li>Individual Class 9–10 Online Coaching: ₹700 / class</li>
-    </ul>
+    <table class="fee-table">
+      <tr><td><strong>IIT-JEE PCM Combo (Online Class room)</strong></td><td>₹4000 / year</td></tr>
+      <tr><td>Physics (Online Class room)</td><td>₹2000 / year</td></tr>
+      <tr><td>Chemistry (Online Class room)</td><td>₹2000 / year</td></tr>
+      <tr><td>Math (Online Class room)</td><td>₹2000 / year</td></tr>
+      <tr><td colspan="2"><hr></td></tr>
+      <tr><td>Individual IIT-JEE Online</td><td>₹800 / class</td></tr>
+      <tr><td>Individual NEET Online</td><td>₹800 / class</td></tr>
+      <tr><td>Class 11–12 Online</td><td>₹800 / class</td></tr>
+      <tr><td>Class 9–10 Online</td><td>₹700 / class</td></tr>
+    </table>
     <a href="#" class="enroll-btn" onclick="sendToWhatsApp('Online Coaching')">Enroll Now</a>
   </div>
 
 </div>
 
-<!-- FLOATING HOME -->
 <a href="https://www.g10educationalplatformindia.co.in/" class="home-btn">🏠</a>
-
-<!-- FLOATING WHATSAPP -->
 <a href="https://wa.me/919706380357" class="whatsapp-float">💬</a>
+<a href="tel:9706380357" class="call-btn">📞</a>
 
 <script>
 function sendToWhatsApp(type){
@@ -189,11 +415,14 @@ Coaching Type: ${type}
 Please guide me.`;
 
   let url = "https://wa.me/919706380357?text=" + encodeURIComponent(message);
-
-  // ✅ FIX: redirect instead of popup
   window.location.href = url;
 }
 </script>
 
+<div class="print-footer">
+  📍 Jayanagar Charali, Beltola Bazaar Road, Guwahati, Assam  
+  | 📞 +91 97063 80357  
+  | 🌐 www.g10educationalplatformindia.co.in
+</div>
 </body>
 </html>
