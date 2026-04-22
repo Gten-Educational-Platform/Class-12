@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>G10 Educational Platform Reviews</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,10 +14,18 @@ body{
   margin:0;
   padding:20px;
 }
+*{
+  box-sizing: border-box;
+}
+textarea{
+  width:100%;
+  max-width:100%;   /* 🔥 prevents overflow */
+  resize:none;      /* optional: stops stretching */
+}
 
 .container{
-  width:100%;
-  max-width:900px;
+  width:90%;
+  max-width:700px;
   margin:auto;
   background:white;
   padding:20px;
@@ -28,17 +37,17 @@ body{
 @media (max-width:768px){
 
   body{
-    padding:0; /* remove outer gap */
+    padding:0;
     background:#f2f2f2;
   }
 
   .container{
-    width:100%;
-    max-width:100%;
+    width:99%;
+    max-width:99%;
     margin:0;
-    padding:12px;   /* tighter but usable */
-    border-radius:0; /* full screen look */
-    box-shadow:none; /* cleaner mobile feel */
+    padding:12px;
+    border-radius:0;
+    box-shadow:none;
   }
 
   h2{
@@ -46,28 +55,64 @@ body{
   }
 
   .review{
-    font-size:20px;
+    font-size:18px;
+    line-height:1.5;
   }
 
   input, textarea, select{
-    font-size:17px;
+    font-size:18px;
+    padding:12px;
   }
 
   button{
     font-size:16px;
   }
 
+  /* ✅ TOP AREA FIX */
   .top-area{
-    flex-direction:column;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
   }
 
   #roleChart{
-    width:100% !important;
-    height:auto !important;
+    width:100px !important;
+    height:100px !important;
   }
 
   #topReviewBox{
-    width:100%;
+    flex:1;
+    font-size:13px;
+    max-height:150px;
+    overflow:auto;
+  }
+
+  .header-bar{
+    flex-wrap:nowrap;
+  }
+
+  .stats-inline{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:4px 8px;
+    font-size:13px;
+    white-space:nowrap;
+  }
+
+  .row{
+    display:flex;
+    gap:10px;
+  }
+
+  .row input{
+    flex:2;
+  }
+
+  .row select{
+    flex:1;
   }
 }
 
@@ -179,10 +224,6 @@ button.filter-btn{
   height:120px !important;
 }
 
-@media (max-width:768px){
-  body{padding:10px;}
-  .container{max-width:100%;padding:20px;}
-}
 
 .header-bar{
   display:flex;
@@ -205,14 +246,23 @@ button.filter-btn{
 /* mobile fix */
 @media (max-width:768px){
   .header-bar{
-    flex-direction:column;
-    align-items:flex-start;
-  }
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:nowrap;   /* 🔥 prevent breaking into next line */
+}
 
-  .stats-inline{
-    width:100%;
-    justify-content:space-between;
-  }
+.stats-inline{
+  display:inline-flex;        /* 🔥 key fix */
+  align-items:center;
+  gap:8px;
+  background:#007bff;
+  color:white;
+  padding:4px 8px;           /* smaller padding */
+  border-radius:8px;
+  font-size:13px;
+  width:auto;                /* 🔥 prevent full width */
+  white-space:nowrap;        /* 🔥 keep in one line */
 }
 
 #topReviewBox{
