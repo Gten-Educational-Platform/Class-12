@@ -211,7 +211,10 @@ h1{
   text-decoration:none;
   z-index:1000;
 }
-
+.qr-img{
+  width:80px;   /* 👈 normal screen size */
+  height:auto;
+}
 
 @media print{
 
@@ -295,6 +298,41 @@ h1{
   font-size:9px;
   border-top:1px solid #000;
   padding-top:5px;
+}
+
+.print-footer{
+  margin-top:10px;
+  border-top:1px solid #000;
+  padding-top:5px;
+}
+
+.footer-content{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.footer-text{
+  font-size:9px;
+  text-align:left;
+}
+
+.qr-img{
+  width:100px;   /* 👈 normal screen size */
+  height:auto;
+}
+
+.footer-content{
+  display:flex;
+  flex-direction:column;   /* 🔥 stack vertically */
+  align-items:center;      /* center everything */
+  text-align:center;
+  gap:5px;                 /* small spacing */
+}
+
+.footer-text{
+  font-size:8px; /* slightly smaller */
+  line-height:1.2;
 }
 </style>
 </head>
@@ -422,9 +460,18 @@ Please guide me.`;
 </script>
 
 <div class="print-footer">
-  📍 Jayanagar Charali, Beltola Bazaar Road, Guwahati, Assam  
-  | 📞 +91 97063 80357  
-  | 🌐 www.g10educationalplatformindia.co.in
+  <div class="footer-content">
+    
+    <!-- TEXT -->
+    <div class="footer-text">
+      📍 Jayanagar Charali, Beltola Bazaar Road, Guwahati, Assam <br>
+      📞 +91 97063 80357  |  🌐 www.g10educationalplatformindia.co.in
+    </div>
+
+    <!-- QR IMAGE -->
+    <img src="https://i.ibb.co/3yPtLX4K/UNO-QR.jpg" class="qr-img">
+
+  </div>
 </div>
 </body>
 </html>
