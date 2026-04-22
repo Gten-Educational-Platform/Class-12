@@ -190,8 +190,8 @@ h1{
 }
 
 @page{
-  size: A4 landscape;
-  margin:10mm;
+  size: A4 portrait;
+  margin:8mm;
 }
 
 
@@ -289,12 +289,10 @@ h1{
 
 .print-footer{
   display:block;
-  position:fixed;
-  bottom:5px;
-  left:0;
-  width:100%;
+  position:relative;   /* 🔥 CHANGE */
+  margin-top:10px;     /* spacing from content */
   text-align:center;
-  font-size:10px;
+  font-size:9px;
   border-top:1px solid #000;
   padding-top:5px;
 }
@@ -374,13 +372,17 @@ h1{
   </div>
 
   <!-- ONLINE -->
-  <div class="fee-box">
+   <div class="fee-box">
     <h3>4️⃣ Online Coaching</h3>
     <table class="fee-table">
       <tr><td><strong>IIT-JEE PCM Combo (Online Class room)</strong></td><td>₹4000 / year</td></tr>
-      <tr><td>Physics (Online Class room)</td><td>₹2000 / year</td></tr>
-      <tr><td>Chemistry (Online Class room)</td><td>₹2000 / year</td></tr>
-      <tr><td>Math (Online Class room)</td><td>₹2000 / year</td></tr>
+	  <tr><td><strong>IIT-JEE PCM Combo(Star Class Room)</strong></td><td>₹10,000 / year</td></tr>
+      <tr><td>Physics [IIT-JEE or NEET or BOARD] (Online Class room)</td><td>₹2000 / year</td></tr>
+	  <tr><td>Physics [IIT-JEE or NEET or BOARD] (Online Star Class Room)</td><td>₹5000 / year</td></tr>
+      <tr><td>Chemistry [IIT-JEE or NEET or BOARD] (Online Class room)</td><td>₹2000 / year</td></tr>
+	  <tr><td>Chemistry [IIT-JEE or NEET or BOARD] (Online Star Class Room)</td><td>₹5000 / year</td></tr>
+      <tr><td>Math [Only IIT-JEE ](Online Class room)</td><td>₹2000 / year</td></tr>
+	  <tr><td>Math [Only IIT-JEE ](Online Star Class Room)</td><td>₹5000 / year</td></tr>
       <tr><td colspan="2"><hr></td></tr>
       <tr><td>Individual IIT-JEE Online</td><td>₹800 / class</td></tr>
       <tr><td>Individual NEET Online</td><td>₹800 / class</td></tr>
