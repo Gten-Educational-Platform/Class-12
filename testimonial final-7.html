@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G10 Educational Platform Testimonials/Photos Gallery</title>
+
+<style>
+body{font-family:Arial;background:#7b9c87;margin:0;color:#e2e8f0}
+
+header{
+  background:#020617;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+  position:relative;
+}
+
+.tabs button{
+  margin:2px;
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  background:#1e293b;
+  color:#fff;
+  cursor:pointer;
+}
+.tabs button.active{background:#facc15;color:#000}
+
+.container{padding:10px}
+
+
+
+
+.carousel{
+  display:flex;
+  gap:16px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  padding:20px 10px;
+
+  scroll-snap-type:x mandatory;
+}
+
+.carousel::-webkit-scrollbar{
+  display:none;
+}
+
+
+
+
+.card{
+  min-width:260px;
+  max-width:260px;
+  flex:0 0 auto;
+
+  background:#1e293b;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+
+  scroll-snap-align:center;
+
+  transform: scale(0.85);   /* 🔥 side cards small */
+  opacity:0.6;
+  transition: all 0.4s ease;
+}
+
+/* 🔥 CENTER CARD */
+.card.active{
+  transform: scale(1.1);   /* 🔥 bigger */
+  opacity:1;
+  z-index:2;
+}
+
+
+
+.card p{
+  white-space:normal;
+  word-break:break-word;
+
+  text-align:justify;   /* 🔥 justify text */
+  text-justify:inter-word;
+}
+.card{
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+/* 🔥 Click / touch effect */
+.card:active{
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+.card:hover{
+  transform: scale(1.03);
+}
+
+
+
+
+.container{
+  padding:10px;
+  max-width:1100px;   /* keeps layout tight and professional */
+  margin:auto;
+}
+
+
+
+input,textarea{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border-radius:6px;
+  border:none;
+  background:#0b1220;
+  color:white;
+}
+
+button{
+  padding:6px;
+  margin-top:6px;
+  background:#3b82f6;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.hidden{display:none}
+
+.profile{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  margin:auto;
+  overflow:hidden;
+}
+.profile img{width:100%;height:100%}
+
+
+
+
+.yellow-btn{
+  background:#facc15;
+  color:#000;
+  border:2px solid #000;
+  font-weight:bold;
+}
+.yellow-btn:hover{
+  opacity:0.9;
+}
+
+.student-name{
+  color:#facc15;
+  font-weight:bold;
+}
+
+.profile{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  margin:auto;
+  overflow:hidden;
+  border:3px solid #3b82f6; /* blue ring */
+  padding:3px;
+  background:#0b1220;
+}
+
+.profile img{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+/* MOBILE */
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:repeat(2, 1fr);
+    gap:15px;
+  }
+}
+
+@media(max-width:600px){
+  .grid{
+    grid-template-columns:1fr;
+    justify-items:center;
+  }
+
+  .card{
+    width:92%;
+  }
+}
+
+@media(max-width:600px){
+  #videoFrame{
+    height:240px !important;
+  }
+}
+
+
+@media(max-width:600px){
+  .card{
+    min-width:85%;
+  }
+}
+
+/* ✅ CLEAN ADMIN PANEL ONLY */
+#adminPanel .card{
+  transform: none !important;     /* remove scaling */
+  opacity: 1 !important;          /* remove fade */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  padding:15px;
+}
+
+/* remove hover zoom in admin */
+#adminPanel .card:hover{
+  transform: none !important;
+}
+
+/* clean text (no justify mess) */
+#adminPanel .card p{
+  text-align:left;
+  line-height:1.5;
+}
+
+/* better buttons layout */
+#adminPanel .card button{
+  margin:4px 2px;
+  font-size:13px;
+}
+
+/* clean grid already good, just spacing */
+#adminList{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:20px;
+}
+
+
+</style>
+</head>
+
+<body>
+<div id="toast" style="
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#16a34a;
+  color:white;
+  padding:12px 18px;
+  border-radius:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  font-weight:bold;
+  opacity:0;
+  transform:translateY(20px);
+  transition:all 0.4s ease;
+  z-index:9999;
+">
+</div>
+
+<!-- VIDEO POPUP -->
+<div id="videoPopup" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+
+  <div style="
+    width:90%;
+    max-width:800px;
+    background:#000;
+    border-radius:10px;
+    padding:10px;
+    position:relative;
+  ">
+
+    <button onclick="closeVideo()" style="
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:red;
+      color:#fff;
+      border:none;
+      padding:6px 10px;
+      border-radius:5px;
+      cursor:pointer;
+    ">X</button>
+
+  <iframe id="videoFrame"
+  width="100%"
+  height="420"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen>
+</iframe>
+
+  </div>
+</div>
+
+
+
+
+<header>
+
+<img 
+  src="https://i.ibb.co/WNZTWPwv/LOGO-PNG-2025-fab.png"
+  onclick="toggleAdminPanel()"
+  style="width:45px;position:absolute;left:10px;top:8px;border-radius:50%;border:2px solid gold;cursor:pointer;"
+>
+
+<h2>G10 Educational Platform Testimonials/Photos Gallery</h2>
+
+<div class="tabs">
+  <button class="active" onclick="showTab('test',this)">Testimonials</button>
+  <button onclick="showTab('photo',this)">Photo Gallery</button>
+</div>
+
+</header>
+
+<div class="container">
+
+<!-- LOGIN / SUBMIT -->
+<div id="loginSection">
+<!-- BLACK BAR -->
+
+
+<div id="testimonialBar" style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#020617;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+">
+
+  <h3 style="margin:0;">Testimonials</h3>
+
+  <button onclick="toggleStudentForm()" class="yellow-btn" style="margin:0;">
+  Upload Testimonial
+</button>
+
+</div>
+
+<!-- FORM -->
+<div id="studentForm" class="hidden">
+
+<h3>Student Submit</h3>
+<input id="name" placeholder="Name">
+<input id="video" placeholder="YouTube Link">
+<textarea id="testimonial" placeholder="Write testimonial"></textarea>
+<input type="file" id="file" style="display:none">
+
+<button onclick="document.getElementById('file').click()" class="yellow-btn">
+  Upload/Click Profile photo
+</button>
+
+<span id="fileName" style="font-size:12px;color:#94a3b8;"></span>
+<button id="submitBtn" onclick="uploadData()">Submit</button>
+
+</div>
+
+
+
+
+
+
+
+<hr>
+
+<div id="adminLoginBox" class="hidden">
+
+
+
+
+
+
+<h3>Admin Login</h3>
+<input id="adminEmail" placeholder="Admin Email">
+<input id="adminPass" placeholder="Password" type="password">
+<button onclick="adminLogin()">Login as Admin</button>
+
+</div>
+
+
+
+
+
+
+<!-- TESTIMONIALS -->
+<div id="testSection">
+<div id="gallery" class="carousel"></div>
+</div>
+
+
+
+
+
+
+
+<!-- PHOTOS -->
+<div id="photoSection" class="hidden">
+
+<!-- BLACK BAR -->
+<div style="
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#020617;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+  gap:10px;
+">
+
+  <!-- LEFT -->
+  <h3 style="margin:0; white-space:nowrap;">Photo Gallery</h3>
+
+  <!-- MIDDLE -->
+  <input type="file" id="photoFile" style="
+    flex:1;
+    max-width:300px;
+    margin:0;
+  ">
+
+  <!-- RIGHT -->
+  <button onclick="uploadPhoto()" class="yellow-btn" style="margin:0;">
+  Upload Image
+</button>
+
+</div>
+
+<!-- GALLERY -->
+<div id="photoGallery" class="carousel"></div>
+
+</div>
+
+
+
+
+
+
+
+<!-- ADMIN -->
+<div id="adminPanel" class="hidden">
+  <h3>Admin Panel</h3>
+
+  <!-- ✅ ADD FILTER HERE -->
+  <select id="filterStatus" onchange="loadAdmin()" style="margin-bottom:10px;padding:6px;border-radius:6px;">
+    <option value="all">All</option>
+    <option value="approved">Approved</option>
+    <option value="pending">Pending</option>
+  </select>
+
+  <div id="adminList"></div>
+</div>
+
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+
+
+
+
+firebase.initializeApp({
+  apiKey:"AIzaSyCL0QfyBuu5jhNP4eKuPSf9FfS49FY5zi4",
+  authDomain:"g10-testimonial.firebaseapp.com",
+  projectId:"g10-testimonial"
+});
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+let isAdmin = false;
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("adminLoginBox").style.display = "none";
+});
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("studentForm").style.display = "none";
+});
+
+
+const photoGallery = document.getElementById("photoGallery");
+
+
+
+
+/* ADMIN PANEL TOGGLE */
+function toggleAdminPanel(){
+
+  const loginBox = document.getElementById("adminLoginBox");
+
+  // toggle login visibility first
+  if(loginBox.style.display === "block"){
+    loginBox.style.display = "none";
+  } else {
+    loginBox.style.display = "block";
+  }
+
+  // admin panel only if already logged in
+  if(isAdmin){
+    adminPanel.classList.toggle("hidden");
+  }
+}
+
+/* AUTO STUDENT LOGIN */
+auth.onAuthStateChanged(async user=>{
+  if(!user){
+    await auth.signInAnonymously();
+  }
+});
+
+
+
+
+function toggleStudentForm(){
+  const form = document.getElementById("studentForm");
+
+  if(form.style.display === "block"){
+    form.style.display = "none";
+  } else {
+    form.style.display = "block";
+  }
+}
+
+
+
+
+/* TAB */
+function showTab(tab,btn){
+
+  // hide ALL sections first
+  testSection.classList.add("hidden");
+  photoSection.classList.add("hidden");
+
+  // hide testimonial UI always
+  const bar = document.getElementById("testimonialBar");
+  const form = document.getElementById("studentForm");
+
+  if(bar) bar.style.display = "none";
+  if(form) form.style.display = "none";
+
+  // reset visibility based on tab
+  if(tab==="test"){
+    testSection.classList.remove("hidden");
+
+    if(bar) bar.style.display = "flex";
+  }
+
+  if(tab==="photo"){
+    photoSection.classList.remove("hidden");
+  }
+
+  // active tab UI
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+
+
+
+
+/* ADMIN LOGIN */
+async function adminLogin(){
+  try{
+    const email = adminEmail.value;
+    const pass = adminPass.value;
+
+    const res = await auth.signInWithEmailAndPassword(email, pass);
+
+    if(res.user.email === "g10.educational.platform@gmail.com"){
+      isAdmin = true;
+      adminPanel.classList.remove("hidden");
+      alert("Admin Logged In");
+      loadAdmin();
+      loadPhotos();
+    } else {
+      alert("Not admin account");
+    }
+
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+
+
+/* SUBMIT TESTIMONIAL */
+async function uploadData(){
+
+  const btn = document.getElementById("submitBtn");
+
+  try{
+    // 🔥 Show loading
+    btn.innerText = "Uploading...";
+    btn.disabled = true;
+
+    // 🔥 Ensure login
+    if(!auth.currentUser){
+      await auth.signInAnonymously();
+    }
+
+    const user = auth.currentUser;
+    if(!user){
+      throw new Error("Auth not ready. Try again.");
+    }
+
+    // 🔥 Get form data
+    const file = document.getElementById("file").files[0];
+    if(!file) throw new Error("Select image");
+
+    const nameVal = document.getElementById("name").value || "";
+    const videoVal = document.getElementById("video").value || "";
+    const textVal = document.getElementById("testimonial").value || "";
+
+    if(!nameVal.trim() || !textVal.trim()){
+      throw new Error("Name and testimonial are required");
+    }
+
+    // 🔥 Upload image to imgbb
+    const fd = new FormData();
+    fd.append("image", file);
+
+    const res = await fetch("https://api.imgbb.com/1/upload?key=de06c0547ba684b42daa90da75d0314a",{
+      method:"POST",
+      body:fd
+    });
+
+    const img = await res.json();
+    if(!img.success){
+      throw new Error("Image upload failed");
+    }
+
+    // 🔥 Save to Firestore
+    await db.collection("testimonials").add({
+      name: nameVal,
+      video: videoVal || "",
+      testimonial: textVal,
+      image: img.data.url,
+      approved: false,
+      createdAt: new Date(),
+      userId: user.uid
+    });
+
+    // ✅ Success message
+    showToast("✅ Submitted! Waiting for admin approval");
+
+    // 🔥 Reset form
+    document.getElementById("name").value = "";
+    document.getElementById("video").value = "";
+    document.getElementById("testimonial").value = "";
+    document.getElementById("file").value = "";
+    document.getElementById("fileName").innerText = "";
+
+  }catch(e){
+    // ❌ Error message
+    showToast("❌ " + e.message);
+  }
+
+  // 🔥 Restore button
+  btn.innerText = "Submit";
+  btn.disabled = false;
+}
+
+/* LOAD TESTIMONIALS (ONLY APPROVED) */
+async function loadGallery(){
+  const snap = await db.collection("testimonials").get();
+  let h = "";
+
+  snap.forEach(doc => {
+    const d = doc.data();
+
+    if(d.approved){
+
+      let videoBtn = "";
+
+      if(d.video){
+        videoBtn = `
+          <button onclick="openVideo('${d.video}')"
+            style="
+              margin-top:10px;
+              padding:8px 12px;
+              background:#facc15;
+              color:#000;
+              border:2px solid #000;
+              font-weight:bold;
+              border-radius:8px;
+              cursor:pointer;
+            ">
+            ▶ Watch Video
+          </button>
+        `;
+      }
+
+      h += `
+      <div class="card">
+        <div class="profile"><img src="${d.image}"></div>
+        <b class="student-name">${d.name}</b>
+        <p>${d.testimonial}</p>
+
+        ${videoBtn}
+      </div>`;
+    }
+  });
+
+  document.getElementById("gallery").innerHTML = h;
+}
+
+
+
+
+
+/* ADMIN PANEL */
+async function loadAdmin(){
+  const snap = await db.collection("testimonials").orderBy("createdAt","desc").get();
+  let h="";
+
+  const filter = document.getElementById("filterStatus")?.value || "all";
+
+  snap.forEach(doc=>{
+    const d = doc.data();
+
+    // 🔥 FILTER LOGIC
+    if(filter === "approved" && !d.approved) return;
+    if(filter === "pending" && d.approved) return;
+
+    // 📅 Format date
+    let dateText = "No date";
+    if(d.createdAt){
+      const date = d.createdAt.toDate ? d.createdAt.toDate() : new Date(d.createdAt);
+      dateText = date.toLocaleString();
+    }
+
+    h+=`
+    <div class="card">
+
+      <div class="profile">
+        <img src="${d.image}" onclick="previewImage('${d.image}')" style="cursor:pointer;">
+      </div>
+
+      <b class="student-name">${d.name}</b><br>
+
+      ${d.approved 
+        ? '<span style="color:lime;">Approved</span>' 
+        : '<span style="color:orange;">Pending</span>'}
+
+      <p>${d.testimonial}</p>
+
+      <small style="color:#94a3b8;">📅 ${dateText}</small><br>
+
+      ${d.video ? `<button onclick="openVideo('${d.video}')">▶ Video</button>` : ""}
+
+      <br><br>
+
+      <button onclick="approve('${doc.id}')">Approve</button>
+
+      <button onclick="editFull('${doc.id}','${d.name}','${d.testimonial}','${d.video}')">
+        Edit
+      </button>
+
+      <button onclick="changeImage('${doc.id}')">
+        Edit Image
+      </button>
+
+      <button onclick="del('${doc.id}')">Delete</button>
+
+    </div>`;
+  });
+
+  adminList.innerHTML = h;
+}
+
+
+
+/* APPROVE */
+/* APPROVE */
+function approve(id){
+  db.collection("testimonials").doc(id).update({approved:true});
+  loadAdmin();
+  loadGallery();
+}
+
+/* ✅ ADD HERE */
+function editFull(id,name,text,video){
+
+  const nn = prompt("Name", name);
+  const tt = prompt("Testimonial", text);
+  const vv = prompt("YouTube Link", video || "");
+
+  if(!nn || !tt) return alert("Required fields missing");
+
+  db.collection("testimonials").doc(id).update({
+    name: nn,
+    testimonial: tt,
+    video: vv
+  });
+
+  loadAdmin();
+  loadGallery();
+}
+
+/* DELETE */
+function del(id){
+  if(confirm("Delete?")){
+    db.collection("testimonials").doc(id).delete();
+    loadAdmin();
+    loadGallery();
+  }
+}
+
+/* PHOTO UPLOAD */
+async function uploadPhoto(){
+
+  const btn = event.target;
+
+  try{
+
+    // 🔥 loading UI
+    btn.innerText = "Uploading...";
+    btn.disabled = true;
+
+    const file = document.getElementById("photoFile").files[0];
+    if(!file){
+      showToast("❌ Please select an image");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("image", file);
+
+    const res = await fetch(
+      "https://api.imgbb.com/1/upload?key=de06c0547ba684b42daa90da75d0314a",
+      {
+        method: "POST",
+        body: fd
+      }
+    );
+
+    const img = await res.json();
+
+    if(!img.success){
+      throw new Error("Image upload failed");
+    }
+
+    await db.collection("photos").add({
+      image: img.data.url,
+      createdAt: new Date()
+    });
+
+    // 🔥 reset file input
+    document.getElementById("photoFile").value = "";
+
+    // 🔄 refresh gallery
+    loadPhotos();
+
+    // ✅ success message
+    showToast("✅ Photo uploaded successfully!");
+
+  }catch(e){
+    showToast("❌ " + e.message);
+  }
+
+  // 🔥 restore button
+  btn.innerText = "Upload Image";
+  btn.disabled = false;
+}
+
+/* LOAD PHOTOS + ADMIN DELETE */
+async function loadPhotos(){
+  const snap = await db.collection("photos").get();
+  let h="";
+
+  snap.forEach(doc=>{
+    h+=`
+    <div class="card">
+      <img src="${doc.data().image}" width="100%">
+
+      ${isAdmin ? `<button onclick="deletePhoto('${doc.id}')">Delete</button>` : ""}
+    </div>`;
+  });
+
+  photoGallery.innerHTML=h;
+}
+
+/* DELETE PHOTO */
+function deletePhoto(id){
+  if(confirm("Delete photo?")){
+    db.collection("photos").doc(id).delete();
+    loadPhotos();
+  }
+}
+
+/* INIT */
+loadGallery();
+loadPhotos();
+
+
+
+
+function openVideo(url){
+  let videoId = "";
+
+  if(url.includes("youtu.be/")){
+    videoId = url.split("youtu.be/")[1].split("?")[0];
+  }
+  else if(url.includes("watch?v=")){
+    videoId = url.split("v=")[1].split("&")[0];
+  }
+
+  if(!videoId){
+    alert("Invalid YouTube link");
+    return;
+  }
+
+  document.getElementById("videoFrame").src =
+    "https://www.youtube.com/embed/" + videoId + "?rel=0&modestbranding=1";
+
+  document.getElementById("videoPopup").style.display = "flex";
+}
+
+function closeVideo(){
+  document.getElementById("videoPopup").style.display = "none";
+  document.getElementById("videoFrame").src = "";
+}
+
+
+
+
+
+
+let autoScroll;
+let isUserInteracting = false;
+
+function startAutoScroll(){
+  autoScroll = setInterval(() => {
+    if(isUserInteracting) return;
+
+    const container = document.getElementById("gallery");
+
+    if (!container) return;
+
+    container.scrollBy({
+      left: 300,
+      behavior: "smooth"
+    });
+
+    // loop reset (smooth)
+    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+      container.scrollTo({ left: 0, behavior: "smooth" });
+    }
+
+  }, 2500);
+}
+
+
+
+function stopAutoScroll(){
+  clearInterval(autoScroll);
+}
+
+/* Detect user touch / scroll */
+const gallery = document.getElementById("gallery");
+
+gallery.addEventListener("touchstart", () => {
+  isUserInteracting = true;
+  stopAutoScroll();
+});
+
+gallery.addEventListener("mousedown", () => {
+  isUserInteracting = true;
+  stopAutoScroll();
+});
+
+gallery.addEventListener("touchend", () => {
+  isUserInteracting = false;
+  startAutoScroll();
+});
+
+gallery.addEventListener("mouseup", () => {
+  isUserInteracting = false;
+  startAutoScroll();
+});
+
+/* Start */
+startAutoScroll();
+
+const galleryEl = document.getElementById("gallery");
+
+/* Convert vertical wheel to horizontal scroll */
+galleryEl.addEventListener("wheel", (e) => {
+  e.preventDefault(); // stop vertical page scroll
+
+  galleryEl.scrollBy({
+    left: e.deltaY * 2, // control speed (2 = faster)
+    behavior: "smooth"
+  });
+}, { passive: false });
+
+
+
+
+
+/* 🔥 STOP on hover (card only - PC) */
+document.addEventListener("mouseover", (e) => {
+  if(e.target.closest(".card")){
+    isUserInteracting = true;
+    stopAutoScroll();
+  }
+});
+
+document.addEventListener("mouseout", (e) => {
+  if(e.target.closest(".card")){
+    isUserInteracting = false;
+    startAutoScroll();
+  }
+});
+
+
+
+
+
+
+
+let ticking = false;
+
+function updateCenterCard(){
+  const container = document.getElementById("gallery");
+  const cards = document.querySelectorAll(".card");
+
+  const center = container.scrollLeft + container.offsetWidth / 2;
+
+  cards.forEach(card => {
+    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+    const distance = Math.abs(center - cardCenter);
+
+    if(distance < card.offsetWidth / 2){
+      card.classList.add("active");
+    } else {
+      card.classList.remove("active");
+    }
+  });
+
+  ticking = false;
+}
+
+/* 🔥 Smooth scroll handler */
+document.getElementById("gallery").addEventListener("scroll", () => {
+  if(!ticking){
+    requestAnimationFrame(() => {
+      updateCenterCard();
+    });
+    ticking = true;
+  }
+});
+
+
+
+
+function updateCenterPhoto(){
+  const container = document.getElementById("photoGallery");
+  const cards = container.querySelectorAll(".card");
+
+  const center = container.scrollLeft + container.offsetWidth / 2;
+
+  cards.forEach(card => {
+    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+    const distance = Math.abs(center - cardCenter);
+
+    if(distance < card.offsetWidth / 2){
+      card.classList.add("active");
+    } else {
+      card.classList.remove("active");
+    }
+  });
+}
+let photoScroll;
+
+
+
+
+function startPhotoScroll(){
+  photoScroll = setInterval(() => {
+
+    if(isUserInteracting) return;
+
+    const container = document.getElementById("photoGallery");
+
+    container.scrollBy({
+      left: 220,
+      behavior: "smooth"
+    });
+
+    if(container.scrollLeft + container.clientWidth >= container.scrollWidth - 10){
+      container.scrollTo({ left: 0, behavior: "smooth" });
+    }
+
+  }, 2500);
+}
+
+
+
+function stopPhotoScroll(){
+  clearInterval(photoScroll);
+}
+
+
+const photoEl = document.getElementById("photoGallery");
+
+/* touch + mouse */
+photoEl.addEventListener("mouseenter", stopPhotoScroll);
+photoEl.addEventListener("mouseleave", startPhotoScroll);
+
+photoEl.addEventListener("touchstart", stopPhotoScroll);
+photoEl.addEventListener("touchend", startPhotoScroll);
+
+/* smooth center update */
+photoEl.addEventListener("scroll", () => {
+  requestAnimationFrame(updateCenterPhoto);
+});
+startPhotoScroll();
+
+
+
+async function changeImage(id){
+
+  const input = document.createElement("input");
+  input.type = "file";
+
+  input.onchange = async () => {
+    const file = input.files[0];
+    if(!file) return;
+
+    const fd = new FormData();
+    fd.append("image", file);
+
+    const res = await fetch("https://api.imgbb.com/1/upload?key=de06c0547ba684b42daa90da75d0314a",{
+      method:"POST",
+      body:fd
+    });
+
+    const img = await res.json();
+
+    if(!img.success){
+      return alert("Upload failed");
+    }
+
+    await db.collection("testimonials").doc(id).update({
+      image: img.data.url
+    });
+
+    alert("Image Updated");
+
+    loadAdmin();
+    loadGallery();
+  };
+
+  input.click();
+}
+
+
+document.getElementById("file").addEventListener("change", function(){
+  const file = this.files[0];
+  document.getElementById("fileName").innerText = file ? file.name : "";
+});
+
+
+
+function showToast(msg){
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+
+  toast.style.opacity = "1";
+  toast.style.transform = "translateY(0)";
+
+  setTimeout(()=>{
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(20px)";
+  }, 3000);
+}
+</script>
+
+</body>
+</html>
