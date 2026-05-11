@@ -74,11 +74,12 @@
     overflow-x:auto;
   }
 
- table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    min-width: 700px;
+  }
 
   th,
   td {
@@ -232,9 +233,9 @@
     -webkit-overflow-scrolling:touch;
   }
 
-table{
-  min-width:100%;
-}
+  table{
+    min-width:900px; /* allows horizontal scroll */
+  }
 
   th,
   td{
@@ -301,131 +302,6 @@ table{
     font-size:10px;
   }
 }
-/* ================= PRINT A4 FIX ================= */
-
-@page {
-  size: A4;
-  margin: 10mm;
-}
-
-@media print {
-
-  html,
-  body {
-    width: 210mm;
-    height: 297mm;
-    background: white !important;
-    margin: 0;
-    padding: 0;
-    zoom: 100%;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .container,
-  .container * {
-    visibility: visible;
-  }
-
-  .container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 190mm !important;
-    max-width: 190mm !important;
-    padding: 5mm !important;
-    margin: 0 auto !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    background: #fff !important;
-  }
-
-  /* Hide buttons and controls */
-  .no-print,
-  button,
-  #passwordScreen,
-  #downloadPdfBtn,
-  #whatsappShareBtn,
-  #cashfreeLink,
-  .actions {
-    display: none !important;
-  }
-
-  /* Table print fix */
-  .invoice-table-wrapper {
-    overflow: visible !important;
-  }
-
-  table {
-    width: 100% !important;
-    min-width: 100% !important;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
-
-  th,
-  td {
-    border: 1px solid #000 !important;
-    padding: 4px !important;
-    font-size: 10px !important;
-    word-wrap: break-word;
-    white-space: normal !important;
-  }
-
-  /* Inputs look like text */
-  input,
-  select {
-    border: none !important;
-    background: transparent !important;
-    font-size: 10px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    appearance: none;
-    -webkit-appearance: none;
-    width: 100% !important;
-  }
-
-  /* QR code size */
-  #qrCanvas img,
-  #qrCanvas canvas {
-    width: 80px !important;
-    height: 80px !important;
-  }
-
-  h2 {
-    font-size: 16px !important;
-    margin: 5px 0 !important;
-  }
-
-  .header {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .header img {
-    max-height: 50px !important;
-  }
-
-  .header .info {
-    font-size: 10px !important;
-    text-align: right;
-  }
-
-  .totals {
-    font-size: 11px !important;
-    margin-top: 10px !important;
-  }
-
-  .notes {
-    font-size: 8px !important;
-    margin-top: 10px !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -449,37 +325,15 @@ table{
 
       <h2>INVOICE/MONEY RECEIPT</h2>
 
-     
+      <div class="form-row">
+        <select id="studentSelect" onchange="handleStudentChange()">
+          <option value="">-- STUDENT NAME --</option>
+        </select>
+        <input list="invoiceList" id="invoiceSelect" placeholder="-- Load Invoice No. --" oninput="handleInvoiceInput()" />
+        <datalist id="invoiceList"></datalist>
+      </div>
 
-	 <div class="form-row">
-  <select id="studentSelect" onchange="handleStudentChange()">
-    <option value="">-- STUDENT NAME --</option>
-  </select>
-
-  <input
-    type="text"
-    id="phoneSearch"
-    placeholder="Search by Phone Number"
-    oninput="searchByPhone()"
-  />
-
-  <input
-    list="invoiceList"
-    id="invoiceSelect"
-    placeholder="-- Load Invoice No. --"
-    oninput="handleInvoiceInput()"
-  />
-
-  <datalist id="invoiceList"></datalist>
-</div>
-
-     
-
-
-
-
-
-	 <div class="form-row">
+      <div class="form-row">
         <input type="text" id="studentName" placeholder="Student Name" />
         <input type="text" id="phone" placeholder="Phone Number" />
       </div>
@@ -525,9 +379,7 @@ table{
       <div>
 	  
         <button onclick="addItem()" class="no-print">+ Add Coaching</button>
-		
-       <button id="printBtn" type="button" class="no-print" style="display:none;">  🖨️ Print Invoice</button>
-		
+        <button id="printBtn" onclick="window.print()" class="no-print" style="display:none;">🖨️ Print Invoice</button>
         <button id="downloadPdfBtn" class="no-print">⬇️ Download PDF</button>
         <button onclick="saveInvoice()" class="no-print">💾 Save Invoice</button>
         <button onclick="newInvoice()" class="no-print">🆕 New Invoice</button>
@@ -578,19 +430,25 @@ table{
 
 
 <script>
-async function checkPassword() {
-  const password = document.getElementById("passwordInput").value;
+function checkPassword() {
 
-  if (password !== "0000") {
+  const password =
+    document.getElementById("passwordInput").value;
+
+  if(password === "0000") {
+
+    document.getElementById("passwordScreen").style.display = "none";
+
+    document.getElementById("protectedContent").style.display = "block";
+
+    if(window.populateDropdowns){
+      window.populateDropdowns();
+    }
+
+  } else {
+
     alert("Incorrect password");
-    return;
-  }
 
-  document.getElementById("passwordScreen").style.display = "none";
-  document.getElementById("protectedContent").style.display = "block";
-
-  if (typeof window.populateDropdowns === "function") {
-    await window.populateDropdowns();
   }
 }
 </script>
@@ -618,6 +476,8 @@ const firebaseConfig = {
   measurementId: "G-EGDM8SYLCW"
 };
 
+
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -627,7 +487,7 @@ const db = getFirestore(app);
 
 
     // Function to share payment link via WhatsApp
-function sharePaymentLink() {
+    function sharePaymentLink() {
       const studentName = document.getElementById("studentName").value.trim() || "Student";
       const invoiceNo = document.getElementById("invoiceNo").textContent.trim() || "N/A";
       const totalAmount = document.getElementById("grandTotal").textContent.replace("Total Amount: ","").trim();
@@ -656,13 +516,9 @@ function sharePaymentLink() {
     const invoiceDateInput = document.getElementById("invoiceDateInput");
     if(invoiceDateInput) invoiceDateInput.valueAsDate = new Date();
 
-   
-   function escapeHTML(str){if(str===undefined||str===null)return'';return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  
+    function escapeHTML(str){if(str===undefined||str===null)return'';return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    function generateInvoiceNo(){return "INV-"+Date.now();}
 
-  function generateInvoiceNo(){return "INV-"+Date.now();}
-
-  
   
   
   async function populateDropdowns() {
@@ -754,102 +610,85 @@ window.handleStudentChange = handleStudentChange;
 
 
 
-async function saveInvoice() {
-  try {
-    const name = document.getElementById("studentName").value.trim();
-    if (!name) {
-      alert("Enter student name.");
-      return;
-    }
+   function saveInvoice() {
+      const name = document.getElementById("studentName").value.trim();
+      if (!name) return alert("Enter student name.");
 
-    let invoiceNo = document.getElementById("invoiceNo").textContent.trim();
-
-    if (!invoiceNo || invoiceNo === "-" || invoiceNo === "INV-0001") {
-      invoiceNo = generateInvoiceNo();
-      document.getElementById("invoiceNo").textContent = invoiceNo;
-    }
-
-    const rows = Array.from(document.querySelectorAll("#billBody tr")).map(row => {
-      const from = row.children[0].querySelector("input")?.value || "";
-      const to = row.children[1].querySelector("input")?.value || "";
-      const type = row.children[2].querySelector("select")?.value || "";
-
-      let subject = "";
-      if (type === "Prev. balance") {
-        subject = row.children[3].querySelector("input")?.value || "";
-      } else {
-        const subjectEl =
-          row.children[3].querySelector("select") ||
-          row.children[3].querySelector("input");
-        subject = subjectEl ? subjectEl.value : "";
+      let invoiceNo = document.getElementById("invoiceNo").textContent;
+      if (invoiceNo === "-" || !invoiceNo) {
+        invoiceNo = generateInvoiceNo();
+        document.getElementById("invoiceNo").textContent = invoiceNo;
       }
 
-      const qtyEl = row.children[4].querySelector("input");
-      const rateEl = row.children[5].querySelector("input");
-      const totalEl = row.children[6].querySelector("input");
+      const rows = Array.from(document.querySelectorAll("#billBody tr")).map(row => {
+        const from = row.children[0].querySelector("input")?.value || "";
+        const to = row.children[1].querySelector("input")?.value || "";
+const type = row.children[2].querySelector("select")?.value || "";
 
-      const qty = qtyEl ? qtyEl.value : "";
-      const rate = rateEl ? rateEl.value : "";
-      const total = totalEl ? totalEl.value : "0";
-
-      return { from, to, type, subject, qty, rate, total };
-    });
-
-    let grandTotalCalc = 0;
-
-    rows.forEach(r => {
-      grandTotalCalc += parseFloat(r.total || 0);
-    });
-
-    const amountPaidNumeric =
-      parseFloat(document.getElementById("amountPaid").value) || 0;
-
-    const balanceToSave =
-      parseFloat((grandTotalCalc - amountPaidNumeric).toFixed(2));
-
-    const invoice = {
-      name,
-      phone: document.getElementById("phone").value,
-      email: document.getElementById("email").value,
-      address: document.getElementById("address").value,
-      class: document.getElementById("studentClass").value,
-      date: invoiceDateInput.value,
-      amountPaid: document.getElementById("amountPaid").value,
-      rows,
-      total: grandTotalCalc,
-      balance: balanceToSave
-    };
-
-await setDoc(doc(db, "invoices", invoiceNo), invoice);
-
-const savedSnap = await getDoc(doc(db, "invoices", invoiceNo));
-
-if (!savedSnap.exists()) {
-  alert("Invoice could not be verified after saving.");
-  return;
+let subject = "";
+if (type === "Prev. balance") {
+  // For Prev. balance we always use <input>
+  subject = row.children[3].querySelector("input")?.value || "";
+} else {
+  let subjectEl = row.children[3].querySelector("select") || row.children[3].querySelector("input");
+  subject = subjectEl ? subjectEl.value : "";
 }
 
-await setDoc(doc(db, "students", name), {
+
+
+        const qtyEl = row.children[4].querySelector("input");
+        const rateEl = row.children[5].querySelector("input");
+        const totalEl = row.children[6].querySelector("input");
+
+        const qty = qtyEl ? qtyEl.value : (row.children[4].textContent.trim() || "");
+        const rate = rateEl ? rateEl.value : (row.children[5].textContent.trim() || "");
+        const total = totalEl ? totalEl.value : (row.children[6].textContent.trim() || "0");
+
+        return { from, to, type, subject, qty, rate, total };
+      });
+
+      // ----- NEW: compute grand total & balance so we can save it (used by Prev. balance) -----
+      let grandTotalCalc = 0;
+      rows.forEach(r => {
+        const rowTotal = (r.total !== undefined && r.total !== "") 
+          ? (parseFloat(r.total) || 0)
+          : ((parseFloat(r.qty) || 0) * (parseFloat(r.rate) || 0));
+        grandTotalCalc += rowTotal;
+      });
+      const amountPaidNumeric = parseFloat(document.getElementById("amountPaid").value) || 0;
+      const balanceToSave = parseFloat((grandTotalCalc - amountPaidNumeric).toFixed(2));
+      // -----------------------------------------------------------------------------------------
+
+      const invoice = {
+        name,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        class: document.getElementById("studentClass").value,
+        date: invoiceDateInput.value,
+        amountPaid: document.getElementById("amountPaid").value,
+        rows,
+        // store totals & balance (NEW) so Prev. balance lookup works
+        total: grandTotalCalc,
+        balance: balanceToSave
+      };
+
+      await setDoc(doc(db, "invoices", invoiceNo), invoice);
+
+    await setDoc(doc(db, "students", name), {
   phone: invoice.phone,
   email: invoice.email,
   address: invoice.address,
   class: invoice.class
 });
 
-await populateDropdowns();
+      populateDropdowns();
+      document.getElementById("invoiceSelect").value = invoiceNo;
+      document.getElementById("printBtn").style.display = "inline-block";
 
-document.getElementById("invoiceSelect").value = invoiceNo;
-document.getElementById("printBtn").style.display = "inline-block";
-
-alert("Invoice saved successfully: " + invoiceNo);
-
-  } catch (error) {
-    console.error(error);
-    alert("Save failed: " + error.message);
-  }
-}
-
-window.saveInvoice = saveInvoice;
+      alert("Invoice Saved!");
+    }
+	window.saveInvoice = saveInvoice;
 	
 	
 
@@ -865,19 +704,15 @@ window.saveInvoice = saveInvoice;
 
   if (!invoiceNo) return;
 
-  await loadInvoiceByNumber(invoiceNo);
+  loadInvoiceByNumber(invoiceNo);
 }
 window.handleInvoiceInput = handleInvoiceInput;
 
 
 
-
-
-
-
 async function loadInvoiceByNumber(invoiceNoParam)
  {
-  const invoiceNo = (invoiceNoParam || document.getElementById("invoiceSelect").value).trim();
+  const invoiceNo = invoiceNoParam || document.getElementById("invoiceSelect").value;
   const snap = await getDoc(doc(db, "invoices", invoiceNo));
 
 if (!snap.exists()) {
@@ -984,108 +819,52 @@ if (delBtn) delBtn.textContent = "×";
 }
 
     // ---------- add / edit rows ----------
-   
+    function addItem() {
+      document.getElementById("invoiceTable").style.display = "table";
+      const row = document.createElement("tr");
+     
 
+	 row.innerHTML = `
+        <td><input type="date"></td>
+        <td><input type="date"></td>
+        <td>
+          <select onchange="handleServiceTypeChange(this)">
+            <option>Individual Coaching</option>
+            <option>Home Tuition</option>
+            <option>Group Coaching</option>
+			<option>Online Coaching</option>
+            <option>Dual Coaching</option>
+            <option>Super Group Coaching</option>
+            <option>Demo Class Reg. Fee</option>
+            <option>Admission Fee</option>
+            <option>Study Material</option>
+            <option>Prev. balance</option>
+            <option>Fee Concession</option>
+          </select>
+        </td>
+        <td>
+          <select>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Math</option>
+            <option>Biology</option>
+            <option>Science</option>
+            <option>NA</option>
+            <option>Qlfd. Scholarship</option>
+          </select>
+        </td>
+        <td><input type="text" value="8 Class" style="width: 60px;" oninput="calculateTotal()"></td>
+        <td><input type="number" value="1000" min="0" class="rate" style="width: 60px;" oninput="calculateTotal()"></td>
+        <td class="item-total">1000.00</td>
+        <td class="no-print"><button class="delete-btn" onclick="this.closest('tr').remove();calculateTotal()">×</button></td>
 
-
-
- function addItem() {
-
-  document.getElementById("invoiceTable").style.display = "table";
-
-  const row = document.createElement("tr");
-
-  row.innerHTML = `
-    <td>
-      <input type="date">
-    </td>
-
-    <td>
-      <input type="date">
-    </td>
-
-    <td>
-      <select onchange="handleServiceTypeChange(this)">
-        <option>Individual Coaching</option>
-        <option>Home Tuition</option>
-        <option>Group Coaching</option>
-        <option>Online Coaching</option>
-        <option>Dual Coaching</option>
-        <option>Super Group Coaching</option>
-        <option>Demo Class Reg. Fee</option>
-        <option>Admission Fee</option>
-        <option>Study Material</option>
-        <option>Prev. balance</option>
-        <option>Fee Concession</option>
-      </select>
-    </td>
-
-    <td>
-      <select>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Science</option>
-        <option>NA</option>
-        <option>Qlfd. Scholarship</option>
-      </select>
-    </td>
-
-    <td>
-      <input
-        type="text"
-        value="8 Class"
-        style="width:60px;"
-        oninput="calculateTotal()"
-      >
-    </td>
-
-    <td>
-      <input
-        type="number"
-        value="1000"
-        min="0"
-        class="rate"
-        style="width:60px;"
-        oninput="calculateTotal()"
-      >
-    </td>
-
-    <td>
-      <input
-        type="number"
-        value="8000"
-        step="0.01"
-        class="total-input"
-        style="width:80px;text-align:center;"
-        oninput="calculateTotal()"
-      >
-    </td>
-
-    <td class="no-print">
-      <button
-        class="delete-btn"
-        onclick="this.closest('tr').remove();calculateTotal()"
-      >
-        ×
-      </button>
-    </td>
-  `;
-
-  document.getElementById("billBody").appendChild(row);
-
-  calculateTotal();
-}
-
-window.addItem = addItem;
+      `;
+      document.getElementById("billBody").appendChild(row);
+      calculateTotal();
+    }
+	window.addItem = addItem;
 	
 	
-
-
-
-
-
 
 async function handleServiceTypeChange(selectEl)
  {
@@ -1290,14 +1069,7 @@ window.handleServiceTypeChange = handleServiceTypeChange;
       updateQRCode(balance);
     }
 
- window.calculateTotal = calculateTotal; 
-
-
-
-
-
-
-  function convertNumberToWords(num) {
+    function convertNumberToWords(num) {
       if (!num || isNaN(num) || Number(num) === 0) return 'Zero Rupees';
       const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
                  'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen',
@@ -1317,13 +1089,7 @@ window.handleServiceTypeChange = handleServiceTypeChange;
       return (str.trim() + ' Rupees');
     }
 
-   
-
-
-
-
-
-   function updateQRCode(amount) {
+    function updateQRCode(amount) {
       const upiID = "9706380357@ucobank";
       const payeeName = "G10 EDUCATIONAL PLATFORM";
       const amt = (isNaN(amount) ? 0 : Number(amount).toFixed(2));
@@ -1338,7 +1104,7 @@ window.handleServiceTypeChange = handleServiceTypeChange;
         });
       }
     }
-
+window.calculateTotal = calculateTotal;
     // ---------- other utilities ----------
   
 
@@ -1563,98 +1329,7 @@ window.newInvoice = newInvoice;
 	
 	window.exportToExcel = exportToExcel;
 window.loadInvoiceByNumber = loadInvoiceByNumber;
-
-window.sharePaymentLink = sharePaymentLink;	
-
-
-
-document.getElementById("printBtn").addEventListener("click", () => {
-
-  document.title =
-    document.getElementById("invoiceNo").textContent;
-
-  window.print();
-});
 	
-	
-	
-	window.addEventListener("load", () => {
-  window.populateDropdowns = populateDropdowns;
-  window.handleStudentChange = handleStudentChange;
-  window.handleInvoiceInput = handleInvoiceInput;
-  window.loadInvoiceByNumber = loadInvoiceByNumber;
-});
-	
-	
-	async function searchByPhone() {
-
-  const phone = document
-    .getElementById("phoneSearch")
-    .value
-    .trim();
-
-  if (!phone) return;
-
-  const invoiceSnap = await getDocs(collection(db, "invoices"));
-
-  let found = false;
-
-  invoiceSnap.forEach((docSnap) => {
-
-    const invoice = docSnap.data();
-
-    if ((invoice.phone || "").includes(phone)) {
-
-      document.getElementById("invoiceSelect").value = docSnap.id;
-
-loadInvoiceByNumber(docSnap.id);
-
-      found = true;
-    }
-  });
-
-  if (!found && phone.length >= 4) {
-    console.log("No invoice found");
-  }
-}
-
-window.searchByPhone = searchByPhone;
-	
-	
-	
-	async function findInvoicesByPhone() {
-  const phone = document.getElementById("phone").value.trim();
-  if (!phone) {
-    alert("Enter phone number");
-    return;
-  }
-
-  const snap = await getDocs(collection(db, "invoices"));
-
-  const matches = [];
-
-  snap.forEach(docSnap => {
-    const inv = docSnap.data();
-    if ((inv.phone || "").trim() === phone) {
-      matches.push(docSnap.id);
-    }
-  });
-
-  if (!matches.length) {
-    alert("No invoice found");
-    return;
-  }
-
-  document.getElementById("invoiceList").innerHTML = "";
-
-  matches.forEach(no => {
-    const option = document.createElement("option");
-    option.value = no;
-    document.getElementById("invoiceList").appendChild(option);
-  });
-
-  alert(matches.length + " invoice(s) found");
-}
 	
  </script>
 </body>
