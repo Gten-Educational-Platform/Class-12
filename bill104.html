@@ -1493,6 +1493,41 @@ loadInvoiceByNumber(docSnap.id);
 window.searchByPhone = searchByPhone;
 	
 	
+	
+	async function findInvoicesByPhone() {
+  const phone = document.getElementById("phone").value.trim();
+  if (!phone) {
+    alert("Enter phone number");
+    return;
+  }
+
+  const snap = await getDocs(collection(db, "invoices"));
+
+  const matches = [];
+
+  snap.forEach(docSnap => {
+    const inv = docSnap.data();
+    if ((inv.phone || "").trim() === phone) {
+      matches.push(docSnap.id);
+    }
+  });
+
+  if (!matches.length) {
+    alert("No invoice found");
+    return;
+  }
+
+  document.getElementById("invoiceList").innerHTML = "";
+
+  matches.forEach(no => {
+    const option = document.createElement("option");
+    option.value = no;
+    document.getElementById("invoiceList").appendChild(option);
+  });
+
+  alert(matches.length + " invoice(s) found");
+}
+	
  </script>
 </body>
 </html>
