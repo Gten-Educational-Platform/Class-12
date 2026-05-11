@@ -1458,38 +1458,6 @@ document.getElementById("printBtn").addEventListener("click", () => {
 });
 	
 	
-	async function searchByPhone() {
-
-  const phone = document
-    .getElementById("phoneSearch")
-    .value
-    .trim();
-
-  if (!phone) return;
-
-  const invoiceSnap = await getDocs(collection(db, "invoices"));
-
-  let found = false;
-
-  invoiceSnap.forEach((docSnap) => {
-
-    const invoice = docSnap.data();
-
-    if ((invoice.phone || "").includes(phone)) {
-
-      document.getElementById("invoiceSelect").value = docSnap.id;
-
-loadInvoiceByNumber(docSnap.id);
-
-      found = true;
-    }
-  });
-
-  if (!found && phone.length >= 4) {
-    console.log("No invoice found");
-  }
-}
-
 async function searchByPhone() {
   const phone = document
     .getElementById("phoneSearch")
@@ -1538,6 +1506,42 @@ async function searchByPhone() {
     invoiceSelect.value = matches[0].id;
     await loadInvoiceByNumber(matches[0].id);
   }
+}
+	
+	
+	
+	async function findInvoicesByPhone() {
+  const phone = document.getElementById("phone").value.trim();
+  if (!phone) {
+    alert("Enter phone number");
+    return;
+  }
+
+  const snap = await getDocs(collection(db, "invoices"));
+
+  const matches = [];
+
+  snap.forEach(docSnap => {
+    const inv = docSnap.data();
+    if ((inv.phone || "").trim() === phone) {
+      matches.push(docSnap.id);
+    }
+  });
+
+  if (!matches.length) {
+    alert("No invoice found");
+    return;
+  }
+
+  document.getElementById("invoiceList").innerHTML = "";
+
+  matches.forEach(no => {
+    const option = document.createElement("option");
+    option.value = no;
+    document.getElementById("invoiceList").appendChild(option);
+  });
+
+  alert(matches.length + " invoice(s) found");
 }
 	
  </script>
