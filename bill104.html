@@ -325,15 +325,37 @@
 
       <h2>INVOICE/MONEY RECEIPT</h2>
 
-      <div class="form-row">
-        <select id="studentSelect" onchange="handleStudentChange()">
-          <option value="">-- STUDENT NAME --</option>
-        </select>
-        <input list="invoiceList" id="invoiceSelect" placeholder="-- Load Invoice No. --" oninput="handleInvoiceInput()" />
-        <datalist id="invoiceList"></datalist>
-      </div>
+     
 
-      <div class="form-row">
+	 <div class="form-row">
+  <select id="studentSelect" onchange="handleStudentChange()">
+    <option value="">-- STUDENT NAME --</option>
+  </select>
+
+  <input
+    type="text"
+    id="phoneSearch"
+    placeholder="Search by Phone Number"
+    oninput="searchByPhone()"
+  />
+
+  <input
+    list="invoiceList"
+    id="invoiceSelect"
+    placeholder="-- Load Invoice No. --"
+    oninput="handleInvoiceInput()"
+  />
+
+  <datalist id="invoiceList"></datalist>
+</div>
+
+     
+
+
+
+
+
+	 <div class="form-row">
         <input type="text" id="studentName" placeholder="Student Name" />
         <input type="text" id="phone" placeholder="Phone Number" />
       </div>
@@ -1434,6 +1456,42 @@ document.getElementById("printBtn").addEventListener("click", () => {
   window.handleInvoiceInput = handleInvoiceInput;
   window.loadInvoiceByNumber = loadInvoiceByNumber;
 });
+	
+	
+	async function searchByPhone() {
+
+  const phone = document
+    .getElementById("phoneSearch")
+    .value
+    .trim();
+
+  if (!phone) return;
+
+  const invoiceSnap = await getDocs(collection(db, "invoices"));
+
+  let found = false;
+
+  invoiceSnap.forEach((docSnap) => {
+
+    const invoice = docSnap.data();
+
+    if ((invoice.phone || "").includes(phone)) {
+
+      document.getElementById("invoiceSelect").value = docSnap.id;
+
+loadInvoiceByNumber(docSnap.id);
+
+      found = true;
+    }
+  });
+
+  if (!found && phone.length >= 4) {
+    console.log("No invoice found");
+  }
+}
+
+window.searchByPhone = searchByPhone;
+	
 	
  </script>
 </body>
