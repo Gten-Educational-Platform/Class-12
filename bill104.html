@@ -426,6 +426,34 @@ table{
     margin-top: 10px !important;
   }
 }
+
+
+
+@media print {
+
+  .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px !important;
+  }
+
+  table {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  th,
+  td {
+    font-size: 10px !important;
+    padding: 4px !important;
+  }
+
+  input,
+  select {
+    border: none !important;
+    background: transparent !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1576,12 +1604,44 @@ window.sharePaymentLink = sharePaymentLink;
 
 
 
-document.getElementById("printBtn").addEventListener("click", () => {
+document.getElementById("printBtn").addEventListener("click", async () => {
 
-  document.title =
-    document.getElementById("invoiceNo").textContent;
+  const printable = document.querySelector('.container');
 
-  window.print();
+  const canvas = await html2canvas(printable, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff"
+  });
+
+  const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+  const { jsPDF } = window.jspdf;
+
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  const pageWidth = 210;
+  const pageHeight = 297;
+
+  const imgWidth = 190;
+
+  const imgHeight =
+    (canvas.height * imgWidth) / canvas.width;
+
+  let y = 10;
+
+  pdf.addImage(
+    imgData,
+    'JPEG',
+    10,
+    y,
+    imgWidth,
+    imgHeight
+  );
+
+  pdf.save(
+    document.getElementById("invoiceNo").textContent + ".pdf"
+  );
 });
 	
 	
