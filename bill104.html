@@ -467,10 +467,13 @@ table{
   .qr p {
     display: none !important;
   }
-
+button{
+  touch-action: manipulation;
+}
 }
 </style>
 </head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <body>
   <div class="container">
     <div id="passwordScreen" style="text-align: center; margin-top: 100px;">
@@ -567,7 +570,15 @@ table{
 	  
         <button onclick="addItem()" class="no-print">+ Add Coaching</button>
 		
-       <button id="printBtn" type="button" class="no-print" style="display:none;">  🖨️ Print Invoice</button>
+       <button
+  id="printBtn"
+  type="button"
+  class="no-print"
+  style="display:none;"
+  onclick="printInvoice()"
+>
+  🖨️ Print Invoice
+</button>
 		
         <button id="downloadPdfBtn" class="no-print">⬇️ Download PDF</button>
         <button onclick="saveInvoice()" class="no-print">💾 Save Invoice</button>
@@ -1619,13 +1630,18 @@ window.sharePaymentLink = sharePaymentLink;
 
 
 
-document.getElementById("printBtn").addEventListener("click", () => {
+function printInvoice() {
 
   document.title =
-    document.getElementById("invoiceNo").textContent;
+    document.getElementById("invoiceNo").textContent || "Invoice";
 
-  window.print();
-});
+  // small delay improves mobile compatibility
+  setTimeout(() => {
+    window.print();
+  }, 300);
+}
+
+window.printInvoice = printInvoice;
 	
 
 
