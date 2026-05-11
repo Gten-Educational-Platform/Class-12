@@ -474,13 +474,27 @@ button{
 
 @media print {
 
-  th[colspan="2"] {
-    text-align: right !important;
-    padding-right: 6px !important;
+  /* DATE HEADER */
+  th[colspan="2"]{
+    text-align:right !important;
+    padding-right:8px !important;
   }
 
-  td input[type="date"] {
-    text-align: right !important;
+  /* FROM + TO HEADERS */
+  thead tr:nth-child(2) th{
+    text-align:right !important;
+  }
+
+  /* FIRST TWO DATE COLUMNS */
+  tbody td:nth-child(1),
+  tbody td:nth-child(2){
+    text-align:right !important;
+  }
+
+  tbody td:nth-child(1) input,
+  tbody td:nth-child(2) input{
+    text-align:right !important;
+    direction:rtl !important;
   }
 
 }
