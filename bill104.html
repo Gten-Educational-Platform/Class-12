@@ -1490,42 +1490,54 @@ loadInvoiceByNumber(docSnap.id);
   }
 }
 
-window.searchByPhone = searchByPhone;
-	
-	
-	
-	async function findInvoicesByPhone() {
-  const phone = document.getElementById("phone").value.trim();
-  if (!phone) {
-    alert("Enter phone number");
-    return;
-  }
+async function searchByPhone() {
+  const phone = document
+    .getElementById("phoneSearch")
+    .value
+    .trim();
 
-  const snap = await getDocs(collection(db, "invoices"));
+  const invoiceList = document.getElementById("invoiceList");
+  const invoiceSelect = document.getElementById("invoiceSelect");
+
+  invoiceList.innerHTML = "";
+  invoiceSelect.value = "";
+
+  if (!phone) return;
+
+  const invoiceSnap = await getDocs(collection(db, "invoices"));
 
   const matches = [];
 
-  snap.forEach(docSnap => {
-    const inv = docSnap.data();
-    if ((inv.phone || "").trim() === phone) {
-      matches.push(docSnap.id);
+  invoiceSnap.forEach((docSnap) => {
+    const invoice = docSnap.data();
+
+    if ((invoice.phone || "").includes(phone)) {
+      matches.push({
+        id: docSnap.id,
+        date: invoice.date || ""
+      });
     }
   });
 
   if (!matches.length) {
-    alert("No invoice found");
     return;
   }
 
-  document.getElementById("invoiceList").innerHTML = "";
-
-  matches.forEach(no => {
-    const option = document.createElement("option");
-    option.value = no;
-    document.getElementById("invoiceList").appendChild(option);
+  matches.sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
   });
 
-  alert(matches.length + " invoice(s) found");
+  matches.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.id;
+    invoiceList.appendChild(option);
+  });
+
+  // auto-load only when exactly one invoice matches
+  if (matches.length === 1) {
+    invoiceSelect.value = matches[0].id;
+    await loadInvoiceByNumber(matches[0].id);
+  }
 }
 	
  </script>
