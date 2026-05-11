@@ -74,12 +74,11 @@
     overflow-x:auto;
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    min-width: 700px;
-  }
+ table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
 
   th,
   td {
@@ -233,9 +232,9 @@
     -webkit-overflow-scrolling:touch;
   }
 
-  table{
-    min-width:900px; /* allows horizontal scroll */
-  }
+table{
+  min-width:100%;
+}
 
   th,
   td{
@@ -302,6 +301,131 @@
     font-size:10px;
   }
 }
+/* ================= PRINT A4 FIX ================= */
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    background: white !important;
+    margin: 0;
+    padding: 0;
+    zoom: 100%;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .container,
+  .container * {
+    visibility: visible;
+  }
+
+  .container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 190mm !important;
+    max-width: 190mm !important;
+    padding: 5mm !important;
+    margin: 0 auto !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  /* Hide buttons and controls */
+  .no-print,
+  button,
+  #passwordScreen,
+  #downloadPdfBtn,
+  #whatsappShareBtn,
+  #cashfreeLink,
+  .actions {
+    display: none !important;
+  }
+
+  /* Table print fix */
+  .invoice-table-wrapper {
+    overflow: visible !important;
+  }
+
+  table {
+    width: 100% !important;
+    min-width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid #000 !important;
+    padding: 4px !important;
+    font-size: 10px !important;
+    word-wrap: break-word;
+    white-space: normal !important;
+  }
+
+  /* Inputs look like text */
+  input,
+  select {
+    border: none !important;
+    background: transparent !important;
+    font-size: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100% !important;
+  }
+
+  /* QR code size */
+  #qrCanvas img,
+  #qrCanvas canvas {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  h2 {
+    font-size: 16px !important;
+    margin: 5px 0 !important;
+  }
+
+  .header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header img {
+    max-height: 50px !important;
+  }
+
+  .header .info {
+    font-size: 10px !important;
+    text-align: right;
+  }
+
+  .totals {
+    font-size: 11px !important;
+    margin-top: 10px !important;
+  }
+
+  .notes {
+    font-size: 8px !important;
+    margin-top: 10px !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -325,15 +449,37 @@
 
       <h2>INVOICE/MONEY RECEIPT</h2>
 
-      <div class="form-row">
-        <select id="studentSelect" onchange="handleStudentChange()">
-          <option value="">-- STUDENT NAME --</option>
-        </select>
-        <input list="invoiceList" id="invoiceSelect" placeholder="-- Load Invoice No. --" oninput="handleInvoiceInput()" />
-        <datalist id="invoiceList"></datalist>
-      </div>
+     
 
-      <div class="form-row">
+	 <div class="form-row">
+  <select id="studentSelect" onchange="handleStudentChange()">
+    <option value="">-- STUDENT NAME --</option>
+  </select>
+
+  <input
+    type="text"
+    id="phoneSearch"
+    placeholder="Search by Phone Number"
+    oninput="searchByPhone()"
+  />
+
+  <input
+    list="invoiceList"
+    id="invoiceSelect"
+    placeholder="-- Load Invoice No. --"
+    oninput="handleInvoiceInput()"
+  />
+
+  <datalist id="invoiceList"></datalist>
+</div>
+
+     
+
+
+
+
+
+	 <div class="form-row">
         <input type="text" id="studentName" placeholder="Student Name" />
         <input type="text" id="phone" placeholder="Phone Number" />
       </div>
@@ -1423,6 +1569,10 @@ window.sharePaymentLink = sharePaymentLink;
 
 
 document.getElementById("printBtn").addEventListener("click", () => {
+
+  document.title =
+    document.getElementById("invoiceNo").textContent;
+
   window.print();
 });
 	
@@ -1434,6 +1584,77 @@ document.getElementById("printBtn").addEventListener("click", () => {
   window.handleInvoiceInput = handleInvoiceInput;
   window.loadInvoiceByNumber = loadInvoiceByNumber;
 });
+	
+	
+	async function searchByPhone() {
+
+  const phone = document
+    .getElementById("phoneSearch")
+    .value
+    .trim();
+
+  if (!phone) return;
+
+  const invoiceSnap = await getDocs(collection(db, "invoices"));
+
+  let found = false;
+
+  invoiceSnap.forEach((docSnap) => {
+
+    const invoice = docSnap.data();
+
+    if ((invoice.phone || "").includes(phone)) {
+
+      document.getElementById("invoiceSelect").value = docSnap.id;
+
+loadInvoiceByNumber(docSnap.id);
+
+      found = true;
+    }
+  });
+
+  if (!found && phone.length >= 4) {
+    console.log("No invoice found");
+  }
+}
+
+window.searchByPhone = searchByPhone;
+	
+	
+	
+	async function findInvoicesByPhone() {
+  const phone = document.getElementById("phone").value.trim();
+  if (!phone) {
+    alert("Enter phone number");
+    return;
+  }
+
+  const snap = await getDocs(collection(db, "invoices"));
+
+  const matches = [];
+
+  snap.forEach(docSnap => {
+    const inv = docSnap.data();
+    if ((inv.phone || "").trim() === phone) {
+      matches.push(docSnap.id);
+    }
+  });
+
+  if (!matches.length) {
+    alert("No invoice found");
+    return;
+  }
+
+  document.getElementById("invoiceList").innerHTML = "";
+
+  matches.forEach(no => {
+    const option = document.createElement("option");
+    option.value = no;
+    document.getElementById("invoiceList").appendChild(option);
+  });
+
+  alert(matches.length + " invoice(s) found");
+}
 	
  </script>
 </body>
