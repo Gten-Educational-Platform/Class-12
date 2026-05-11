@@ -1635,15 +1635,27 @@ function printInvoice() {
   document.title =
     document.getElementById("invoiceNo").textContent || "Invoice";
 
-  // small delay improves mobile compatibility
-  setTimeout(() => {
+  // mobile fix
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+
+    // force repaint before print
+    document.body.offsetHeight;
+
+    requestAnimationFrame(() => {
+      window.print();
+    });
+
+  } else {
+
     window.print();
-  }, 300);
+
+  }
 }
 
 window.printInvoice = printInvoice;
 	
-
+document.getElementById("printBtn")
+  .addEventListener("click", printInvoice);
 
 
 
