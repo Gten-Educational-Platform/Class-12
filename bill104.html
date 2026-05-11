@@ -1459,73 +1459,52 @@ document.getElementById("printBtn").addEventListener("click", () => {
 	
 	
 	async function searchByPhone() {
+  const phone = document.getElementById("phoneSearch").value.trim();
 
-  const phone = document
-    .getElementById("phoneSearch")
-    .value
-    .trim();
+  const invoiceList = document.getElementById("invoiceList");
+  const invoiceSelect = document.getElementById("invoiceSelect");
+
+  invoiceList.innerHTML = "";
+  invoiceSelect.value = "";
 
   if (!phone) return;
 
   const invoiceSnap = await getDocs(collection(db, "invoices"));
 
-  let found = false;
-
-  invoiceSnap.forEach((docSnap) => {
-
-    const invoice = docSnap.data();
-
-    if ((invoice.phone || "").includes(phone)) {
-
-      document.getElementById("invoiceSelect").value = docSnap.id;
-
-loadInvoiceByNumber(docSnap.id);
-
-      found = true;
-    }
-  });
-
-  if (!found && phone.length >= 4) {
-    console.log("No invoice found");
-  }
-}
-
-window.searchByPhone = searchByPhone;
-	
-	
-	
-	async function findInvoicesByPhone() {
-  const phone = document.getElementById("phone").value.trim();
-  if (!phone) {
-    alert("Enter phone number");
-    return;
-  }
-
-  const snap = await getDocs(collection(db, "invoices"));
-
   const matches = [];
 
-  snap.forEach(docSnap => {
-    const inv = docSnap.data();
-    if ((inv.phone || "").trim() === phone) {
-      matches.push(docSnap.id);
+  invoiceSnap.forEach((docSnap) => {
+    const invoice = docSnap.data();
+
+    if ((invoice.phone || "").trim().includes(phone)) {
+      matches.push({
+        invoiceNo: docSnap.id,
+        name: invoice.name || ""
+      });
     }
   });
 
   if (!matches.length) {
-    alert("No invoice found");
     return;
   }
 
-  document.getElementById("invoiceList").innerHTML = "";
-
-  matches.forEach(no => {
-    const option = document.createElement("option");
-    option.value = no;
-    document.getElementById("invoiceList").appendChild(option);
+  matches.sort((a, b) => {
+    const ta = parseInt((a.invoiceNo || "").replace("INV-", "")) || 0;
+    const tb = parseInt((b.invoiceNo || "").replace("INV-", "")) || 0;
+    return tb - ta;
   });
 
-  alert(matches.length + " invoice(s) found");
+  matches.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.invoiceNo;
+    option.label = `${item.invoiceNo} - ${item.name}`;
+    invoiceList.appendChild(option);
+  });
+
+  if (matches.length === 1) {
+    invoiceSelect.value = matches[0].invoiceNo;
+    await loadInvoiceByNumber(matches[0].invoiceNo);
+  }
 }
 	
  </script>
