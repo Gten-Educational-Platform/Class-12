@@ -471,6 +471,21 @@ button{
   touch-action: manipulation;
 }
 }
+
+@media print {
+
+  th[colspan="2"] {
+    text-align: left !important;
+    padding-left: 6px !important;
+  }
+
+  td input[type="date"] {
+    text-align: left !important;
+  }
+
+}
+
+
 </style>
 </head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
