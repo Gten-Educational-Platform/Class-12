@@ -741,7 +741,7 @@ table{
   style="display:none"
 />
 
-  button
+ <button
   type="button"
   class="no-print"
   onclick="openPhotoOptions()"
@@ -2045,7 +2045,15 @@ window.sharePaymentLink = sharePaymentLink;
 
 
 
+function openPhotoOptions() {
 
+  const input = document.getElementById("photoInput");
+
+  // reset value so same image can be selected again
+  input.value = "";
+
+  input.click();
+}
 
 
 
