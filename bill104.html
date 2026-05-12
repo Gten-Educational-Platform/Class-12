@@ -719,31 +719,31 @@ table{
 
   <div class="student-photo-box">
 
-  <img
-    id="studentPhoto"
-    src="https://i.ibb.co/4wz0V8Q/user.png"
-    alt="Student Photo"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    onclick="document.getElementById('photoInput').click()"
-    style="cursor:pointer;"
-  >
+ <img
+  id="studentPhoto"
+  src="https://i.ibb.co/4wz0V8Q/user.png"
+  alt="Student Photo"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+  style="cursor:pointer;"
+>
 
-  <div style="font-size:11px; margin-top:5px; color:#666;">
-    Tap photo to upload
-  </div>
+<div style="font-size:11px; margin-top:5px; color:#666;">
+  Tap photo to upload
+</div>
 
- <input
+<input
   type="file"
   id="photoInput"
   accept="image/*"
+  capture="environment"
   style="display:none"
 />
 
- <button
+<button
   type="button"
   class="no-print"
-  onclick="openPhotoOptions()"
+  id="uploadBtn"
 >
   📷 Upload Photo
 </button>
@@ -2204,16 +2204,20 @@ window.markAsPaid = markAsPaid;
 
 
 
-function openPhotoOptions() {
+const photoInput = document.getElementById("photoInput");
+const studentPhoto = document.getElementById("studentPhoto");
+const uploadBtn = document.getElementById("uploadBtn");
 
-  const input = document.getElementById("photoInput");
+/* direct mobile-safe tap */
+studentPhoto.addEventListener("click", () => {
+  photoInput.value = "";
+  photoInput.click();
+});
 
-  // reset value so same image can be selected again
-  input.value = "";
-
-  input.click();
-}
-window.openPhotoOptions = openPhotoOptions;
+uploadBtn.addEventListener("click", () => {
+  photoInput.value = "";
+  photoInput.click();
+});
 	
  </script>
 </body>
