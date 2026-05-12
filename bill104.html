@@ -2045,15 +2045,7 @@ window.sharePaymentLink = sharePaymentLink;
 
 
 
-function openPhotoOptions() {
 
-  const input = document.getElementById("photoInput");
-
-  // reset value so same image can be selected again
-  input.value = "";
-
-  input.click();
-}
 
 
 
@@ -2209,6 +2201,20 @@ async function markAsPaid() {
 }
 
 window.markAsPaid = markAsPaid;
+
+
+
+
+function openPhotoOptions() {
+
+  const input = document.getElementById("photoInput");
+
+  // reset value so same image can be selected again
+  input.value = "";
+
+  input.click();
+}
+
 	
  </script>
 </body>
