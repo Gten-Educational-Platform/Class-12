@@ -1153,21 +1153,7 @@ const invoice = snap.data();
   </td>
   <td><input type="text" value="${escapeHTML(row.qty || '')}" style="width:60px;" oninput="calculateTotal()"></td>
   <td><input type="number" value="${escapeHTML(row.rate || 0)}" min="0" class="rate" style="width:60px;" oninput="calculateTotal()"></td>
-  
-<td>
-  <input
-    type="number"
-    step="0.01"
-    value="${escapeHTML(row.total || 0)}"
-    class="total-input"
-    style="text-align:center;"
-    oninput="${
-      row.type === 'Admission Fee'
-        ? 'updateManualTotal(this)'
-        : 'calculateTotal()'
-    }"
-  >
-</td>  
+  <td><input type="number" step="0.01" value="${escapeHTML(row.total || 0)}" class="total-input" style="text-align:center;" oninput="calculateTotal()"></td>
   <td class="no-print"><button class="delete-btn" onclick="this.closest('tr').remove();calculateTotal()">×</button></td>
 `;
 
@@ -1347,7 +1333,11 @@ async function handleServiceTypeChange(selectEl)
       `;
       totalCell.innerHTML = `<input type="number" step="0.01" value="0.00" class="total-input" style="text-align:center;" oninput="calculateTotal()">`;
     } 
-    else {  // Prev. balance
+   
+
+
+
+   else {  // Prev. balance
       fromInput.disabled = false;
       toInput.disabled = false;
 
@@ -1384,7 +1374,14 @@ querySnapshot.forEach((docSnap) => {
       }
     }
   }
-  else if (val === "Study Material") {
+ 
+
+
+
+
+
+
+ else if (val === "Study Material") {
     qtyCell.innerHTML = `<input type="text" value="1 Qnty" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="0" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
     fromInput.disabled = false;
@@ -1406,6 +1403,13 @@ querySnapshot.forEach((docSnap) => {
       `;
     }
   }
+  
+  
+  
+  
+  
+  
+  
   else if (["Individual Coaching", "Online Coaching", "Home Tuition", "Dual Coaching", "Demo Class Reg. Fee"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="8 Class" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="1000" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
@@ -1428,7 +1432,14 @@ querySnapshot.forEach((docSnap) => {
       `;
     }
   }
-  else if (["Group Coaching", "Super Group Coaching"].includes(val)) {
+ 
+
+
+
+
+
+
+ else if (["Group Coaching", "Super Group Coaching"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="1 Month" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="0" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
     fromInput.disabled = false;
@@ -1455,74 +1466,32 @@ querySnapshot.forEach((docSnap) => {
   
   
   
- else {
+  else {
+    const qtyVal = (qtyCell.querySelector("input") && !qtyCell.querySelector("input").disabled) ? qtyCell.querySelector("input").value : 1;
+    const rateVal = (rateCell.querySelector("input") && !rateCell.querySelector("input").disabled) ? rateCell.querySelector("input").value : 0;
+    qtyCell.innerHTML = `<input type="number" value="${escapeHTML(qtyVal || 0)}" min="0" style="width:60px;" oninput="calculateTotal()">`;
+    rateCell.innerHTML = `<input type="number" value="${escapeHTML(rateVal || 0)}" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
+    fromInput.disabled = false;
+    toInput.disabled = false;
+    if (!fromInput.value) fromInput.value = invoiceDateInput.value || '';
+    const qtyNum = parseFloat(qtyVal) || 0;
+    const rateNum = parseFloat(rateVal) || 0;
+    totalCell.innerHTML = (qtyNum * rateNum).toFixed(2);
 
-  const qtyVal =
-    (qtyCell.querySelector("input") &&
-    !qtyCell.querySelector("input").disabled)
-      ? qtyCell.querySelector("input").value
-      : 1;
-
-  const rateVal =
-    (rateCell.querySelector("input") &&
-    !rateCell.querySelector("input").disabled)
-      ? rateCell.querySelector("input").value
-      : 0;
-
-  qtyCell.innerHTML = `
-    <input
-      type="number"
-      value="${escapeHTML(qtyVal || 0)}"
-      min="0"
-      style="width:60px;"
-      oninput="calculateTotal()"
-    >
-  `;
-
-  rateCell.innerHTML = `
-    <input
-      type="number"
-      value="${escapeHTML(rateVal || 0)}"
-      min="0"
-      class="rate"
-      style="width:60px;"
-      oninput="calculateTotal()"
-    >
-  `;
-
-  fromInput.disabled = false;
-  toInput.disabled = false;
-
-  if (!fromInput.value)
-    fromInput.value = invoiceDateInput.value || '';
-
-  const qtyNum = parseFloat(qtyVal) || 0;
-  const rateNum = parseFloat(rateVal) || 0;
-
-  totalCell.innerHTML = `
-    <input
-      type="number"
-      step="0.01"
-      value="${(qtyNum * rateNum).toFixed(2)}"
-      class="total-input"
-      style="text-align:center;"
-      oninput="calculateTotal()"
-    >
-  `;
-
-  if (!subjectCell.querySelector("select")) {
-    subjectCell.innerHTML = `
-      <select>
-        <option>Physics</option>
-        <option>Chemistry</option>
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Science</option>
-        <option>NA</option>
-      </select>
-    `;
+    // ✅ Only set subject dropdown if empty
+    if (!subjectCell.querySelector("select")) {
+      subjectCell.innerHTML = `
+        <select>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Math</option>
+          <option>Biology</option>
+          <option>Science</option>
+          <option>NA</option>
+        </select>
+      `;
+    }
   }
-}
 
   calculateTotal();
 }
