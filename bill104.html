@@ -503,7 +503,33 @@ table{
   text-align:center !important;
   font-weight:bold !important;
 }
-  
+ /* STUDENT PHOTO PRINT POSITION */
+#studentPhotoBox{
+  position:absolute !important;
+  top:115px !important;
+  right:15px !important;
+  width:120px !important;
+  text-align:right !important;
+  z-index:999 !important;
+}
+
+/* BOTH IMAGE TYPES */
+#studentPhoto,
+#uploadedPreview{
+  width:110px !important;
+  height:110px !important;
+  object-fit:cover !important;
+  border-radius:8px !important;
+  border:2px solid #000 !important;
+  display:block !important;
+  margin-left:auto !important;
+  background:#fff !important;
+}
+
+/* SPACE SO TEXT DOES NOT OVERLAP IMAGE */
+.student-fields{
+  padding-right:140px !important;
+} 
   
   
 
@@ -607,6 +633,7 @@ table{
 
 
 .student-section{
+  position:relative;
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
