@@ -733,90 +733,84 @@ table{
 
 
 
-<div class="form-row student-photo-row">
+	 <div class="form-row student-photo-row">
 
   <div style="flex:1;">
-
-    <div class="print-field">
+   <div class="print-field">
       <span class="print-label">Student Name :</span>
       <input type="text" id="studentName" placeholder="Student Name" />
     </div>
 
     <br>
-
-    <div class="print-field">
-      <span class="print-label">Phone Number :</span>
-      <input type="text" id="phone" placeholder="Phone Number" />
-    </div>
-
+    <input type="text" id="phone" placeholder="Phone Number" />
   </div>
 
-  <div class="student-photo-box">
+ <div class="student-photo-box">
 
-    <img
-      id="studentPhoto"
-      src="https://i.ibb.co/4wz0V8Q/user.png"
-      alt="Student Photo"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-      style="cursor:pointer;"
-    >
+  <img
+    id="studentPhoto"
+    src="https://i.ibb.co/4wz0V8Q/user.png"
+    alt="Student Photo"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+    style="cursor:pointer;"
+  >
 
-    <input
-      type="file"
-      id="photoInput"
-      accept="image/*"
-      style="display:none"
-    />
-
-    <input
-      type="file"
-      id="cameraInput"
-      accept="image/*"
-      capture="environment"
-      style="display:none"
-    />
-
-    <button
-      type="button"
-      class="no-print"
-      id="uploadBtn"
-    >
-      📷 Upload Photo
-    </button>
-
-    <button
-      type="button"
-      class="no-print"
-      id="cameraBtn"
-    >
-      📸 Click Photo
-    </button>
-
+  <div style="font-size:11px; margin-top:5px; color:#666;">
+    
   </div>
+
+  <!-- Upload from gallery -->
+  <input
+    type="file"
+    id="photoInput"
+    accept="image/*"
+    style="display:none"
+  />
+
+  <!-- Open mobile camera -->
+  <input
+    type="file"
+    id="cameraInput"
+    accept="image/*"
+    capture="environment"
+    style="display:none"
+  />
+
+  <button
+    type="button"
+    class="no-print"
+    id="uploadBtn"
+  >
+    📷 Upload Photo
+  </button>
+
+  <button
+    type="button"
+    class="no-print"
+    id="cameraBtn"
+  >
+    📸 Click Photo
+  </button>
+
+</div>
 
 </div>
 
 
 
-<div class="form-row">
 
-  <div class="print-field">
-    <span class="print-label">Email :</span>
-    <input type="email" id="email" placeholder="Email ID" />
-  </div>
-
-  <div class="print-field">
-    <span class="print-label">Address :</span>
-    <input type="text" id="address" placeholder="Address" />
-  </div>
-
-  <div class="print-field">
+	  
+	  
+	  
+      <div class="form-row">
+        <input type="email" id="email" placeholder="Email ID" />
+        <input type="text" id="address" placeholder="Address" />
+		<div class="print-field">
     <span class="print-label">Parent Name :</span>
     <input type="text" id="parentName" placeholder="Parent Name" />
   </div>
-
-</div>
+      </div>
 	  
 	  
 	  
