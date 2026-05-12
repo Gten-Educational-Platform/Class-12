@@ -1436,32 +1436,79 @@ querySnapshot.forEach((docSnap) => {
       `;
     }
   }
-  else {
-    const qtyVal = (qtyCell.querySelector("input") && !qtyCell.querySelector("input").disabled) ? qtyCell.querySelector("input").value : 1;
-    const rateVal = (rateCell.querySelector("input") && !rateCell.querySelector("input").disabled) ? rateCell.querySelector("input").value : 0;
-    qtyCell.innerHTML = `<input type="number" value="${escapeHTML(qtyVal || 0)}" min="0" style="width:60px;" oninput="calculateTotal()">`;
-    rateCell.innerHTML = `<input type="number" value="${escapeHTML(rateVal || 0)}" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
-    fromInput.disabled = false;
-    toInput.disabled = false;
-    if (!fromInput.value) fromInput.value = invoiceDateInput.value || '';
-    const qtyNum = parseFloat(qtyVal) || 0;
-    const rateNum = parseFloat(rateVal) || 0;
-    totalCell.innerHTML = (qtyNum * rateNum).toFixed(2);
+  
+  
+  
+  
+  
+ else {
 
-    // ✅ Only set subject dropdown if empty
-    if (!subjectCell.querySelector("select")) {
-      subjectCell.innerHTML = `
-        <select>
-          <option>Physics</option>
-          <option>Chemistry</option>
-          <option>Math</option>
-          <option>Biology</option>
-          <option>Science</option>
-          <option>NA</option>
-        </select>
-      `;
-    }
+  const qtyVal =
+    (qtyCell.querySelector("input") &&
+    !qtyCell.querySelector("input").disabled)
+      ? qtyCell.querySelector("input").value
+      : 1;
+
+  const rateVal =
+    (rateCell.querySelector("input") &&
+    !rateCell.querySelector("input").disabled)
+      ? rateCell.querySelector("input").value
+      : 0;
+
+  qtyCell.innerHTML = `
+    <input
+      type="number"
+      value="${escapeHTML(qtyVal || 0)}"
+      min="0"
+      style="width:60px;"
+      oninput="calculateTotal()"
+    >
+  `;
+
+  rateCell.innerHTML = `
+    <input
+      type="number"
+      value="${escapeHTML(rateVal || 0)}"
+      min="0"
+      class="rate"
+      style="width:60px;"
+      oninput="calculateTotal()"
+    >
+  `;
+
+  fromInput.disabled = false;
+  toInput.disabled = false;
+
+  if (!fromInput.value)
+    fromInput.value = invoiceDateInput.value || '';
+
+  const qtyNum = parseFloat(qtyVal) || 0;
+  const rateNum = parseFloat(rateVal) || 0;
+
+  totalCell.innerHTML = `
+    <input
+      type="number"
+      step="0.01"
+      value="${(qtyNum * rateNum).toFixed(2)}"
+      class="total-input"
+      style="text-align:center;"
+      oninput="calculateTotal()"
+    >
+  `;
+
+  if (!subjectCell.querySelector("select")) {
+    subjectCell.innerHTML = `
+      <select>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Math</option>
+        <option>Biology</option>
+        <option>Science</option>
+        <option>NA</option>
+      </select>
+    `;
   }
+}
 
   calculateTotal();
 }
