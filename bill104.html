@@ -605,12 +605,21 @@ table{
 
 
 .student-photo-row{
+  display:flex;
   align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
 }
 
 .student-photo-box{
   width:140px;
   text-align:center;
+  flex-shrink:0;
+}
+
+/* HIDE EMPTY PHOTO BOX */
+.student-photo-box.hidden{
+  display:none !important;
 }
 
 #studentPhoto{
@@ -622,6 +631,49 @@ table{
   background:#f0f0f0;
   display:block;
   margin:auto;
+}
+
+.student-photo-box button{
+  margin-top:8px;
+  width:100%;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+  .student-photo-row{
+    flex-direction:column;
+  }
+
+  .student-photo-box{
+    width:100%;
+  }
+
+  #studentPhoto{
+    margin:auto;
+  }
+}
+
+/* PRINT FIX */
+@media print{
+
+  .student-photo-row{
+    display:flex !important;
+    flex-direction:row !important;
+    justify-content:space-between !important;
+    align-items:flex-start !important;
+  }
+
+  .student-photo-box{
+    order:2;
+    margin-left:auto !important;
+    text-align:right !important;
+  }
+
+  #studentPhoto{
+    margin:0 !important;
+  }
+
 }
 
 .student-photo-box button{
@@ -717,7 +769,7 @@ table{
     <input type="text" id="phone" placeholder="Phone Number" />
   </div>
 
-  <div class="student-photo-box">
+  <div class="student-photo-box hidden" id="studentPhotoBox">
 
  <img
   id="studentPhoto"
@@ -2217,6 +2269,33 @@ uploadBtn.addEventListener("click", () => {
   photoInput.value = "";
   photoInput.click();
 });
+	
+	
+	
+	function togglePhotoVisibility(photoUrl) {
+
+  const photoBox =
+    document.getElementById("studentPhotoBox");
+
+  const photo =
+    document.getElementById("studentPhoto");
+
+  if (
+    !photoUrl ||
+    photoUrl.includes("user.png")
+  ) {
+
+    photoBox.classList.add("hidden");
+
+  } else {
+
+    photo.src = photoUrl;
+
+    photoBox.classList.remove("hidden");
+  }
+}
+	
+	
 	
  </script>
 </body>
