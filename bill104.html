@@ -656,6 +656,25 @@ table{
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
+
+
+#uploadBtn,
+#cameraBtn{
+
+  width:100%;
+  margin-top:8px;
+
+}
+
+#cameraBtn{
+  background:#2196f3;
+  color:#fff;
+}
+
+#uploadBtn{
+  background:#28a745;
+  color:#fff;
+}
 </style>
 
 
@@ -2227,19 +2246,50 @@ window.markAsPaid = markAsPaid;
 
 
 const photoInput = document.getElementById("photoInput");
+const cameraInput = document.getElementById("cameraInput");
+
 const studentPhoto = document.getElementById("studentPhoto");
+
 const uploadBtn = document.getElementById("uploadBtn");
+const cameraBtn = document.getElementById("cameraBtn");
 
-/* direct mobile-safe tap */
+/* tap image */
 studentPhoto.addEventListener("click", () => {
-  photoInput.value = "";
-  photoInput.click();
+
+  // mobile camera preferred
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+
+    cameraInput.value = "";
+    cameraInput.click();
+
+  } else {
+
+    photoInput.value = "";
+    photoInput.click();
+
+  }
 });
 
+/* upload from gallery */
 uploadBtn.addEventListener("click", () => {
+
   photoInput.value = "";
   photoInput.click();
+
 });
+
+/* open camera */
+cameraBtn.addEventListener("click", () => {
+
+  cameraInput.value = "";
+  cameraInput.click();
+
+});
+
+/* upload handlers */
+photoInput.addEventListener("change", uploadStudentPhoto);
+
+cameraInput.addEventListener("change", uploadStudentPhoto);
 	
  </script>
 </body>
