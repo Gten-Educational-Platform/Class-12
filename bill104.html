@@ -1182,8 +1182,9 @@ async function handleStudentChange() {
     document.getElementById("phone").value = s.phone || "";
     document.getElementById("email").value = s.email || "";
     document.getElementById("address").value = s.address || "";
+	document.getElementById("studentClass").value = s.class || "Class 9";
 	document.getElementById("parentName").value = s.parentName || "";
-    document.getElementById("studentClass").value = s.class || "Class 9";
+    
 	// ✅ LOAD PHOTO
 document.getElementById("studentPhoto").src =
   s.photo || "https://i.ibb.co/4wz0V8Q/user.png";
