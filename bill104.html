@@ -737,6 +737,19 @@ table{
 >
   Upload Image
 </button>
+		  <div style="margin-top:15px;text-align:center;">
+  <img
+    id="uploadedPreview"
+    src=""
+    style="
+      max-width:250px;
+      display:none;
+      border:2px solid #ccc;
+      border-radius:8px;
+      padding:4px;
+    "
+  >
+</div>
         <button onclick="saveInvoice()" class="no-print">💾 Save Invoice</button>
 <button onclick="markAsPaid()" class="no-print paid-btn">
   ✅ Paid
@@ -2012,8 +2025,12 @@ async function uploadImage(event) {
 
       console.log(imageUrl);
 
-      // Example:
-      // document.getElementById("preview").src = imageUrl;
+		const preview =
+  document.getElementById("uploadedPreview");
+
+preview.src = imageUrl;
+
+preview.style.display = "block";
 
     } else {
 
