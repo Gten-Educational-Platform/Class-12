@@ -1346,23 +1346,47 @@ async function handleServiceTypeChange(selectEl)
       let lastDueBalance = null;
 
       if (studentName) {
+
+
+
+
+
 const querySnapshot = await getDocs(collection(db, "invoices"));
-let latestDate = null;
+
+let invoices = [];
 
 querySnapshot.forEach((docSnap) => {
 
   const invNo = docSnap.id;
   const inv = docSnap.data();
-		
-          if (inv.name === studentName && invNo !== document.getElementById("invoiceNo").textContent) {
-            const invDate = new Date(inv.date);
-            if (!latestDate || invDate > latestDate) {
-              latestDate = invDate;
-              lastInvoiceNo = invNo;
-              lastDueBalance = parseFloat(inv.balance || 0);
-            }
-          }
-      });
+
+  // same student + not current invoice
+  if (
+    inv.name === studentName &&
+    invNo !== document.getElementById("invoiceNo").textContent
+  ) {
+
+    invoices.push({
+      invoiceNo: invNo,
+      balance: parseFloat(inv.balance || 0),
+      timestamp: parseInt(invNo.replace("INV-", "")) || 0
+    });
+  }
+});
+
+// sort newest invoice first
+invoices.sort((a, b) => b.timestamp - a.timestamp);
+
+// pick latest
+if (invoices.length > 0) {
+  lastInvoiceNo = invoices[0].invoiceNo;
+  lastDueBalance = invoices[0].balance;
+}
+	  
+	  
+	  
+	  
+	  
       }
 
       if (lastInvoiceNo) {
