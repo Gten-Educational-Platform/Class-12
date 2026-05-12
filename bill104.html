@@ -605,12 +605,15 @@ table{
 
 
 .student-photo-row{
+  display:flex;
   align-items:flex-start;
+  justify-content:space-between;
 }
 
 .student-photo-box{
   width:140px;
-  text-align:center;
+  text-align:right;
+  margin-left:auto;
 }
 
 #studentPhoto{
@@ -621,7 +624,8 @@ table{
   border-radius:8px;
   background:#f0f0f0;
   display:block;
-  margin:auto;
+  margin-left:auto;
+  margin-right:0;
 }
 
 .student-photo-box button{
@@ -639,9 +643,10 @@ table{
     width:100%;
   }
 
-  #studentPhoto{
-    margin:auto;
-  }
+#studentPhoto{
+  margin-left:auto;
+  margin-right:0;
+}
 }
 #studentPhoto:active{
   transform:scale(0.98);
