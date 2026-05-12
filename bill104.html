@@ -601,6 +601,11 @@ table{
 
 }
 
+
+#uploadedPreview{
+  display:none !important;
+}
+
 </style>
 
 
@@ -687,7 +692,19 @@ table{
     "
   >
 </div>
-
+<img
+  id="uploadedPreview"
+  src=""
+  style="
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:10px;
+    border:2px solid #2196f3;
+    display:none;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  "
+>
 	   
 
 
@@ -1007,30 +1024,19 @@ async function handleStudentChange() {
     const studentPhoto =
       document.getElementById("studentPhoto");
 
-    const studentPhoto =
-      document.getElementById("studentPhoto");
 
    if (s.photoURL && s.photoURL.trim() !== "") {
 
   // force reload image
   const freshURL = s.photoURL + "?t=" + Date.now();
 
-  studentPhoto.src = "";
-  studentPhoto.src = "";
-
-  studentPhoto.src = freshURL;
-  studentPhoto.src = freshURL;
-
-  studentPhoto.style.display = "block";
-  studentPhoto.style.display = "block";
+ studentPhoto.src = freshURL;
+studentPhoto.style.display = "block";
 
 } else {
 
-  studentPhoto.src = "";
-  studentPhoto.src = "";
-
-  studentPhoto.style.display = "none";
-  studentPhoto.style.display = "none";
+ studentPhoto.src = "";
+studentPhoto.style.display = "none";
 }
   }
 
