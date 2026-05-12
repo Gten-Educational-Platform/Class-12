@@ -1190,6 +1190,9 @@ document.getElementById("studentPhoto").src =
   s.photo || "https://i.ibb.co/4wz0V8Q/user.png";
 
 uploadedPhotoURL = s.photo || "";
+
+/* ADD THIS LINE */
+togglePhotoVisibility(s.photo);
   }
 
   document.getElementById("invoiceNo").textContent =
@@ -1355,6 +1358,9 @@ document.getElementById("studentPhoto").src =
   invoice.photo || "https://i.ibb.co/4wz0V8Q/user.png";
 
 uploadedPhotoURL = invoice.photo || "";
+
+/* SHOW/HIDE PHOTO BOX */
+togglePhotoVisibility(invoice.photo);
   document.getElementById("invoiceDateInput").value = invoice.date;
   document.getElementById("amountPaid").value = invoice.amountPaid;
   document.getElementById("invoiceNo").textContent = invoiceNo;
@@ -2003,6 +2009,7 @@ querySnapshot.forEach((docSnap) => {
     "https://i.ibb.co/4wz0V8Q/user.png";
 
   uploadedPhotoURL = "";
+  togglePhotoVisibility("");
   
       // ensure invoiceSelect cleared too
       const invoiceSelect = document.getElementById("invoiceSelect");
