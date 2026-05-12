@@ -760,19 +760,7 @@ table{
 >
   Upload Image
 </button>
-		  <div style="margin-top:15px;text-align:center;">
-  <img
-    id="uploadedPreview"
-    src=""
-    style="
-      max-width:250px;
-      display:none;
-      border:2px solid #ccc;
-      border-radius:8px;
-      padding:4px;
-    "
-  >
-</div>
+		 
         <button onclick="saveInvoice()" class="no-print">💾 Save Invoice</button>
 <button onclick="markAsPaid()" class="no-print paid-btn">
   ✅ Paid
@@ -1019,8 +1007,8 @@ async function handleStudentChange() {
     const studentPhoto =
       document.getElementById("studentPhoto");
 
-    const uploadedPreview =
-      document.getElementById("uploadedPreview");
+    const studentPhoto =
+      document.getElementById("studentPhoto");
 
    if (s.photoURL && s.photoURL.trim() !== "") {
 
@@ -1028,21 +1016,21 @@ async function handleStudentChange() {
   const freshURL = s.photoURL + "?t=" + Date.now();
 
   studentPhoto.src = "";
-  uploadedPreview.src = "";
+  studentPhoto.src = "";
 
   studentPhoto.src = freshURL;
-  uploadedPreview.src = freshURL;
+  studentPhoto.src = freshURL;
 
   studentPhoto.style.display = "block";
-  uploadedPreview.style.display = "block";
+  studentPhoto.style.display = "block";
 
 } else {
 
   studentPhoto.src = "";
-  uploadedPreview.src = "";
+  studentPhoto.src = "";
 
   studentPhoto.style.display = "none";
-  uploadedPreview.style.display = "none";
+  studentPhoto.style.display = "none";
 }
   }
 
