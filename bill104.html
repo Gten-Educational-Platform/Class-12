@@ -676,6 +676,7 @@ table{
 </div>
 
 <div id="studentPhotoBox" style="text-align:center; margin-top:10px;">
+
   <img
     id="studentPhoto"
     src=""
@@ -689,21 +690,23 @@ table{
       box-shadow:0 2px 8px rgba(0,0,0,0.2);
     "
   >
-</div>
 
-<img
-  id="uploadedPreview"
-  src=""
-  style="
-    width:120px;
-    height:120px;
-    object-fit:cover;
-    border-radius:10px;
-    border:2px solid #2196f3;
-    display:none;
-    box-shadow:0 2px 8px rgba(0,0,0,0.2);
-  "
->
+  <img
+    id="uploadedPreview"
+    src=""
+    style="
+      width:120px;
+      height:120px;
+      object-fit:cover;
+      border-radius:10px;
+      border:2px solid #2196f3;
+      display:none;
+      box-shadow:0 2px 8px rgba(0,0,0,0.2);
+      margin-top:10px;
+    "
+  >
+
+</div>
 	   
 
 
@@ -2134,6 +2137,11 @@ async function uploadImage(event) {
 
 		const preview =
   document.getElementById("uploadedPreview");
+
+const studentPhoto =
+  document.getElementById("studentPhoto");
+
+studentPhoto.style.display = "none";
 
 preview.src = imageUrl;
 
