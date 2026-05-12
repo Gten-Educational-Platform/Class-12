@@ -472,6 +472,9 @@ table{
   }
 }
 
+
+
+
 @media print {
 
   #studentSelect,
@@ -482,12 +485,21 @@ table{
   }
 
   .qr p {
-    display: none !important;
+    display: block !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    margin-bottom: 6px !important;
   }
-button{
-  touch-action: manipulation;
+
+  button{
+    touch-action: manipulation;
+  }
 }
-}
+
+
+
+
 
 @media print {
 
@@ -658,16 +670,34 @@ button{
         <!-- 🔹 NEW Cashfree Link Field -->
         <input type="text" id="cashfreeLink" placeholder="Enter Cashfree Payment Link manually here..." class="no-print">
       </div>
-    </div>
-  </div>
-
-  <div class="notes" style="margin-top: 30px; font-size: 9px;">
+	  
+	  
+	 <div class="notes" style="margin-top: 30px; font-size: 9px;">
     <p><strong>Note:</strong></p>
     <ol style="padding-left: 20px;">
       <li>This is a computer-generated invoice; signature is not required.</li>
       <li>Fee once paid is not refundable.</li>
     </ol>
+  </div>  
+	  
+	  
+	  
+    </div>
   </div>
+
+ 
+
+
+
+
+
+
+
+
+  
+  
+  
+  
 
   <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
