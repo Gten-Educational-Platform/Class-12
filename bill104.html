@@ -369,7 +369,7 @@ table{
 
 @page {
   size: A4;
-  margin: 10mm;
+  margin: 12mm;
 }
 
 @media print {
@@ -603,6 +603,41 @@ table{
 }
 
 
+
+
+
+.student-section{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.student-fields{
+  flex:1;
+}
+
+#studentPhotoBox{
+  width:130px;
+  text-align:right;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+  .student-section{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  #studentPhotoBox{
+    width:100%;
+    text-align:center;
+    margin-top:10px;
+  }
+}
+
 </style>
 
 
@@ -674,36 +709,66 @@ table{
   <datalist id="invoiceList"></datalist>
 </div>
 
-<div id="studentPhotoBox" style="text-align:center; margin-top:10px;">
+<div class="student-section">
 
-  <img
-    id="studentPhoto"
-    src=""
-    style="
-      width:120px;
-      height:120px;
-      object-fit:cover;
-      border-radius:10px;
-      border:2px solid #ff9800;
-      display:none;
-      box-shadow:0 2px 8px rgba(0,0,0,0.2);
-    "
-  >
+  <div class="student-fields">
 
-  <img
-    id="uploadedPreview"
-    src=""
-    style="
-      width:120px;
-      height:120px;
-      object-fit:cover;
-      border-radius:10px;
-      border:2px solid #2196f3;
-      display:none;
-      box-shadow:0 2px 8px rgba(0,0,0,0.2);
-      margin-top:10px;
-    "
-  >
+    <div class="form-row">
+      <select id="studentSelect" onchange="handleStudentChange()">
+        <option value="">-- STUDENT NAME --</option>
+      </select>
+
+      <input
+        type="text"
+        id="phoneSearch"
+        placeholder="Search by Phone Number"
+        oninput="searchByPhone()"
+      />
+
+      <input
+        list="invoiceList"
+        id="invoiceSelect"
+        placeholder="-- Load Invoice No. --"
+        oninput="handleInvoiceInput()"
+      />
+
+      <datalist id="invoiceList"></datalist>
+    </div>
+
+  </div>
+
+  <div id="studentPhotoBox">
+
+    <img
+      id="studentPhoto"
+      src=""
+      style="
+        width:120px;
+        height:120px;
+        object-fit:cover;
+        border-radius:10px;
+        border:2px solid #ff9800;
+        display:none;
+        box-shadow:0 2px 8px rgba(0,0,0,0.2);
+      "
+    >
+
+    <img
+      id="uploadedPreview"
+      src=""
+      style="
+        width:120px;
+        height:120px;
+        object-fit:cover;
+        border-radius:10px;
+        border:2px solid #2196f3;
+        display:none;
+        box-shadow:0 2px 8px rgba(0,0,0,0.2);
+        margin-top:10px;
+      "
+    >
+
+  </div>
 
 </div>
 	   
