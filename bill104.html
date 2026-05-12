@@ -643,7 +643,14 @@ table{
 
       <h2>INVOICE/MONEY RECEIPT</h2>
 
-     <div class="form-row">
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <div class="form-row">
   <select id="studentSelect" onchange="handleStudentChange()">
     <option value="">-- STUDENT NAME --</option>
   </select>
@@ -663,6 +670,22 @@ table{
   />
 
   <datalist id="invoiceList"></datalist>
+</div>
+
+<div id="studentPhotoBox" style="text-align:center; margin-top:10px;">
+  <img
+    id="studentPhoto"
+    src=""
+    style="
+      width:120px;
+      height:120px;
+      object-fit:cover;
+      border-radius:10px;
+      border:2px solid #ff9800;
+      display:none;
+      box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    "
+  >
 </div>
 
 	   
@@ -991,6 +1014,22 @@ async function handleStudentChange() {
     document.getElementById("email").value = s.email || "";
     document.getElementById("address").value = s.address || "";
     document.getElementById("studentClass").value = s.class || "Class 9";
+
+    // PHOTO SHOW
+    const studentPhoto =
+      document.getElementById("studentPhoto");
+
+    if (s.photoURL) {
+
+      studentPhoto.src = s.photoURL;
+
+      studentPhoto.style.display = "block";
+
+    } else {
+
+      studentPhoto.style.display = "none";
+
+    }
   }
 
   document.getElementById("invoiceNo").textContent =
@@ -1080,12 +1119,18 @@ if (!savedSnap.exists()) {
   return;
 }
 
+
+
 await setDoc(doc(db, "students", name), {
   phone: invoice.phone,
   email: invoice.email,
   address: invoice.address,
-  class: invoice.class
+  class: invoice.class,
+  photoURL:
+    document.getElementById("uploadedPreview").src || ""
 });
+
+
 
 await populateDropdowns();
 
