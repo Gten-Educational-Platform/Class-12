@@ -1019,16 +1019,24 @@ async function handleStudentChange() {
     const studentPhoto =
       document.getElementById("studentPhoto");
 
-    if (s.photoURL) {
+    const uploadedPreview =
+      document.getElementById("uploadedPreview");
 
+    if (s.photoURL && s.photoURL.trim() !== "") {
+
+      // Main photo
       studentPhoto.src = s.photoURL;
-
       studentPhoto.style.display = "block";
+
+      // Upload preview also restore
+      uploadedPreview.src = s.photoURL;
+      uploadedPreview.style.display = "block";
 
     } else {
 
       studentPhoto.style.display = "none";
 
+      uploadedPreview.style.display = "none";
     }
   }
 
@@ -1189,10 +1197,35 @@ const invoice = snap.data();
   document.getElementById("email").value = invoice.email;
   document.getElementById("address").value = invoice.address;
   document.getElementById("studentClass").value = invoice.class;
+  // LOAD STUDENT PHOTO
+const studentSnap =
+  await getDoc(doc(db, "students", invoice.name));
+
+if (studentSnap.exists()) {
+
+  const s = studentSnap.data();
+
+  if (s.photoURL) {
+
+    document.getElementById("studentPhoto").src =
+      s.photoURL;
+
+    document.getElementById("studentPhoto").style.display =
+      "block";
+
+    document.getElementById("uploadedPreview").src =
+      s.photoURL;
+
+    document.getElementById("uploadedPreview").style.display =
+      "block";
+
+  }
+}
   document.getElementById("invoiceDateInput").value = invoice.date;
   document.getElementById("amountPaid").value = invoice.amountPaid;
   document.getElementById("invoiceNo").textContent = invoiceNo;
   document.getElementById("invoiceTable").style.display = "table";
+  
 
   const billBody = document.getElementById("billBody");
   billBody.innerHTML = "";
@@ -1777,6 +1810,10 @@ querySnapshot.forEach((docSnap) => {
       document.getElementById("studentClass").value = "Class 9";
       document.getElementById("amountPaid").value = "";
       document.getElementById("billBody").innerHTML = "";
+	  document.getElementById("studentPhoto").style.display = "none";
+document.getElementById("uploadedPreview").style.display = "none";
+document.getElementById("studentPhoto").src = "";
+document.getElementById("uploadedPreview").src = "";
       // ensure invoiceSelect cleared too
       const invoiceSelect = document.getElementById("invoiceSelect");
       if (invoiceSelect) invoiceSelect.value = "";
