@@ -605,21 +605,12 @@ table{
 
 
 .student-photo-row{
-  display:flex;
   align-items:flex-start;
-  justify-content:space-between;
-  gap:15px;
 }
 
 .student-photo-box{
   width:140px;
   text-align:center;
-  flex-shrink:0;
-}
-
-/* HIDE EMPTY PHOTO BOX */
-.student-photo-box.hidden{
-  display:none !important;
 }
 
 #studentPhoto{
@@ -631,49 +622,6 @@ table{
   background:#f0f0f0;
   display:block;
   margin:auto;
-}
-
-.student-photo-box button{
-  margin-top:8px;
-  width:100%;
-}
-
-/* MOBILE */
-@media(max-width:768px){
-
-  .student-photo-row{
-    flex-direction:column;
-  }
-
-  .student-photo-box{
-    width:100%;
-  }
-
-  #studentPhoto{
-    margin:auto;
-  }
-}
-
-/* PRINT FIX */
-@media print{
-
-  .student-photo-row{
-    display:flex !important;
-    flex-direction:row !important;
-    justify-content:space-between !important;
-    align-items:flex-start !important;
-  }
-
-  .student-photo-box{
-    order:2;
-    margin-left:auto !important;
-    text-align:right !important;
-  }
-
-  #studentPhoto{
-    margin:0 !important;
-  }
-
 }
 
 .student-photo-box button{
@@ -769,7 +717,7 @@ table{
     <input type="text" id="phone" placeholder="Phone Number" />
   </div>
 
-  <div class="student-photo-box hidden" id="studentPhotoBox">
+  <div class="student-photo-box">
 
  <img
   id="studentPhoto"
@@ -1190,9 +1138,6 @@ document.getElementById("studentPhoto").src =
   s.photo || "https://i.ibb.co/4wz0V8Q/user.png";
 
 uploadedPhotoURL = s.photo || "";
-
-/* ADD THIS LINE */
-togglePhotoVisibility(s.photo);
   }
 
   document.getElementById("invoiceNo").textContent =
@@ -1358,9 +1303,6 @@ document.getElementById("studentPhoto").src =
   invoice.photo || "https://i.ibb.co/4wz0V8Q/user.png";
 
 uploadedPhotoURL = invoice.photo || "";
-
-/* SHOW/HIDE PHOTO BOX */
-togglePhotoVisibility(invoice.photo);
   document.getElementById("invoiceDateInput").value = invoice.date;
   document.getElementById("amountPaid").value = invoice.amountPaid;
   document.getElementById("invoiceNo").textContent = invoiceNo;
@@ -2009,7 +1951,6 @@ querySnapshot.forEach((docSnap) => {
     "https://i.ibb.co/4wz0V8Q/user.png";
 
   uploadedPhotoURL = "";
-  togglePhotoVisibility("");
   
       // ensure invoiceSelect cleared too
       const invoiceSelect = document.getElementById("invoiceSelect");
@@ -2276,33 +2217,6 @@ uploadBtn.addEventListener("click", () => {
   photoInput.value = "";
   photoInput.click();
 });
-	
-	
-	
-	function togglePhotoVisibility(photoUrl) {
-
-  const photoBox =
-    document.getElementById("studentPhotoBox");
-
-  const photo =
-    document.getElementById("studentPhoto");
-
-  if (
-    !photoUrl ||
-    photoUrl.includes("user.png")
-  ) {
-
-    photoBox.classList.add("hidden");
-
-  } else {
-
-    photo.src = photoUrl;
-
-    photoBox.classList.remove("hidden");
-  }
-}
-	
-	
 	
  </script>
 </body>
