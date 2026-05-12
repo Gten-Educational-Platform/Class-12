@@ -178,6 +178,15 @@
     font-size:12px;
   }
 
+
+.upi-text{
+  margin-top:10px;
+  font-size:14px;
+  font-weight:bold;
+  text-align:center;
+  color:#000;
+  word-break:break-all;
+}
   /* ================= MOBILE ================= */
 
 /* ================= MOBILE ================= */
@@ -433,7 +442,12 @@ table{
   align-items: center;
   gap: 5px;
 }
-  
+  .upi-text{
+  font-size:12px !important;
+  margin-top:8px !important;
+  text-align:center !important;
+  font-weight:bold !important;
+}
   
   
   
@@ -670,8 +684,17 @@ table{
       </div>
 
       <div class="qr">
-        <p style="font-weight:bold; color:green; text-align:left;">Scan the Below QR to Pay the Fee:</p>
-        <div id="qrCanvas"></div>
+  <p style="font-weight:bold; color:green; text-align:left;">
+    Scan the Below QR to Pay the Fee:
+  </p>
+
+  <div id="qrCanvas"></div>
+
+  <div class="upi-text">
+    UPI ID: 9706380357@ucobank
+  </div>
+		
+		
         <!-- 🔹 NEW Cashfree Link Field -->
         <input type="text" id="cashfreeLink" placeholder="Enter Cashfree Payment Link manually here..." class="no-print">
       </div>
