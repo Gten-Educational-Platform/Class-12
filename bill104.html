@@ -187,6 +187,11 @@
   color:#000;
   word-break:break-all;
 }
+
+.paid-btn{
+  background:#28a745;
+  color:#fff;
+}
   /* ================= MOBILE ================= */
 
 /* ================= MOBILE ================= */
@@ -661,6 +666,9 @@ table{
 		
         <button id="downloadPdfBtn" class="no-print">⬇️ Download PDF</button>
         <button onclick="saveInvoice()" class="no-print">💾 Save Invoice</button>
+<button onclick="markAsPaid()" class="no-print paid-btn">
+  ✅ Paid
+</button>
         <button onclick="newInvoice()" class="no-print">🆕 New Invoice</button>
         <button id="whatsappShareBtn" class="no-print" style="margin-top:10px;" onclick="sharePaymentLink()">📱 Share via WhatsApp</button>
 		<button onclick="window.open('https://merchant.cashfree.com/merchants/landing?env=prod', '_blank')"class="no-print">Pay via Cashfree</button>
@@ -1846,6 +1854,46 @@ window.searchByPhone = searchByPhone;
 
   alert(matches.length + " invoice(s) found");
 }
+
+async function markAsPaid() {
+
+  try {
+
+    // calculate latest total first
+    calculateTotal();
+
+    // get grand total amount
+    const grandTotalText =
+      document.getElementById("grandTotal")
+      .textContent
+      .replace("Total Amount: ₹", "")
+      .trim();
+
+    const grandTotal =
+      parseFloat(grandTotalText) || 0;
+
+    // set amount paid = full total
+    document.getElementById("amountPaid").value =
+      grandTotal.toFixed(2);
+
+    // refresh due balance + QR
+    calculateTotal();
+
+    // save invoice automatically
+    await saveInvoice();
+
+    alert("Invoice marked as FULLY PAID.");
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Failed to mark as paid.");
+
+  }
+}
+
+window.markAsPaid = markAsPaid;
 	
  </script>
 </body>
