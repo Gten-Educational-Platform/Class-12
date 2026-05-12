@@ -1022,22 +1022,28 @@ async function handleStudentChange() {
     const uploadedPreview =
       document.getElementById("uploadedPreview");
 
-    if (s.photoURL && s.photoURL.trim() !== "") {
+   if (s.photoURL && s.photoURL.trim() !== "") {
 
-      // Main photo
-      studentPhoto.src = s.photoURL;
-      studentPhoto.style.display = "block";
+  // force reload image
+  const freshURL = s.photoURL + "?t=" + Date.now();
 
-      // Upload preview also restore
-      uploadedPreview.src = s.photoURL;
-      uploadedPreview.style.display = "block";
+  studentPhoto.src = "";
+  uploadedPreview.src = "";
 
-    } else {
+  studentPhoto.src = freshURL;
+  uploadedPreview.src = freshURL;
 
-      studentPhoto.style.display = "none";
+  studentPhoto.style.display = "block";
+  uploadedPreview.style.display = "block";
 
-      uploadedPreview.style.display = "none";
-    }
+} else {
+
+  studentPhoto.src = "";
+  uploadedPreview.src = "";
+
+  studentPhoto.style.display = "none";
+  uploadedPreview.style.display = "none";
+}
   }
 
   document.getElementById("invoiceNo").textContent =
@@ -1205,21 +1211,26 @@ if (studentSnap.exists()) {
 
   const s = studentSnap.data();
 
-  if (s.photoURL) {
+if (s.photoURL) {
 
-    document.getElementById("studentPhoto").src =
-      s.photoURL;
+  const freshURL = s.photoURL + "?t=" + Date.now();
 
-    document.getElementById("studentPhoto").style.display =
-      "block";
+  document.getElementById("studentPhoto").src = "";
+  document.getElementById("uploadedPreview").src = "";
 
-    document.getElementById("uploadedPreview").src =
-      s.photoURL;
+  document.getElementById("studentPhoto").src =
+    freshURL;
 
-    document.getElementById("uploadedPreview").style.display =
-      "block";
+  document.getElementById("uploadedPreview").src =
+    freshURL;
 
-  }
+  document.getElementById("studentPhoto").style.display =
+    "block";
+
+  document.getElementById("uploadedPreview").style.display =
+    "block";
+
+}
 }
   document.getElementById("invoiceDateInput").value = invoice.date;
   document.getElementById("amountPaid").value = invoice.amountPaid;
@@ -1952,6 +1963,11 @@ document.getElementById("printBtn")
 });
 	
 	
+	
+	
+	
+	
+	
 	async function searchByPhone() {
 
   const phone = document
@@ -2064,6 +2080,11 @@ window.markAsPaid = markAsPaid;
 	
 	
 	const IMGBB_API_KEY = "bfdf6690aa0bfcafdf1492d833e07e5b";
+
+
+
+
+
 
 function selectImage() {
 
