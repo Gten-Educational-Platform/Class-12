@@ -602,9 +602,7 @@ table{
 }
 
 
-#uploadedPreview{
-  display:none !important;
-}
+
 
 </style>
 
@@ -1198,6 +1196,10 @@ const invoice = snap.data();
   document.getElementById("address").value = invoice.address;
   document.getElementById("studentClass").value = invoice.class;
   // LOAD STUDENT PHOTO
+
+
+
+// LOAD STUDENT PHOTO
 const studentSnap =
   await getDoc(doc(db, "students", invoice.name));
 
@@ -1205,27 +1207,34 @@ if (studentSnap.exists()) {
 
   const s = studentSnap.data();
 
-if (s.photoURL) {
+  if (s.photoURL) {
 
-  const freshURL = s.photoURL + "?t=" + Date.now();
+    const freshURL = s.photoURL + "?t=" + Date.now();
 
-  document.getElementById("studentPhoto").src = "";
-  document.getElementById("uploadedPreview").src = "";
+    // show only one image
+    const studentPhoto =
+      document.getElementById("studentPhoto");
 
-  document.getElementById("studentPhoto").src =
-    freshURL;
+    studentPhoto.src = freshURL;
 
-  document.getElementById("uploadedPreview").src =
-    freshURL;
+    studentPhoto.style.display = "block";
 
-  document.getElementById("studentPhoto").style.display =
-    "block";
+    // hide uploaded preview
+    document.getElementById("uploadedPreview").style.display =
+      "none";
 
-  document.getElementById("uploadedPreview").style.display =
-    "block";
+  } else {
 
+    document.getElementById("studentPhoto").style.display =
+      "none";
+
+    document.getElementById("uploadedPreview").style.display =
+      "none";
+  }
 }
-}
+
+
+
   document.getElementById("invoiceDateInput").value = invoice.date;
   document.getElementById("amountPaid").value = invoice.amountPaid;
   document.getElementById("invoiceNo").textContent = invoiceNo;
