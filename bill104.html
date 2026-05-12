@@ -1975,7 +1975,7 @@ function selectImage() {
   // MUST happen directly from user click
   document.getElementById("imageInput").click();
 }
-
+window.selectImage = selectImage;
 document
   .getElementById("imageInput")
   .addEventListener("change", uploadImage);
