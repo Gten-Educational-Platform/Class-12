@@ -65,31 +65,51 @@
     min-width: 0;
   }
 
-/* Top search/select boxes */
+/* TOP SEARCH BOXES FULL COLOR STYLE */
+
 #studentSelect,
 #phoneSearch,
 #invoiceSelect{
-  background:#fff3cd;
-  border:1px solid #d6b656;
-  color:#000;
+
+  background:#ffcc80 !important;   /* box background */
+  border:2px solid #ef6c00 !important;
+  color:#000 !important;
+
   font-weight:bold;
+  border-radius:6px;
+
+  padding:10px !important;
+
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+
 }
 
-/* Placeholder color */
+/* Placeholder text */
 #phoneSearch::placeholder,
 #invoiceSelect::placeholder{
-  color:#7a5a00;
+  color:#5d4037;
+  opacity:1;
+}
+
+/* Dropdown option color */
+#studentSelect option{
+  background:#fff3e0;
+  color:#000;
 }
 
 /* Focus effect */
 #studentSelect:focus,
 #phoneSearch:focus,
 #invoiceSelect:focus{
-  outline:none;
-  border-color:#ff9800;
-  box-shadow:0 0 5px rgba(255,152,0,0.5);
-}
 
+  background:#ffe0b2 !important;
+
+  border-color:#e65100 !important;
+
+  box-shadow:0 0 8px rgba(230,81,0,0.5);
+
+  outline:none;
+}
   label {
     font-weight: bold;
   }
