@@ -65,51 +65,6 @@
     min-width: 0;
   }
 
-/* TOP SEARCH BOXES FULL COLOR STYLE */
-
-#studentSelect,
-#phoneSearch,
-#invoiceSelect{
-
-  background:#ffcc80 !important;   /* box background */
-  border:2px solid #ef6c00 !important;
-  color:#000 !important;
-
-  font-weight:bold;
-  border-radius:6px;
-
-  padding:10px !important;
-
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-
-}
-
-/* Placeholder text */
-#phoneSearch::placeholder,
-#invoiceSelect::placeholder{
-  color:#5d4037;
-  opacity:1;
-}
-
-/* Dropdown option color */
-#studentSelect option{
-  background:#fff3e0;
-  color:#000;
-}
-
-/* Focus effect */
-#studentSelect:focus,
-#phoneSearch:focus,
-#invoiceSelect:focus{
-
-  background:#ffe0b2 !important;
-
-  border-color:#e65100 !important;
-
-  box-shadow:0 0 8px rgba(230,81,0,0.5);
-
-  outline:none;
-}
   label {
     font-weight: bold;
   }
@@ -232,15 +187,6 @@
   color:#000;
   word-break:break-all;
 }
-
-.paid-btn{
-  background:#28a745;
-  color:#fff;
-}
-
-
-
-
   /* ================= MOBILE ================= */
 
 /* ================= MOBILE ================= */
@@ -366,10 +312,9 @@ table{
 }
 /* ================= PRINT A4 FIX ================= */
 
-
 @page {
   size: A4;
-  margin: 12mm;
+  margin: 10mm;
 }
 
 @media print {
@@ -502,7 +447,7 @@ table{
   margin-top:8px !important;
   text-align:center !important;
   font-weight:bold !important;
-  }
+}
   
   
   
@@ -622,7 +567,6 @@ table{
         <div class="info">
           <div><strong>G10 EDUCATIONAL PLATFORM </strong></div>
           <div>Jayanagar Charali, Beltola Bazar Road, Guwahati-28, Ph. No.: 9706380357</div>
-		  <div>g10.educational.platform@gail.com</div>
           <div>Date: <input type="date" id="invoiceDateInput" /></div>
           <div>Invoice No: <span id="invoiceNo">INV-0001</span></div>
         </div>
@@ -717,9 +661,6 @@ table{
 		
         <button id="downloadPdfBtn" class="no-print">⬇️ Download PDF</button>
         <button onclick="saveInvoice()" class="no-print">💾 Save Invoice</button>
-<button onclick="markAsPaid()" class="no-print paid-btn">
-  ✅ Paid
-</button>
         <button onclick="newInvoice()" class="no-print">🆕 New Invoice</button>
         <button id="whatsappShareBtn" class="no-print" style="margin-top:10px;" onclick="sharePaymentLink()">📱 Share via WhatsApp</button>
 		<button onclick="window.open('https://merchant.cashfree.com/merchants/landing?env=prod', '_blank')"class="no-print">Pay via Cashfree</button>
@@ -1333,11 +1274,7 @@ async function handleServiceTypeChange(selectEl)
       `;
       totalCell.innerHTML = `<input type="number" step="0.01" value="0.00" class="total-input" style="text-align:center;" oninput="calculateTotal()">`;
     } 
-   
-
-
-
-   else {  // Prev. balance
+    else {  // Prev. balance
       fromInput.disabled = false;
       toInput.disabled = false;
 
@@ -1346,47 +1283,23 @@ async function handleServiceTypeChange(selectEl)
       let lastDueBalance = null;
 
       if (studentName) {
-
-
-
-
-
 const querySnapshot = await getDocs(collection(db, "invoices"));
-
-let invoices = [];
+let latestDate = null;
 
 querySnapshot.forEach((docSnap) => {
 
   const invNo = docSnap.id;
   const inv = docSnap.data();
-
-  // same student + not current invoice
-  if (
-    inv.name === studentName &&
-    invNo !== document.getElementById("invoiceNo").textContent
-  ) {
-
-    invoices.push({
-      invoiceNo: invNo,
-      balance: parseFloat(inv.balance || 0),
-      timestamp: parseInt(invNo.replace("INV-", "")) || 0
-    });
-  }
-});
-
-// sort newest invoice first
-invoices.sort((a, b) => b.timestamp - a.timestamp);
-
-// pick latest
-if (invoices.length > 0) {
-  lastInvoiceNo = invoices[0].invoiceNo;
-  lastDueBalance = invoices[0].balance;
-}
-	  
-	  
-	  
-	  
-	  
+		
+          if (inv.name === studentName && invNo !== document.getElementById("invoiceNo").textContent) {
+            const invDate = new Date(inv.date);
+            if (!latestDate || invDate > latestDate) {
+              latestDate = invDate;
+              lastInvoiceNo = invNo;
+              lastDueBalance = parseFloat(inv.balance || 0);
+            }
+          }
+      });
       }
 
       if (lastInvoiceNo) {
@@ -1398,14 +1311,7 @@ if (invoices.length > 0) {
       }
     }
   }
- 
-
-
-
-
-
-
- else if (val === "Study Material") {
+  else if (val === "Study Material") {
     qtyCell.innerHTML = `<input type="text" value="1 Qnty" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="0" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
     fromInput.disabled = false;
@@ -1427,13 +1333,6 @@ if (invoices.length > 0) {
       `;
     }
   }
-  
-  
-  
-  
-  
-  
-  
   else if (["Individual Coaching", "Online Coaching", "Home Tuition", "Dual Coaching", "Demo Class Reg. Fee"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="8 Class" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="1000" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
@@ -1456,14 +1355,7 @@ if (invoices.length > 0) {
       `;
     }
   }
- 
-
-
-
-
-
-
- else if (["Group Coaching", "Super Group Coaching"].includes(val)) {
+  else if (["Group Coaching", "Super Group Coaching"].includes(val)) {
     qtyCell.innerHTML = `<input type="text" value="1 Month" style="width:60px;" oninput="calculateTotal()">`;
     rateCell.innerHTML = `<input type="number" value="0" min="0" class="rate" style="width:60px;" oninput="calculateTotal()">`;
     fromInput.disabled = false;
@@ -1485,11 +1377,6 @@ if (invoices.length > 0) {
       `;
     }
   }
-  
-  
-  
-  
-  
   else {
     const qtyVal = (qtyCell.querySelector("input") && !qtyCell.querySelector("input").disabled) ? qtyCell.querySelector("input").value : 1;
     const rateVal = (rateCell.querySelector("input") && !rateCell.querySelector("input").disabled) ? rateCell.querySelector("input").value : 0;
@@ -1959,46 +1846,6 @@ window.searchByPhone = searchByPhone;
 
   alert(matches.length + " invoice(s) found");
 }
-
-async function markAsPaid() {
-
-  try {
-
-    // calculate latest total first
-    calculateTotal();
-
-    // get grand total amount
-    const grandTotalText =
-      document.getElementById("grandTotal")
-      .textContent
-      .replace("Total Amount: ₹", "")
-      .trim();
-
-    const grandTotal =
-      parseFloat(grandTotalText) || 0;
-
-    // set amount paid = full total
-    document.getElementById("amountPaid").value =
-      grandTotal.toFixed(2);
-
-    // refresh due balance + QR
-    calculateTotal();
-
-    // save invoice automatically
-    await saveInvoice();
-
-    alert("Invoice marked as FULLY PAID.");
-
-  } catch (err) {
-
-    console.error(err);
-
-    alert("Failed to mark as paid.");
-
-  }
-}
-
-window.markAsPaid = markAsPaid;
 	
  </script>
 </body>
