@@ -365,92 +365,165 @@ table{
   }
 }
 /* ================= PRINT A4 FIX ================= */
+/* ================= A4 PRINT PERFECT FIT ================= */
 
-@page {
-  size: A4;
-  margin: 10mm;
+@page{
+  size:A4 portrait;
+  margin:8mm;
 }
 
-@media print {
+@media print{
 
   html,
-  body {
-    width: 210mm;
-    height: 297mm;
-    background: white !important;
-    margin: 0;
-    padding: 0;
-    zoom: 100%;
+  body{
+    width:210mm;
+    height:auto;
+    margin:0 !important;
+    padding:0 !important;
+    background:#fff !important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    overflow:visible !important;
   }
 
-  body * {
-    visibility: hidden;
+  body *{
+    visibility:hidden;
   }
 
   .container,
-  .container * {
-    visibility: visible;
+  .container *{
+    visibility:visible;
   }
 
-  .container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 190mm !important;
-    max-width: 190mm !important;
-    padding: 5mm !important;
-    margin: 0 auto !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    background: #fff !important;
+  .container{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:194mm !important;
+    max-width:194mm !important;
+
+    margin:0 auto !important;
+    padding:5mm !important;
+
+    background:#fff !important;
+
+    border:none !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+
+    overflow:visible !important;
   }
 
-  /* Hide buttons and controls */
+  /* HIDE BUTTONS */
   .no-print,
   button,
   #passwordScreen,
   #downloadPdfBtn,
   #whatsappShareBtn,
   #cashfreeLink,
-  .actions {
-    display: none !important;
+  .actions,
+  #studentSelect,
+  #phoneSearch,
+  #invoiceSelect,
+  #invoiceList{
+    display:none !important;
   }
 
-  /* Table print fix */
-  .invoice-table-wrapper {
-    overflow: visible !important;
+  /* HEADER */
+  .header{
+    display:flex !important;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:10px !important;
   }
 
-  table {
-    width: 100% !important;
-    min-width: 100% !important;
-    table-layout: fixed;
-    border-collapse: collapse;
+  .header img{
+    max-height:65px !important;
+    width:auto !important;
+  }
+
+  .header .info{
+    font-size:10px !important;
+    text-align:right !important;
+    line-height:1.4 !important;
+  }
+
+  h2{
+    font-size:16px !important;
+    margin:8px 0 !important;
+    text-align:center !important;
+  }
+
+  /* FORM ROWS */
+  .form-row{
+    display:flex !important;
+    gap:6px !important;
+    margin-bottom:6px !important;
+  }
+
+  .form-row input,
+  .form-row select{
+    border:none !important;
+    background:transparent !important;
+    font-size:10px !important;
+    padding:0 !important;
+    color:#000 !important;
+  }
+
+  /* TABLE */
+  .invoice-table-wrapper{
+    overflow:visible !important;
+  }
+
+  table{
+    width:100% !important;
+    border-collapse:collapse !important;
+    table-layout:fixed !important;
+    margin-top:8px !important;
   }
 
   th,
-  td {
-    border: 1px solid #000 !important;
-    padding: 4px !important;
-    font-size: 10px !important;
-    word-wrap: break-word;
-    white-space: normal !important;
+  td{
+    border:1px solid #000 !important;
+    padding:4px !important;
+    font-size:9px !important;
+    word-break:break-word !important;
+    white-space:normal !important;
+    vertical-align:middle !important;
   }
 
-  /* Inputs look like text */
-  input,
-  select {
-    border: none !important;
-    background: transparent !important;
-    font-size: 10px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    appearance: none;
-    -webkit-appearance: none;
-    width: 100% !important;
+  th{
+    font-weight:bold !important;
+    text-align:center !important;
   }
 
+  td input,
+  td select{
+    width:100% !important;
+    border:none !important;
+    background:transparent !important;
+    font-size:9px !important;
+    padding:0 !important;
+    margin:0 !important;
+    appearance:none !important;
+    -webkit-appearance:none !important;
+  }
+
+  /* TOTALS */
+  .totals{
+    margin-top:10px !important;
+    font-size:10px !important;
+    text-align:right !important;
+    line-height:1.6 !important;
+  }
+
+  /* QR */
+  .qr{
+    margin-top:12px !important;
+    text-align:center !important;
+  }
   /* QR code size */
 /* QR code size */
 #qrCanvas canvas {
@@ -459,144 +532,30 @@ table{
   display: block !important;
 }
 
-#qrCanvas img {
-  display: none !important;
-}
-
-  h2 {
-    font-size: 16px !important;
-    margin: 5px 0 !important;
-  }
-
-  .header {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .header img {
-    max-height: 75px !important;
-  }
-
- 
 
 
-
-@media print {
-
-.header .info {
-  font-size: 10px !important;
-  text-align: right;
-}
-
-.header .info div {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 5px;
-}
   .upi-text{
-  font-size:12px !important;
-  margin-top:8px !important;
-  text-align:center !important;
-  font-weight:bold !important;
-}
-  
-  
-  
-
-  .totals {
-    font-size: 11px !important;
-    margin-top: 10px !important;
+    font-size:10px !important;
+    margin-top:5px !important;
+    font-weight:bold !important;
   }
 
-  .notes {
-    font-size: 8px !important;
-    margin-top: 10px !important;
-  }
-}
-
-
-
-@media print {
-
-  .container {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 10px !important;
+  /* NOTES */
+  .notes{
+    margin-top:12px !important;
+    font-size:8px !important;
+    line-height:1.4 !important;
   }
 
-  table {
-    width: 100% !important;
-    min-width: 100% !important;
+  /* PAGE BREAK FIX */
+  tr,
+  td,
+  th{
+    page-break-inside:avoid !important;
   }
 
-  th,
-  td {
-    font-size: 10px !important;
-    padding: 4px !important;
-  }
-
-  input,
-  select {
-    border: none !important;
-    background: transparent !important;
-  }
-}
-
-
-
-
-@media print {
-
-  #studentSelect,
-  #phoneSearch,
-  #invoiceSelect,
-  #invoiceList {
-    display: none !important;
-  }
-
-  .qr p {
-    display: block !important;
-    font-size: 11px !important;
-    font-weight: bold !important;
-    color: #000 !important;
-    margin-bottom: 6px !important;
-  }
-
-  button{
-    touch-action: manipulation;
-  }
-}
-
-
-
-
-
-@media print {
-
-  /* DATE HEADER */
-  th[colspan="2"]{
-    text-align:left !important;
-    padding-left:8px !important;
-  }
-
-  /* FROM + TO HEADERS */
-  thead tr:nth-child(2) th{
-    text-align:left !important;
-  }
-
-  /* FIRST TWO DATE COLUMNS */
-  tbody td:nth-child(1),
-  tbody td:nth-child(2){
-    text-align:left !important;
-  }
-
-  tbody td:nth-child(1) input,
-  tbody td:nth-child(2) input{
-    text-align:left !important;
-    direction:ltr !important;
+  table{
+    page-break-inside:auto;
   }
 
 }
