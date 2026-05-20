@@ -1,0 +1,3378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Secure Learning Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef2f7;font-family:Arial,sans-serif}
+
+/* LOGIN */
+.login-container{display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;padding:25px;width:340px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.15);text-align:center}
+input,button{width:100%;padding:12px;margin:8px 0;font-size:16px}
+button{background:#4f46e5;color:#fff;border:none;border-radius:6px;cursor:pointer}
+button:hover{opacity:.9}
+.hidden{display:none}
+.msg{color:red;font-size:14px}
+
+/* MENU */
+#menuScreen{display:none;min-height:100vh;padding:15px}
+.menuBox{
+  width:90%;
+  max-width:1300px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15)
+}
+.menuBox h2{text-align:center}
+
+/* ACCORDION */
+.acc-btn,.sub-btn{background:#1e293b;color:#fff;padding:12px;border:none;width:100%;border-radius:8px;margin:6px 0;font-size:16px;text-align:left;cursor:pointer}
+.sub-btn{background:#475569}
+.acc-content{display:none;padding-left:8px;margin-top:6px}
+
+.chapter{background:#e5e7eb;padding:10px;border-radius:6px;margin:6px 0}
+.resource-row{display:flex;gap:8px;margin-top:6px}
+.resource-row button{flex:1;padding:8px;font-size:14px}
+.resource-row button:nth-child(1){background:#10b981}
+.resource-row button:nth-child(2){background:#6366f1}
+.resource-row button:nth-child(3){background:#f59e0b}
+
+/* FULLSCREEN PPT */
+#frameContainer{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#ffffff;
+  z-index:999
+}
+#frameContainer iframe{width:100vw;height:100vh;border:none}
+
+/* FLOAT BUTTONS */
+.float-btn{
+  position:fixed;
+  z-index:1000;
+  width:38px !important;
+  height:38px !important;
+  font-size:18px;
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+  transition:0.2s;
+}
+.float-btn:hover{background:rgba(0,0,0,0.8);transform:scale(1.05)}
+
+
+/* ACTIVE PEN GLOW */
+.pen-active{
+  background:#22c55e !important;
+  box-shadow:0 0 12px rgba(34,197,94,0.9);
+  transform:scale(1.1);
+}
+
+
+
+
+#backBtn{top:10px;right:10px}
+#logoutBtn{bottom:10px;right:10px;background:rgba(239,68,68,0.85)}
+
+/* DRAW CANVAS */
+#drawCanvas{
+  position:fixed;
+  inset:0;
+  z-index:900;
+  display:none;
+  background:transparent;
+}
+
+/* DRAW TOOL BUTTONS */
+#penBtn{top:60px;right:10px}
+#eraserBtn{top:110px;right:10px}
+#clearBtn{top:160px;right:10px}
+
+
+
+/* COLOR TRAY */
+#colorTray{
+  position:fixed;
+  top:210px;
+  right:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  z-index:1000;
+}
+
+#colorTray span{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  cursor:pointer;
+  border:2px solid #fff;
+  box-shadow:0 0 4px rgba(0,0,0,0.6);
+}
+
+
+
+
+#plusBtn{
+  bottom:110px;   /* Adjust if needed */
+  left:10px;
+}
+
+#minusBtn{
+  bottom:60px;    /* Adjust if needed */
+  left:10px;
+}
+
+
+
+
+#sizeLabel{
+  position:fixed;
+  bottom:210px;   /* Above zoom display */
+  left:10px;
+  color:#fff;
+  font-size:13px;
+  font-weight:600;
+  z-index:1000;
+  pointer-events:none;
+  text-shadow:0 0 4px rgba(0,0,0,0.9);
+}
+
+
+
+
+
+
+#timerBox{
+  position:fixed;
+  top:10px;
+  left:10px;
+  padding:6px 12px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+  border-radius:8px;
+  z-index:1000;
+  letter-spacing:1px;
+  box-shadow:0 0 6px rgba(0,0,0,0.6);
+}
+
+
+
+#whiteboardWindow{
+  position:fixed;
+  top:10px;
+  bottom:40px;
+  left:10%;
+  right:10%;
+  background:#fff;
+  border-radius:12px;
+  z-index:2000;
+  display:none;
+  box-shadow:0 0 30px rgba(0,0,0,0.7);
+}
+
+
+#whiteboardHeader{
+  height:40px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  border-radius:12px 12px 0 0;
+  font-size:15px;
+}
+
+#whiteboardHeader span{
+  cursor:pointer;
+  font-size:18px;
+}
+
+#whiteboardCanvas{
+  width:100%;
+  height:calc(100% - 40px);
+  touch-action: none;
+  display:block;
+}
+
+
+/* PERIODIC TABLE WINDOW */
+
+#ptableWindow{
+  position:fixed;
+  inset:20px;
+  background:#fff;
+  border-radius:14px;
+  z-index:3000;
+  display:none;
+  box-shadow:0 0 35px rgba(0,0,0,0.8);
+  overflow:hidden;
+}
+
+#ptableHeader{
+  height:42px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  font-size:15px;
+  font-weight:600;
+}
+
+#ptableHeader span{
+  cursor:pointer;
+  font-size:18px;
+}
+
+#ptableWindow iframe{
+  width:100%;
+  height:calc(100% - 42px);
+  border:none;
+}
+
+/* PERIODIC TABLE BUTTON STYLE */
+
+.ptable-btn{
+  background:linear-gradient(135deg,#f97316,#ea580c);
+  box-shadow:0 0 12px rgba(249,115,22,.8);
+  font-size:19px;
+}
+
+
+/* FORMULA WINDOW */
+
+#formulaWindow{
+  position:fixed;
+  inset:20px;
+  background:#fff;
+  border-radius:14px;
+  z-index:3500;
+  display:none;
+  box-shadow:0 0 35px rgba(0,0,0,0.85);
+  overflow:hidden;
+}
+
+#formulaWindow iframe{
+  width:100%;
+  height:calc(100% - 42px);
+  border:none;
+}
+
+
+
+#calcWindow{
+  position:fixed;
+  width:360px;
+  height:320px;
+  top:90px;
+  left:90px;
+  background:#fff;
+  border-radius:14px;
+  z-index:4000;
+  display:none;
+  box-shadow:0 0 30px rgba(0,0,0,0.7);
+  overflow:hidden;
+  resize:both;
+  min-width:340px;
+  min-height:480px;
+}
+
+
+#calcHeader{
+  height:38px;
+  background:#0ea5e9;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  font-weight:600;
+  cursor:move;
+}
+
+#calcHeader span{
+  cursor:pointer;
+  font-size:18px;
+}
+
+#calcWindow iframe{
+  width:100%;
+  height:calc(100% - 38px);
+  border:none;
+}
+
+@media(max-width:480px){
+  #calcWindow{
+    width:95vw;
+    height:80vh;
+    left:2.5vw;
+    top:10vh;
+  }
+}
+
+
+
+
+
+
+
+
+
+/* ===== IIT-JEE ===== */
+.sub-btn.jee-class11{
+  background:#2563eb !important;
+}
+
+.sub-btn.jee-class12{
+  background:#7c3aed !important;
+}
+
+/* ===== NEET ===== */
+.sub-btn.neet-class11{
+  background:#16a34a !important;
+}
+
+.sub-btn.neet-class12{
+  background:#dc2626 !important;
+}
+
+
+
+.float-btn:focus{
+outline:none;
+}
+canvas{
+  touch-action:none;
+  -ms-touch-action:none;
+}
+#drawCanvas{
+  will-change: transform;
+  touch-action:none;
+  pointer-events:auto;
+}
+iframe{
+  touch-action:auto;
+}
+#drawCanvas{
+  image-rendering:auto;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+}
+.tool-active{
+  background:#22c55e !important;
+  box-shadow:0 0 12px rgba(34,197,94,0.9);
+  transform:scale(1.1);
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login-container" id="loginUI">
+  <div class="card">
+    <h2>Email OTP Login</h2>
+    <p><b>OTP will be sent to:</b></p>
+    <p style="color:#4f46e5;font-weight:bold">g10.educational.platform@gmail.com</p>
+
+    <div id="sendBox">
+      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+	  <button style="background:#22c55e"
+        onclick="window.open('https://gten-educational-platform.github.io/Class-12/bill104.html','_blank')">
+  🧾 Invoice
+</button>
+
+      <p class="msg" id="emailMsg"></p>
+      <p id="otpInfo" style="display:none;color:#16a34a;font-size:14px;font-weight:600">✔ Check your mail</p>
+    </div>
+
+    <div id="otpBox" class="hidden">
+      <input type="number" id="otp" placeholder="Enter OTP">
+      <button onclick="verifyOTP()">Verify OTP</button>
+      <p class="msg" id="otpMsg"></p>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- MENU -->
+<div id="menuScreen">
+  <div class="menuBox">
+    <h2>📚 Learning Dashboard</h2>
+<!-- CLASS 9 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 9</button>
+    <div class="acc-content">
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+      <div class="acc-content">
+         <div class="chapter"><b>Chapter 1 The Use of Coordinates: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/10_SgwTcLDr3FqNewJfT80PI6CAn2207oUsyNYXM9Uw8/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Introduction to Linear Polynomials: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/18HmnNXPSsWfToEPOLaSYl49OkAet8_YqydRNiyl8P98/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  		        <div class="chapter"><b>Chapter 3 The World of Numbers:: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/18-Feq7J2Zb-oe-OirHi0rWFYxQqVNYgFw4xOf2cJR_E/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  		        <div class="chapter"><b>Chapter 4 Exploring Algebraic Identities:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1WumB2Wgo_Dq_agV7GLk-IGweqb7KO6KpXTcAmB99RUA/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 I’m Up and Down, and Round and Round:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1DEFDhrnYdPoJXZg4q1D67ju2LDECyyT1xxHSzZyMazM/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Measuring Space: Perimeter and Area:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1inIJRqH1ltUvBHRhdS1HAiZAX5HLIUvToMSyONVKvoE/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 The Mathematics of Maybe: Introduction to Probability:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1J5VqFukl6YVHHXzwqyu4DeYPSUUmCM5eAAJ8r39X-EY/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    
+	  
+	   
+	  		        <div class="chapter"><b>Chapter 8 Predicting What Comes Next: Exploring Sequences: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1gVG7C6j4GKZi2HU9nvlKZZvjbxLXEfNcZxtlmCB_h-k/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+ <button class="sub-btn" onclick="toggleAcc(this)">Science</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Matter in Our Surroundings:  </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1ggdmwdRkMms83kY6S1IS12fZzNeVd_z3yoUCLaV6pmo/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Cell – The Building Block of Life: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1h1-H6HtQ7ob9fhYtu6SfJYSDrqJzczHCwPgv2J1LInQ/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 3 Atoms and Molecules: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 4 Structure of the Atom:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 The Fundamental Unit of Life :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Tissues :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 DESCRIBING MOTION AROUND US:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1aNMt8VW34LNKz2kJlNnNXLqztvu0X-7drB2N_mW3dOs/preview')">PPT</button>
+            <button onclick="openLink('https://smclass9science-ai.github.io/Science-9-store-Std-material/SM class 9 Science.html')">Study materials</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 8 Force and Laws of Motion:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 9 Gravitation:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+   
+	  
+	  		        <div class="chapter"><b>Chapter 10 Work and Energy:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  	  		        <div class="chapter"><b>Chapter 11 Sound:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 12 Improvement in Food Resources: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    </div>
+	   </div>
+
+ 
+
+    <!-- CLASS 10 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 10</button>
+    <div class="acc-content">
+      <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Real Numbers: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1QrM5inP5khcgPCotMrdzkpTYOnZ1bZtt_NgMQ0TASUA/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Polynomials: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1-j3psISqonr_zHzr2YrxvOCZgaVKKqMrSX1gUFII2Ok/preview')">PPT</button>
+            <button onclick="openLink('https://sm10math26-blip.github.io/SM-10-math-html-store/html SM/SM 10 Math.html')">Study Materials and questions</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  		        <div class="chapter"><b>Chapter 3 Pair of Linear Equations in Two Variables : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  		        <div class="chapter"><b>Chapter 4 Quadratic Equations:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 Arithmetic Progressions:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Coordinate Geometry:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 Triangles:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    
+	  
+	  		        <div class="chapter"><b>Chapter 8 Circles:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 9 Introduction to Trigonometry:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 10 Some Applications of Trigonometry:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  	  		        <div class="chapter"><b>Chapter 11 Areas Related to Circles:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+  
+	  
+	  	  	  		        <div class="chapter"><b>Chapter 12 Areas Related to Circles:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+  
+  	  	  		        <div class="chapter"><b>Chapter 13 Statistics:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+  
+	  
+	  		        <div class="chapter"><b>Chapter 14 Probability: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+ <button class="sub-btn" onclick="toggleAcc(this)">Science</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Chemical Reactions and Equations :  </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1qd7NmJUR2ExBbLF07KwfcpMbw1BfIp9omLcu2GT9kDU/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2  Acids, Bases and Salts: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 3 Metals and Non-metals: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 4 Carbon and its Compounds:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 Life Processes :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Control and Coordination :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 How do Organisms Reproduce?:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 8 Heredity:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 9 Light – Reflection and Refraction:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1S5lxdt4cFAPdGa5al9lq_o5DYaECVCMQy2A5vb_ny4s/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+   
+	  
+	  		        <div class="chapter"><b>Chapter 10 The Human Eye and the Colourful World:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  	  		        <div class="chapter"><b>Chapter 11 Electricity:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+			  	  		        <div class="chapter"><b>Chapter 11 Magnetic Effects of Electric Current:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 12 Our Environment: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    </div>
+	   </div>
+	
+	
+	
+	
+	
+
+    <!-- CLASS 11 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 11</button>
+    <div class="acc-content">
+            <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+ 
+	  
+	  		        <div class="chapter"><b>Chapter 12 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Biology</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  		        <div class="chapter"><b>Chapter 12 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Chemistry</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Some Basic Concepts of Chemistry: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1f9rXNQLTzin85o51XxJjuDsqRH4qxQ5sj1pRoXvoS0M/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Structure of Atom: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1qpg2KLgoE3AWlcFBjePmW0h3QUcY04Q9JaIGp3PvvK4/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  		        <div class="chapter"><b>Chapter 3 Classification of Elements and Periodicity in Properties: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1xQt0MznBx3cB8mjpgycLVbqtVm9rhDacH8LimKhb3Ro/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  		        <div class="chapter"><b>Chapter 4 Chemical Bonding and Molecular Structure:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1nXaV7ePRKBlPdn7DrXhgsem8QAwYguNYil9Xh-lhQnA/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 Chemical Thermodynamics:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1gCpQVw2sU1FWcrN79f1UUhq-hJSQFXsR3tZMnmySFCg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Equilibrium:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1MgxpwG7mi6xjaDuAjukDG8957o8P_wT14uGqP68pDno/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 Redox Reactions:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/19YZhvLpIU2TNPkuIdPYG3ceXx1MeeyZogcwJzso0LkE/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    
+	
+	  		        <div class="chapter"><b>Chapter 8 Hydrogen:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1DXCcRpqQDiJv5PF3zjrQoIqnuw5PaaWWpxjKqHrgpD4/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+		  		        <div class="chapter"><b>Chapter 9 S-Block Elements:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1PVxVgoT8v4OrTNUc3c27rJuQ2zc1VLqNPl_zKmLaeME/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+		  		        <div class="chapter"><b>Chapter 10 P-block Elements:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/16UICk16efAogfvMBTF1C9VyLpxWN2wHkL7QoB0dou_w/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+		  		        <div class="chapter"><b>Chapter 11 Organic Chemistry– Some Basic Principles and Techniques:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1EW4V7oay5x1HEw5DDyjpwu10yELVdhcUpL2-EKnNgkE/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+		  		        <div class="chapter"><b>Chapter 12 Hydrocarbons:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1E0SN0GcOoJ3P55vPN-ruKe7zEtrBshSteE1IGZEZt1M/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+	  
+	
+      
+	  
+	  
+	  		        <div class="chapter"><b>Chapter 13 Enviromental Chemistry: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1CaOcPnG6PHIe8xyzcLwTy0yV_GIPqfCmPCAektn8C8E/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+ <button class="sub-btn" onclick="toggleAcc(this)">Physics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Units and Measurements:  </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/16Eo5hLmyF3xu7xO2uA_zI8x2jTyhOMRH6ue1J4HIXNI/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1axQ-QT2h9a5te8M8aJ1F8cq79GoB3oMNGbp1zr2JXdY/preview')">Basic Math</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Motion in a Straight Line: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/15ICBTwH707uPzWdh9HVTEm3wgCB3gCq1D2UFMSSB4Mg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 3 Motion in a Plane : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1V7t3vSHWufJBw6t9tzYn33IxYqk6O-KIuZPc-DIjJdI/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 4 Laws of Motion:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1_f626Y_Azi5Uj7Y8pg5v-qv0xmM_LLGKOHlXQOL__Ec/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 Work, Energy and Power :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1h3OCmekoNplB5-UdcNuLBjazHYkDo6PE9ytRRgp5DHo/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6  System of Particles and Rotational Motion :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1QOvK5xT8rKFJNqYk_mwIcITpY2dVKC_fXWU48zXKQac/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 Gravitation:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1eaCFkfbkNZEVrzWPRtupMlVIm3KjXcM9coUKdPSMgoI/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 8 Mechanical Properties of Solids :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/17aWL4CpI0cmMO0w9p3B5BfpW-CRrEJ3kz47xZJkZH1c/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 9 Mechanical Properties of Fluids:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1JPLbUo8HPAADPfUtBru9NJEGSsLlEEcuj95a5QZcXP8/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+   
+	  
+	  		        <div class="chapter"><b>Chapter 10 Thermal Properties of Matter:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/15NJj-uGt4-BBKwet9WhVEIXdi6jCCESVqwtbgaTV2jw/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  	  		        <div class="chapter"><b>Chapter 11 Thermodynamics:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1nYcbr35IVB3ltGRsHj4Xx2bGoDwUu-k6Ix4nqeo4F-M/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+			  	  		        <div class="chapter"><b>Chapter 12 Kinetic Theory:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1AlQFZ7y2N8zbxaMfohH6G7bbcBt05JMbdEGzgStPTzI/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+			  	  		        <div class="chapter"><b>Chapter 13 Oscillations:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1K9rQuGfjLNAsTiWhYFpvXW0ppwXQTkNxzEM-UZxpPnU/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 14 Waves: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1FKhljHmn6ga7VF5Vyxxl4Fos658GCc_rXhRi6SsDhRg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    </div>
+	   </div>
+   
+
+
+
+
+
+
+   <!-- CLASS 12 -->
+    <button class="acc-btn" onclick="toggleAcc(this)">Class 12</button>
+    <div class="acc-content">
+      <button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  	
+	  		        <div class="chapter"><b>Chapter 12 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Biology</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/13DD4-9Z-iNC6H-oXjKDTraHKhfsHySRAbNvU6H-RF4U/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	
+		  		        <div class="chapter"><b>Chapter 12 : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <button class="sub-btn" onclick="toggleAcc(this)">Chemistry</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Solutions: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1xGAyK6h5B-REA0wqmodz-2izSVT1Sg8Y9KnCMO1Q8sA/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Electrochemistry: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  		        <div class="chapter"><b>Chapter 3 Chemical Kinetics: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  		        <div class="chapter"><b>Chapter 4 d and f-Block Elements:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 Coordination Compounds:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Haloalkanes and Haloarenes:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 Alcohols, Phenols, and Ethers:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    
+	  
+	  		        <div class="chapter"><b>Chapter 8 Aldehydes, Ketones, and Carboxylic Acids:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 9 Amines:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+
+	  
+	  		        <div class="chapter"><b>Chapter 12 Biomolecules: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1mszFLszPl6-uLOTRdpmkfXiHYQzoY3IlMXkxjpXdAjg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+ <button class="sub-btn" onclick="toggleAcc(this)">Physics</button>
+      <div class="acc-content">
+        <div class="chapter"><b>Chapter 1 Electric Charges and Fields:  </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1CnzBSxNaYNj7MW42OS3Hcrvd9pT_vO9epcrm_hLFr_Q/preview')">PPT</button>
+            <button onclick="openLink('https://docs.google.com/presentation/d/1axQ-QT2h9a5te8M8aJ1F8cq79GoB3oMNGbp1zr2JXdY/preview')">Basic Math</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		        <div class="chapter"><b>Chapter 2 Electrostatic Potential and Capacitance: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1pqRLjkzSkZyo0WlVGHaUolF2qjksaXC97AD4zKIJdm0/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 3 Current Electricity: </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1MIoifFUYJMGqXz0IRjtYT7XmZvNROJqIJ-LSLr2-pmM/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 4 Moving Charges and Magnetism:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1IwKtwPxVNNNnyIn0YJcM1txQTQqpCwmsOMnFiqX-RTI/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 5 Magnetism and Matter :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1JLqaiGomSVkjrXsjqIYso8EjnciCnVcBjuO7rvul7kk/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 6 Electromagnetic Induction:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1bhPnxHKpkTrwol_xRfH6j3FzvD-QHUCzhS3wMyNna2Q/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 7 Alternating Current:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1TwiiT65XNA-acyqksawUHazcd2XxCIoGuFvEa0S4Xlo/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 8 Electromagnetic Waves:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1ea3DOZmdvmq_zcJ4Y_XylhAbiC9eqMRcYGGptRs2Tqg/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+      
+	  
+	  		        <div class="chapter"><b>Chapter 9 Ray Optics and Optical Instruments:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1XMA0OZd7r2H92s9Y5FFw6l9V-6aiXQljAhP2EJBWFt0/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+   
+	  
+	  		        <div class="chapter"><b>Chapter 10 Wave Optics:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1SdSJaDG8qmUNJRjIgghUT-mgrUepze8gy3n2bNTwBAw/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  	  		        <div class="chapter"><b>Chapter 11 Dual Nature of Radiation and Matter:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1tmPNVK2iEZN_Q56sAXEhRd23O-4ZzmY8QMK-_-OINlQ/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+			  	  		        <div class="chapter"><b>Chapter 12 Atoms:</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1G99Bu_og0sO4R9LWfa_P-FNmohkeDBOPcehPLPTaxRI/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+		
+		
+			  	  		        <div class="chapter"><b>Chapter 13 Nuclei :</b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1jnxfLfomZMU6jioioTraW7-IqeW_jfv87NsgeMsvvhI/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+     
+	  
+	  		        <div class="chapter"><b>Chapter 14 Semiconductor Electronics : </b>
+          <div class="resource-row">
+            <button onclick="openLink('https://docs.google.com/presentation/d/1N6Uj0iW8gOQDQwYTlNqb8sjSb5hAu9AoZVL83p3SmKc/preview')">PPT</button>
+            <button onclick="openLink('#')">Test</button>
+            <button onclick="openLink('#')">Solution</button>
+          </div>
+        </div>
+    </div>
+	   </div>
+
+
+
+
+
+
+
+
+
+
+<!-- IIT-JEE -->
+
+<button class="acc-btn" onclick="toggleAcc(this)">IIT-JEE</button>
+<div class="acc-content">
+
+<!-- ================= PHYSICS ================= -->
+<button class="sub-btn" onclick="toggleAcc(this)">Physics</button>
+<div class="acc-content">
+
+  <!-- CLASS 11 -->
+  <button class="sub-btn jee-class11" onclick="toggleAcc(this)">Class 11</button>
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1 Physical World and Measurement:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1suFCxr9GsROhSfxiatElb2OPbDvGG7XOcYyivQfqPYk/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Kinematics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/15kTJ12O6RozqI6j2lXAAmEV0OlZB9DJjyq3h7J385Vs/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Laws of Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/16V2MPn4kldG7Ilaz7ZfMae8fKGaTZviAj9N4bJbpYZQ/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Work, Energy, and Power:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1OWQzF78byD6QXeV6A0a_lH8YtPWh2Kn0PinfL3lccdk/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Rotational Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1XouWZJM5RvLJm5_oEPH9v-hcWRSwFYmlFCvjt7DzeWE/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Gravitation:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1nFv5J60Gm7x1BnUMGedG_KMMsvO-vfiHHRXn97pT1VM/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Mechanical Properties of Solids:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1z0X9lYUu1AMjJAjwEU9iM-iN9Fm904tPumV-rvSBtG4/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 8 Mechanical Properties of Fluids: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1IwNEUOJ8MsGE4JvqXOvOB7iZ5PAX68uEkuhKkBetAo8/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	<div class="chapter"><b>Chapter 9 Thermal Properties of Matter: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/185lvsSPNB7P9nGdsibFjuAOgxkAfSOLW1ZQ89wbh_BI/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	<div class="chapter"><b>Chapter 10 Thermodynamics: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1_HjdAcqWQ9OOKc4c6uuKikJhuyP6ccRV6rTvE6oQ8SM/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	<div class="chapter"><b>Chapter 11 Kinetic Theory:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1ULSDKhyjrbjMxYKeEgmkiVbwKV8FWxt8yqV64P4buTY/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 12 Simple Harmonic Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1rlaMx8fZJaW-r6GuqaM-7heIYq5tkoXd3GKOXeYsR3M/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	<div class="chapter"><b>Chapter 13 Waves:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1Z5E4E5R6BeMmDnUtRI-4l5cUe6R8pnGLv4gQjWETXrk/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CLASS 12 -->
+  <button class="sub-btn jee-class12" onclick="toggleAcc(this)">Class 12</button>
+
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1 Electric Charges & Fields:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1bKgrRbBnC6Tk5OvLTJtOlaFLns7tmaBf-9xE4mShNdQ/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Electric Potential & Capacitance:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1fTtbIldUzqOD8SyRQ8o9-s3q6tww-DwRqaukJy2yQCE/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Current Electricity:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1KabWbA7VsaOy24oCb-qEARnq2K6nGXBeuRmTreJ8S3w/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Moving Charges & Magnetism:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1-4mSd51839tyw9vcITgLo6Vxjz0kFxsjbFYjNg54gPQ/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Magnetism & Matter:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/13fCnHX0rb0cAwa3DdORqoA9_sY9zx6tOyenSDiVIgG8/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Electromagnetic Induction:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/14NiRP6XYFMfXLe_Y-nSbLKNvwHL_cBe0_tQ7vsjTTmY/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Alternating Current: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1WSu677hFuNAULTJ99oHNXhlE-h6XvN4NOLy-SWclPVg/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+    <div class="chapter"><b>Chapter 8 Electromagnetic Waves: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1zXvE3fSEt-ioeMPSMectn-T1SOc6WBKWAmcausE4cbI/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+    <div class="chapter"><b>Chapter 9 Ray Optics & Optical Instruments:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1oQTrtFTo9doaIC7_XGVOWhGPDn6fCD2ByQry5_WR-4o/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	<div class="chapter"><b>Chapter 10 Wave Optics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1FGkwlUExzQ5kATjba-V7BmUTI3IYNEtrXaup3Yc1hFc/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	<div class="chapter"><b>Chapter 11 Dual Nature of Radiation & Matter: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1UWCQvtp8Nk6a36shk6hpwDsGpbAs_chtmlT6O6k67Bo/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	<div class="chapter"><b>Chapter 12 Atoms: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/12j9k3RUGnxKo_9R1NOisNePx5MmoHd7LstjAY64Mp90/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	<div class="chapter"><b>Chapter 13 Nuclei: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1hi4BHAEZnq-9QEWqONacLyt759zHztYyQW7hgdd101g/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	<div class="chapter"><b>Chapter 14 Semis=conductors </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1_lwbsouX11LBSJlwdRrYIh5KrtUCezLscEDa9W-7ck8/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CHEMISTRY ================= -->
+<button class="sub-btn" onclick="toggleAcc(this)">Chemistry</button>
+<div class="acc-content">
+
+  <button class="sub-btn jee-class11" onclick="toggleAcc(this)">Class 11</button>
+
+  <div class="acc-content">
+<div class="chapter"><b>Chapter 1 Mole Concept & Stoichiometry:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1P-7mB-6ZIRGIF0NbF-ER4Vrkol5EPPmMt6BuCnU7I44/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Atomic Structure:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1UpNZ0UT8Aeh860J2wwxYZH54IJCRqNyp91uHXv-4Qvo/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Chemical Thermodynamics & Energetics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1oG2abaeuc7PWrKMGprjrw2-SyadzwDxPex2qy88sLVY/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Chemical & Ionic Equilibrium:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1i5t6e7tLjjoUogi3qM4EpX_28NRHAhSqaL0eDRliFlk/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Redox Reactions & Electrochemistry:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1m54oLo7RaMus7rcjz37TGVxI9-0Y6lj4l4qEPmmEuw0/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 State of Matter (Gaseous State):</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Chemical Bonding & Molecular Structure:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1kGusmNdyGUBLk3XxH24_uFLvGPABEDWWhMCcHMxsRZY/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+    <div class="chapter"><b>Chapter 8 : Hydrogen</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1JUzEcJIpXr0c9sbVyF7veU0grw-4ruUVE7wZls_xS3w/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+    <div class="chapter"><b>Chapter 9 Periodic Table & Periodicity:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1v05K2T_aXzbB39L056daEcx4PmLGQk9dwTO4Dqcp5cY/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	    <div class="chapter"><b>Chapter 10 General Organic Chemistry (GOC):</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1ztD4XKSLEW70rPDCyMOH3d25cwsmNdID-QjYr0j9ZHU/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	    <div class="chapter"><b>Chapter 11 Isomerism:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/16ztnQE0-qu_5LgcwXMKc_LNsWCgFpeTTriIaF7rlMsQ/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+		    <div class="chapter"><b>Chapter 12 Hydrocarbons:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1qUZWYWZWuuZ8jfGjzjWvR_n9ROpagvI70kSqjcybANw/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 13 s-Block Elements</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1Gdvj61Cz7kqYvmCQuJghgkru80zlkD__YNmxXiYCkUc/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+<button class="sub-btn jee-class12" onclick="toggleAcc(this)">Class 12</button>
+
+  <div class="acc-content">
+
+     <div class="chapter"><b>Chapter 1 Solutions:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1hUM5N3r_h3jG38M40AX3q7Opy0Qsi4QVv5JaFUkDGQM/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Chemical Kinetics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1aflAkK5xY5XHxrkYn_f_sprJr4JzrLr3uMaCqqZa9ro/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+
+    <div class="chapter"><b>Chapter 3 Electrochemistry:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1lrd_LmNWlqabpIn0Sush-wrgxUqisHNrCIFnJoB_Wt8/edit?usp=sharing/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 p-Block Elements: Groups 13 to 18:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/11eEZZkuIa_RcZLisE4Fr7ntd__uqegU1Fi3R_T1TQlk/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 d and f-Block Elements:</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1lc8m4dWZEkry8C3rjUEBKebGDgy0oNwlxN3pK_T2WXc/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Coordination Compounds: </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1c9iULrldXj-Bnr_T-uSq5CEGGImbBQWN653GHXN4eNY/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	
+    <div class="chapter"><b>Chapter 7 Qualitative Analysis </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+    <div class="chapter"><b>Chapter 8 Haloalkanes & Haloarenes</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1qgJRMn1lQytVEZ8iHByz-RZjteuaYxDtJmtui6MoQQ8/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+	
+	    <div class="chapter"><b>Chapter 9 Oxygen Containing Compounds(Alcohols, Phenols, Ethers)</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/17fpwaT1mHqh5To0nkIdCPsQvE6Ce0psU2kCr2URadew/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+	  </div>
+	  
+	      <div class="chapter"><b>Chapter 10 Oxygen Containing Compounds (Aldehydes, and Ketones)</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1oU4WPw3mFr49mO3G3qwW0p8_Er_ZD6Yr2pF5wKGtmzA/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+	  </div>
+	  
+	      <div class="chapter"><b>Chapter 11 Carboxylic Acids & Derivatives</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1oO_QKMgYm0On5llcQfq5GKGM85E9Pbcbz9WC5bA8fvk/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+	  </div>
+	  
+	      <div class="chapter"><b>Chapter 12 Nitrogen Containing Compounds</b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1MSdW3WGjCGYbclhFdzraAhMDvrKcfTlNlajkQCJs024/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+	  </div>
+
+    <div class="chapter"><b>Chapter 13 Biomolecules </b>
+      <div class="resource-row">
+        <button onclick="openLink('https://docs.google.com/presentation/d/1kX8kRafsiHkuiKJ97_Dmr0lKjt3BjpZf4sij8vhU42o/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= MATHEMATICS ================= -->
+<button class="sub-btn" onclick="toggleAcc(this)">Mathematics</button>
+<div class="acc-content">
+
+  <button class="sub-btn jee-class11" onclick="toggleAcc(this)">Class 11</button>
+
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1</b>
+      <div class="resource-row">
+        <button onclick="openLink('#')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+<button class="sub-btn jee-class12" onclick="toggleAcc(this)">Class 12</button>
+
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1</b>
+      <div class="resource-row">
+        <button onclick="openLink('#')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+
+    <!-- NEET -->
+
+  <button class="acc-btn" onclick="toggleAcc(this)">NEET</button>
+<div class="acc-content">
+
+<!-- ================= PHYSICS ================= -->
+<button class="sub-btn" onclick="toggleAcc(this)">Physics</button>
+<div class="acc-content">
+
+  <!-- CLASS 11 -->
+  <button class="sub-btn neet-class11" onclick="toggleAcc(this)">Class 11</button>
+
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1 Physical World and Measurement:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Kinematics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Laws of Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Work, Energy, and Power:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Rotational Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Gravitation:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Properties of Solids and Liquids:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 8 Thermodynamics: </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 9 Oscillations and Waves:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CLASS 12 -->
+ <button class="sub-btn neet-class12" onclick="toggleAcc(this)">Class 12</button>
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1 Electrostatics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Current Electricity:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Magnetic Effects of Current and Magnetism:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Electromagnetic Induction and AC:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Electromagnetic Waves:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Optics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Modern Physics: </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 8  </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 9 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CHEMISTRY ================= -->
+<button class="sub-btn" onclick="toggleAcc(this)">Chemistry</button>
+<div class="acc-content">
+
+  <button class="sub-btn neet-class11" onclick="toggleAcc(this)">Class 11</button>
+  <div class="acc-content">
+
+<div class="chapter"><b>Chapter 1 Physical World and Measurement:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Kinematics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Laws of Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Work, Energy, and Power:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Rotational Motion:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Gravitation:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Properties of Solids and Liquids:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 8 Thermodynamics: </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 9 Oscillations and Waves:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+<button class="sub-btn neet-class12" onclick="toggleAcc(this)">Class 12</button>
+
+  <div class="acc-content">
+
+     <div class="chapter"><b>Chapter 1 Electrostatics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 2 Current Electricity:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 3 Magnetic Effects of Current and Magnetism:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 4 Electromagnetic Induction and AC:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 5 Electromagnetic Waves:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 6 Optics:</b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 7 Modern Physics: </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 8  </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+    <div class="chapter"><b>Chapter 9 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+    <div class="chapter"><b>Chapter 10 </b>
+      <div class="resource-row">
+        <button onclick="openLink('/preview')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= BIOLOGY ================= -->
+<button class="sub-btn" onclick="toggleAcc(this)">Biology</button>
+<div class="acc-content">
+
+ <button class="sub-btn neet-class11" onclick="toggleAcc(this)">Class 11</button>
+
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1</b>
+      <div class="resource-row">
+        <button onclick="openLink('#')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+<button class="sub-btn neet-class12" onclick="toggleAcc(this)">Class 12</button>
+
+  <div class="acc-content">
+
+    <div class="chapter"><b>Chapter 1</b>
+      <div class="resource-row">
+        <button onclick="openLink('#')">PPT</button>
+        <button onclick="openLink('#')">Test</button>
+        <button onclick="openLink('#')">Solution</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+   <!-- EXTRA LINKS -->
+<div style="margin-top:12px;display:flex;gap:8px">
+  <button style="background:#0ea5e9" 
+          onclick="window.open('https://practice-test-backend.onrender.com','_blank')">
+    Administrator
+  </button>
+
+  <button style="background:#22c55e" 
+          onclick="window.open('https://gten-educational-platform.github.io/Class-12/bill104.html','_blank')">
+    Invoice
+  </button>
+</div>
+
+<button style="background:#ef4444;margin-top:10px" onclick="logout()">Logout</button>
+
+  </div>
+</div>
+
+<!-- FULLSCREEN PPT -->
+<div id="frameContainer">
+  <button id="backBtn" class="float-btn" onclick="backToMenu()">⮌</button>
+  <button id="logoutBtn" class="float-btn" onclick="logout()">⏻</button>
+
+  <button id="penBtn" class="float-btn" onclick="setTool('pen')">✏</button>
+  <button id="eraserBtn" class="float-btn" onclick="setTool('eraser')">🧽</button>
+  <button id="clearBtn" class="float-btn" onclick="clearCanvas()">🗑</button>
+ <button id="plusBtn" class="float-btn icon-btn" onclick="changePenSize(1)">➕</button>
+<button id="minusBtn" class="float-btn icon-btn" onclick="changePenSize(-1)">➖</button>
+<button id="whiteboardBtn" class="float-btn" style="left:10px; top:60px;" onclick="openWhiteboard()">🧾</button>
+<button id="ptableBtn" class="float-btn ptable-btn" style="left:10px; top:110px;" onclick="openPeriodic()">⚛</button>
+<button class="float-btn ptable-btn" style="left:10px; top:160px; background:#22c55e"
+        onclick="openFormula('chem')">🧪</button>
+
+<button class="float-btn ptable-btn" style="left:10px; top:210px; background:#3b82f6"
+        onclick="openFormula('phy')">🧲</button>
+
+<button class="float-btn ptable-btn" style="left:10px; top:260px; background:#a855f7"
+        onclick="openFormula('math')">📐</button>
+<button id="calcBtn" class="float-btn ptable-btn"
+        style="left:10px; top:310px; background:#0ea5e9"
+        onclick="openCalculator()">🧮</button>
+<button id="clearLeftBtn" 
+        class="float-btn" 
+        style="left:10px; top:360px; background:#ef4444"
+        onclick="clearCanvas()">🗑</button>
+<input type="number" id="slideInput" placeholder="#"
+  style="
+    position:fixed;
+    top:460px;   /* just below color panel */
+    right:10px;
+    width:55px;
+    height:28px;
+    font-size:14px;
+    z-index:1000;
+    padding:3px;
+    border-radius:6px;
+    border:none;
+    text-align:center;
+    box-shadow:0 0 6px rgba(0,0,0,0.5);
+  ">
+
+<button onclick="goToSlide()"
+  style="
+    position:fixed;
+    top:490px;
+    right:10px;
+    width:55px;
+    height:28px;
+    font-size:13px;
+    z-index:1000;
+    border:none;
+    border-radius:6px;
+    background:#22c55e;
+    color:#fff;
+    cursor:pointer;
+  ">
+Go
+</button>
+
+
+
+<div id="timerBox">00:00:00</div>
+
+
+<div id="sizeLabel">3</div>
+
+  <div id="colorTray">
+  <span style="background:red" onclick="setColor('red')"></span>
+  <span style="background:blue" onclick="setColor('blue')"></span>
+  <span style="background:green" onclick="setColor('green')"></span>
+  <span style="background:yellow" onclick="setColor('yellow')"></span>
+  <span style="background:white" onclick="setColor('white')"></span>
+  <span class="color-dot" style="background:black" onclick="setColor('black')"></span>
+<span class="color-dot" style="background:maroon" onclick="setColor('maroon')"></span>
+  <span class="color-dot" style="background:navy" onclick="setColor('navy')"></span>
+  <span class="color-dot" style="background:#7CB342" onclick="setColor('#7CB342')"></span> <!-- buff green -->
+</div>
+
+
+  <canvas id="drawCanvas"></canvas>
+
+  <iframe id="mainFrame" allowfullscreen></iframe>
+</div>
+
+
+<div id="whiteboardWindow">
+  <div id="whiteboardHeader">
+    Whiteboard
+    <span onclick="closeWhiteboard()">✖</span>
+  </div>
+  <canvas id="whiteboardCanvas"></canvas>
+</div>
+
+<div id="ptableWindow">
+  <div id="ptableHeader">
+    Periodic Table
+    <span onclick="closePeriodic()">✖</span>
+  </div>
+  <iframe src="https://ptable.com/#Properties" frameborder="0"></iframe>
+</div>
+
+
+<div id="formulaWindow">
+  <div id="ptableHeader">
+    Formula Sheet
+    <span onclick="closeFormula()">✖</span>
+  </div>
+  <iframe id="formulaFrame"></iframe>
+</div>
+
+
+<div id="calcWindow" class="drag-box">
+  <div id="calcHeader" onmousedown="dragStart(event)" ontouchstart="dragStart(event)">
+    🧮 Calculator
+    <span onclick="closeCalculator()">✖</span>
+  </div>
+  <iframe id="calcFrame"></iframe>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("5Hb6w86d9jhSLBa9y");
+
+const SERVICE_ID="service_ypvhncp";
+const TEMPLATE_ID="template_wvtlep4";
+let OTP=null;
+
+
+
+
+function sendOTP(){
+
+  const btn = document.getElementById("sendOtpBtn");
+
+  // ✅ Prevent multiple clicks immediately
+  btn.disabled = true;
+  btn.innerText = "Sending...";
+  btn.style.background = "#64748b";
+
+  const sendBox = document.getElementById("sendBox");
+  const otpBox = document.getElementById("otpBox");
+
+  OTP = Math.floor(100000 + Math.random() * 900000);
+
+  emailjs.send(SERVICE_ID, TEMPLATE_ID, { otp: OTP })
+
+  .then(() => {
+
+    otpUiFeedback();
+
+    setTimeout(() => {
+      sendBox.classList.add("hidden");
+      otpBox.classList.remove("hidden");
+    }, 800);
+
+  })
+
+  .catch(() => {
+
+    emailMsg.textContent = "Retry after some time";
+
+    // ✅ Re-enable only if failed
+    btn.disabled = false;
+    btn.innerText = "Send OTP";
+    btn.style.background = "#4f46e5";
+  });
+}
+
+
+
+let dragItem = null;
+let offsetX = 0;
+let offsetY = 0;
+
+function dragStart(e){
+  dragItem = document.getElementById("calcWindow");
+
+  let rect = dragItem.getBoundingClientRect();
+
+  if(e.touches){
+    offsetX = e.touches[0].clientX - rect.left;
+    offsetY = e.touches[0].clientY - rect.top;
+  } else {
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+  }
+
+  document.addEventListener("mousemove", dragging);
+  document.addEventListener("mouseup", dragEnd);
+  document.addEventListener("touchmove", dragging, {passive:false});
+  document.addEventListener("touchend", dragEnd);
+}
+
+function dragging(e){
+  if(!dragItem) return;
+  e.preventDefault();
+
+  let x,y;
+
+  if(e.touches){
+    x = e.touches[0].clientX;
+    y = e.touches[0].clientY;
+  } else {
+    x = e.clientX;
+    y = e.clientY;
+  }
+
+  dragItem.style.left = (x - offsetX) + "px";
+  dragItem.style.top  = (y - offsetY) + "px";
+}
+
+function dragEnd(){
+  dragItem = null;
+  document.removeEventListener("mousemove", dragging);
+  document.removeEventListener("mouseup", dragEnd);
+  document.removeEventListener("touchmove", dragging);
+  document.removeEventListener("touchend", dragEnd);
+}
+
+
+
+function verifyOTP(){
+
+  if(otp.value.trim() !== OTP?.toString()){
+    otpMsg.textContent = "Invalid OTP";
+    return;
+  }
+
+  // ✅ SAVE LOGIN ONLY FOR CURRENT BROWSER TAB
+  sessionStorage.setItem("loggedIn", "true");
+
+  loginUI.style.display = "none";
+  menuScreen.style.display = "block";
+}
+
+
+let timerStarted = false;
+
+function openLink(url){
+  clearCanvas();
+  menuScreen.style.display="none";
+  frameContainer.style.display="block";
+  mainFrame.src=url;
+
+  currentSlide = 1;
+  document.getElementById("slideInput").value = 1;
+
+  setTimeout(()=>{ mainFrame.focus(); },500);
+
+  // ✅ START TIMER ONLY ONCE
+  if(!timerStarted){
+    startTimer();
+    timerStarted = true;
+  }
+}
+
+
+
+
+function backToMenu(){
+  frameContainer.style.display="none";
+  menuScreen.style.display="block";
+  mainFrame.src="";
+}
+
+function logout(){
+
+  // ✅ remove login session
+  sessionStorage.removeItem("loggedIn");
+
+  // ✅ show login screen again
+  loginUI.style.display = "flex";
+  menuScreen.style.display = "none";
+
+  frameContainer.style.display = "none";
+
+  mainFrame.src = "";
+}
+
+function toggleAcc(btn){
+  const content=btn.nextElementSibling;
+  const siblings=btn.parentElement.querySelectorAll(".acc-content");
+  siblings.forEach(d=>{if(d!==content) d.style.display="none";});
+  content.style.display=(content.style.display==="block")?"none":"block";
+}
+
+
+function otpUiFeedback(){
+  const btn = document.getElementById("sendOtpBtn");
+  const info = document.getElementById("otpInfo");
+
+  btn.style.background = "#16a34a";   // green
+  btn.innerText = "OTP Sent";
+  btn.disabled = true;
+
+  info.style.display = "block";
+  }
+  
+  
+/* ===== DRAW TOOL ===== */
+const canvas = document.getElementById("drawCanvas");
+const whiteboardWindow = document.getElementById("whiteboardWindow");
+const wbCanvas = document.getElementById("whiteboardCanvas");
+const wbCtx = wbCanvas.getContext("2d");
+
+let lastX = 0, lastY = 0;
+let lastTX = 0, lastTY = 0;
+
+
+const ctx = canvas.getContext("2d", {
+  alpha:true,
+  desynchronized:true
+});
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = "medium";
+
+
+let drawing = false;
+let tool = "pen";
+let penMode = false;
+let penColor = "red";
+let penSize = 2;
+let eraserSize = 20;
+
+
+function setColor(c){
+  penColor = c;
+  enablePen();   // auto enable pen when color selected
+}
+
+
+function resizeCanvas(){
+
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width  = window.innerWidth * ratio;
+  canvas.height = window.innerHeight * ratio;
+
+  canvas.style.width  = window.innerWidth + "px";
+  canvas.style.height = window.innerHeight + "px";
+
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+
+function setTool(t){
+  tool = t;
+
+  // remove active state from both
+  penBtn.classList.remove("tool-active");
+  eraserBtn.classList.remove("tool-active");
+
+  // set active state
+  if(t === "pen"){
+    penBtn.classList.add("tool-active");
+    enablePen();
+  }
+
+  if(t === "eraser"){
+    eraserBtn.classList.add("tool-active");
+    enablePen(); // keep drawing enabled
+  }
+}
+
+
+function enablePen(){
+
+  penMode = true;
+
+  canvas.style.display = "block";
+  canvas.style.pointerEvents = "auto";
+
+  mainFrame.style.pointerEvents = "none";
+
+  penBtn.classList.add("pen-active");
+}
+
+
+function disablePen(){
+
+  penMode = false;
+
+  canvas.style.pointerEvents = "none";
+
+  mainFrame.style.pointerEvents = "auto";
+
+  penBtn.classList.remove("pen-active");
+
+  mainFrame.focus();
+}
+
+function changePenSize(delta){
+  penSize += delta;
+
+  if(penSize < 1) penSize = 1;
+  if(penSize > 20) penSize = 20;
+
+  document.getElementById("sizeLabel").innerText = penSize;
+  enablePen();
+}
+
+
+
+/* ===== XP PEN + SMART BOARD UNIVERSAL SYSTEM ===== */
+
+/* ===== UNIVERSAL XP-PEN + PALM ERASER SYSTEM ===== */
+
+canvas.style.touchAction = "none";
+
+let activePointers = new Map();
+
+canvas.addEventListener("pointerdown", pointerStart);
+canvas.addEventListener("pointermove", pointerMove, {passive:false});
+canvas.addEventListener("pointerup", pointerEnd);
+canvas.addEventListener("pointercancel", pointerEnd);
+
+function pointerStart(e){
+
+  if(!penMode) return;
+
+  e.preventDefault();
+
+  activePointers.set(e.pointerId,{
+    x:e.clientX,
+    y:e.clientY,
+    type:e.pointerType
+  });
+
+  /* =========================
+     TOOL SELECTION
+  ========================== */
+
+  // Default from button
+  activeMode = tool;
+
+  /* =========================
+     PALM ERASER
+  ========================== */
+
+  // Multi-touch = palm erase
+  if(e.pointerType === "touch" && activePointers.size >= 2){
+    activeMode = "eraser";
+  }
+
+  drawLine(
+    e.clientX,
+    e.clientY,
+    e.clientX,
+    e.clientY,
+    activeMode === "eraser",
+    e.pressure || 0.5
+  );
+
+  drawing = true;
+}
+
+
+function pointerMove(e){
+
+  if(!drawing || !penMode) return;
+
+  e.preventDefault();
+
+  const prev = activePointers.get(e.pointerId);
+
+  if(!prev) return;
+
+  const isErase = (
+    activeMode === "eraser"
+  );
+
+  drawLine(
+    prev.x,
+    prev.y,
+    e.clientX,
+    e.clientY,
+    isErase,
+    e.pressure
+  );
+
+  activePointers.set(e.pointerId,{
+    x:e.clientX,
+    y:e.clientY,
+    type:e.pointerType
+  });
+}
+function processDrawQueue(){
+
+  for(let i=0;i<drawQueue.length;i++){
+
+    const d = drawQueue[i];
+
+    drawLine(
+      d.x1,
+      d.y1,
+      d.x2,
+      d.y2,
+      d.erase,
+      d.pressure
+    );
+  }
+
+  drawQueue.length = 0;
+
+  rendering = false;
+}
+
+function pointerEnd(e){
+
+  activePointers.delete(e.pointerId);
+
+  if(activePointers.size === 0){
+    drawing = false;
+  }
+
+  lastMidX = 0;
+  lastMidY = 0;
+
+  ctx.beginPath();
+}
+
+
+
+/* =========================
+   DRAW ENGINE
+========================= */
+
+let lastMidX = 0;
+let lastMidY = 0;
+
+function drawLine(x1,y1,x2,y2,erase=false,pressure=0.5){
+
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  if(erase){
+
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineWidth = 50;
+    ctx.shadowBlur = 0;
+
+  } else {
+
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = penColor;
+
+    if(!pressure || pressure === 0){
+      pressure = 0.5;
+    }
+
+    // smoother pressure
+    ctx.lineWidth = Math.max(
+      1,
+      penSize * (0.6 + pressure * 1.8)
+    );
+
+    ctx.shadowBlur = 0;
+  }
+
+  // ===== SMOOTH CURVE =====
+
+  const midX = (x1 + x2) / 2;
+  const midY = (y1 + y2) / 2;
+
+  ctx.beginPath();
+
+  ctx.moveTo(lastMidX || x1, lastMidY || y1);
+
+  ctx.quadraticCurveTo(
+    x1,
+    y1,
+    midX,
+    midY
+  );
+
+  ctx.stroke();
+
+  lastMidX = midX;
+  lastMidY = midY;
+}
+
+
+
+/* ===== WHITEBOARD ===== */
+
+
+
+function resizeWB(){
+  const rect = wbCanvas.getBoundingClientRect();
+  wbCanvas.width  = rect.width * window.devicePixelRatio;
+  wbCanvas.height = rect.height * window.devicePixelRatio;
+  wbCtx.setTransform(window.devicePixelRatio,0,0,window.devicePixelRatio,0,0);
+}
+
+window.addEventListener("resize", resizeWB);
+
+function openWhiteboard(){
+  whiteboardWindow.style.display = "block";
+  resizeWB();
+}
+
+function closeWhiteboard(){
+  whiteboardWindow.style.display = "none";
+}
+
+/* whiteboard drawing */
+
+let wbDrawing = false;
+let wbLastX = 0;
+let wbLastY = 0;
+
+
+wbCanvas.addEventListener("mousedown", e => {
+  wbDrawing = true;
+  wbCtx.beginPath();
+  wbCtx.moveTo(e.offsetX, e.offsetY);
+});
+
+wbCanvas.addEventListener("mousemove", e => {
+  if(!wbDrawing) return;
+
+  wbCtx.lineCap = "round";
+  wbCtx.lineJoin = "round";
+
+  if(tool === "pen"){
+    wbCtx.globalCompositeOperation = "source-over";
+    wbCtx.strokeStyle = penColor;
+    wbCtx.lineWidth = penSize;
+  } else {
+    wbCtx.globalCompositeOperation = "destination-out";
+    wbCtx.lineWidth = 20;
+  }
+
+  wbCtx.lineTo(e.offsetX, e.offsetY);
+  wbCtx.stroke();
+});
+
+window.addEventListener("mouseup", () => wbDrawing = false);
+
+/* ===== WHITEBOARD TOUCH SUPPORT ===== */
+
+/* ===== WHITEBOARD TOUCH DRAW FIX ===== */
+
+function getTouchPos(canvas, e){
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.touches[0];
+  return {
+    x: touch.clientX - rect.left,
+    y: touch.clientY - rect.top
+  };
+}
+
+wbCanvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  wbDrawing = true;
+  const pos = getTouchPos(wbCanvas, e);
+  wbLastX = pos.x;
+  wbLastY = pos.y;
+});
+
+wbCanvas.addEventListener("touchmove", e => {
+  if(!wbDrawing) return;
+  e.preventDefault();
+
+  const pos = getTouchPos(wbCanvas, e);
+
+  wbCtx.lineCap = "round";
+  wbCtx.lineJoin = "round";
+
+  if(tool === "pen"){
+    wbCtx.globalCompositeOperation = "source-over";
+    wbCtx.strokeStyle = penColor;
+    wbCtx.lineWidth = penSize;
+  } else {
+    wbCtx.globalCompositeOperation = "destination-out";
+    wbCtx.lineWidth = 20;
+  }
+
+  wbCtx.beginPath();
+  wbCtx.moveTo(wbLastX, wbLastY);
+  wbCtx.lineTo(pos.x, pos.y);
+  wbCtx.stroke();
+
+  wbLastX = pos.x;
+  wbLastY = pos.y;
+});
+
+wbCanvas.addEventListener("touchend", () => wbDrawing = false);
+
+
+
+
+
+
+
+
+
+/* ===== PERFECT SLIDE + PEN CONTROL ===== */
+
+let blockOnce = false;
+
+/* Mouse wheel */
+document.addEventListener("wheel", e => {
+  if(penMode && !blockOnce){
+    disablePen();
+    blockOnce = true;
+    return;
+  }
+  blockOnce = false;
+}, {passive:true});
+
+/* Keyboard navigation */
+document.addEventListener("keydown", e => {
+
+  const navKeys = ["ArrowRight","ArrowLeft","PageDown","PageUp"," ","Enter"];
+  if(!navKeys.includes(e.key)) return;
+
+  // ⭐ IMPORTANT: stop drawing immediately
+  drawing = false;
+
+  if(penMode){
+
+    canvas.style.pointerEvents = "none";
+
+    mainFrame.focus();
+
+    setTimeout(()=>{
+      canvas.style.pointerEvents = "auto";
+    },30);
+
+  }
+
+});
+
+
+
+
+/* ===== LONG PRESS NEXT = RE-ACTIVATE PEN ===== */
+
+let nextHoldTimer = null;
+let longPressTriggered = false;
+
+document.addEventListener("keydown", e => {
+
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){
+
+    if(nextHoldTimer) return;   // already running
+
+    longPressTriggered = false;
+
+    nextHoldTimer = setTimeout(() => {
+      longPressTriggered = true;
+      enablePen();   // 🔥 long press → pen ON
+    }, 600);  // 600ms = long press
+  }
+
+});
+
+/* ===== LONG PRESS PREVIOUS = CLEAR ALL (KEEP PEN ACTIVE) ===== */
+
+/* ===== LONG PRESS PREVIOUS = CLEAR ALL ===== */
+
+let prevHoldTimer = null;
+
+document.addEventListener("keydown", e => {
+
+  if(["ArrowLeft","PageUp"].includes(e.key)){
+
+    if(prevHoldTimer) return;
+
+    prevHoldTimer = setTimeout(() => {
+      clearCanvas();   // uses your working function
+    }, 600);
+
+  }
+
+});
+
+document.addEventListener("keyup", e => {
+
+  if(["ArrowLeft","PageUp"].includes(e.key)){
+    clearTimeout(prevHoldTimer);
+    prevHoldTimer = null;
+  }
+
+});
+
+
+
+document.addEventListener("keyup", e => {
+
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){
+    clearTimeout(nextHoldTimer);
+    nextHoldTimer = null;
+  }
+
+});
+
+
+/* ===== TIMER ===== */
+
+
+
+let seconds = 0;
+let nextAlert = 3600; // first alert at 1 hour
+let firstAlertDone = false;
+
+function beep(times = 3, gap = 500){
+  let count = 0;
+
+  const playBeep = () => {
+    if(count >= times) return;
+
+    const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+    audio.play();
+
+    count++;
+    setTimeout(playBeep, gap);
+  };
+
+  playBeep();
+}
+
+function startTimer(){
+
+  setInterval(() => {
+
+    seconds++;
+
+    let h = Math.floor(seconds / 3600);
+    let m = Math.floor((seconds % 3600) / 60);
+    let s = seconds % 60;
+
+    timerBox.innerText =
+      String(h).padStart(2,'0') + ":" +
+      String(m).padStart(2,'0') + ":" +
+      String(s).padStart(2,'0');
+
+    // 🔔 ALERT LOGIC
+    if(seconds === nextAlert){
+
+      if(!firstAlertDone){
+        // 🔴 FIRST ALERT (1 hour)
+        beep(3); // 3 beeps
+        timerBox.style.background = "#ef4444"; // red
+        firstAlertDone = true;
+
+      } else {
+        // 🟡 NEXT ALERTS (every 15 min)
+        beep(1); // 1 beep
+        timerBox.style.background = "#eab308"; // yellow
+      }
+
+      // ⏱ next alert after 15 min
+      nextAlert += 900;
+    }
+
+  }, 1000);
+}
+
+
+
+
+
+function openPeriodic(){
+  document.getElementById("ptableWindow").style.display = "block";
+}
+
+function closePeriodic(){
+  document.getElementById("ptableWindow").style.display = "none";
+}
+
+function closeFormula(){
+  document.getElementById("formulaWindow").style.display = "none";
+  document.getElementById("formulaFrame").src = "";
+}
+
+
+function openFormula(type){
+  const frame = document.getElementById("formulaFrame");
+  document.getElementById("formulaWindow").style.display = "block";
+
+  if(type === "chem")
+    frame.src = "https://gten-educational-platform.github.io/Class-12/chemistry formula.html";
+  else if(type === "phy")
+    frame.src = "https://gten-educational-platform.github.io/Class-12/Physics%20formula.html";
+  else
+    frame.src = "https://byjus.com/maths/formulas/";
+}
+
+
+
+
+function openCalculator(){
+  document.getElementById("calcWindow").style.display = "block";
+  document.getElementById("calcFrame").src = "https://www.desmos.com/scientific";
+}
+
+function closeCalculator(){
+  document.getElementById("calcWindow").style.display = "none";
+  document.getElementById("calcFrame").src = "";
+}
+
+function clearCanvas(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  wbCtx.clearRect(0, 0, wbCanvas.width, wbCanvas.height);
+
+  enablePen();
+  canvas.style.pointerEvents = "auto";
+}
+
+function goToSlide(){
+  const slideNum = document.getElementById("slideInput").value;
+
+  if(slideNum === "") return;
+
+  let base = mainFrame.src.split('#')[0];
+
+  // 🔥 NO -1 → exact number
+  mainFrame.src = base + "#slide=" + slideNum;
+}
+
+// ✅ KEEP LOGIN AFTER REFRESH
+window.onload = function(){
+
+  if(sessionStorage.getItem("loggedIn") === "true"){
+
+    loginUI.style.display = "none";
+    menuScreen.style.display = "block";
+
+  } else {
+
+    loginUI.style.display = "flex";
+    menuScreen.style.display = "none";
+  }
+
+}
+
+// 🔥 TEMP AUTO LOGIN (REMOVE LATER)
+window.onload = function(){
+  document.getElementById("loginUI").style.display = "none";
+  document.getElementById("menuScreen").style.display = "block";
+}
+
+</script>
+
+
+</body>
+</html>
