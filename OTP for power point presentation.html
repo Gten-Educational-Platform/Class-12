@@ -381,6 +381,11 @@ iframe{
   will-change: transform;
   transform: translate3d(0,0,0);
 }
+.tool-active{
+  background:#22c55e !important;
+  box-shadow:0 0 12px rgba(34,197,94,0.9);
+  transform:scale(1.1);
+}
 </style>
 </head>
 
@@ -2753,6 +2758,9 @@ let penMode = false;
 let penColor = "red";
 let penSize = 3;
 let eraserSize = 20;
+/* ADD THESE */
+let activeMode = "pen";
+let drawing = false;
 
 
 function setColor(c){
@@ -2781,10 +2789,19 @@ window.addEventListener("resize", resizeCanvas);
 function setTool(t){
   tool = t;
 
-  if(penMode && t === "pen"){
-    disablePen();   // toggle OFF
-  } else {
-    enablePen();    // toggle ON
+  // remove active state from both
+  penBtn.classList.remove("tool-active");
+  eraserBtn.classList.remove("tool-active");
+
+  // set active state
+  if(t === "pen"){
+    penBtn.classList.add("tool-active");
+    enablePen();
+  }
+
+  if(t === "eraser"){
+    eraserBtn.classList.add("tool-active");
+    enablePen(); // keep drawing enabled
   }
 }
 
@@ -2843,6 +2860,9 @@ canvas.addEventListener("pointermove", pointerMove, {passive:false});
 canvas.addEventListener("pointerup", pointerEnd);
 canvas.addEventListener("pointercancel", pointerEnd);
 
+
+
+
 function pointerStart(e){
 
   if(!penMode) return;
@@ -2856,51 +2876,29 @@ function pointerStart(e){
   });
 
   /* =========================
-     XP PEN / STYLUS
+     TOOL SELECTION
   ========================== */
 
-  if(e.pointerType === "pen"){
-
-    activeMode = "pen";
-
-    drawLine(
-      e.clientX,
-      e.clientY,
-      e.clientX,
-      e.clientY,
-      false,
-      e.pressure
-    );
-  }
+  // Default from button
+  activeMode = tool;
 
   /* =========================
-     FINGER TOUCH
+     PALM ERASER
   ========================== */
 
-  else if(e.pointerType === "touch"){
-
-    /*
-      MULTI TOUCH = PALM
-    */
-
-    if(activePointers.size >= 2){
-
-      activeMode = "eraser";
-
-    } else {
-
-      activeMode = "pen";
-    }
+  // Multi-touch = palm erase
+  if(e.pointerType === "touch" && activePointers.size >= 2){
+    activeMode = "eraser";
   }
 
-  /*
-    MOUSE
-  */
-
-  else{
-
-    activeMode = "pen";
-  }
+  drawLine(
+    e.clientX,
+    e.clientY,
+    e.clientX,
+    e.clientY,
+    activeMode === "eraser",
+    e.pressure || 0.5
+  );
 
   drawing = true;
 }
@@ -3405,7 +3403,11 @@ window.onload = function(){
   }
 
 }
-
+// 🔥 TEMP AUTO LOGIN (REMOVE LATER)
+window.onload = function(){
+  document.getElementById("loginUI").style.display = "none";
+  document.getElementById("menuScreen").style.display = "block";
+}
 
 
 </script>
