@@ -359,7 +359,28 @@ button:hover{opacity:.9}
 .float-btn:focus{
 outline:none;
 }
-
+canvas{
+  touch-action:none;
+  -ms-touch-action:none;
+}
+#drawCanvas{
+  will-change: transform;
+  touch-action:none;
+  pointer-events:auto;
+}
+iframe{
+  touch-action:auto;
+}
+#drawCanvas{
+  image-rendering:auto;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+}
+#drawCanvas{
+  contain: strict;
+  will-change: transform;
+  transform: translate3d(0,0,0);
+}
 </style>
 </head>
 
@@ -2530,26 +2551,44 @@ const SERVICE_ID="service_ypvhncp";
 const TEMPLATE_ID="template_wvtlep4";
 let OTP=null;
 
+
+
+
 function sendOTP(){
+
+  const btn = document.getElementById("sendOtpBtn");
+
+  // ✅ Prevent multiple clicks immediately
+  btn.disabled = true;
+  btn.innerText = "Sending...";
+  btn.style.background = "#64748b";
+
   const sendBox = document.getElementById("sendBox");
   const otpBox = document.getElementById("otpBox");
 
   OTP = Math.floor(100000 + Math.random() * 900000);
 
   emailjs.send(SERVICE_ID, TEMPLATE_ID, { otp: OTP })
+
   .then(() => {
 
-    otpUiFeedback(); // UI change first
+    otpUiFeedback();
 
-    // small delay so message is visible
     setTimeout(() => {
       sendBox.classList.add("hidden");
       otpBox.classList.remove("hidden");
     }, 800);
 
   })
+
   .catch(() => {
-    emailMsg.textContent = "Failed to send OTP";
+
+    emailMsg.textContent = "Retry after some time";
+
+    // ✅ Re-enable only if failed
+    btn.disabled = false;
+    btn.innerText = "Send OTP";
+    btn.style.background = "#4f46e5";
   });
 }
 
@@ -2607,11 +2646,17 @@ function dragEnd(){
 
 
 function verifyOTP(){
-  if(otp.value.trim()!==OTP?.toString()){
-    otpMsg.textContent="Invalid OTP";return;
+
+  if(otp.value.trim() !== OTP?.toString()){
+    otpMsg.textContent = "Invalid OTP";
+    return;
   }
-  loginUI.style.display="none";
-  menuScreen.style.display="block";
+
+  // ✅ SAVE LOGIN ONLY FOR CURRENT BROWSER TAB
+  sessionStorage.setItem("loggedIn", "true");
+
+  loginUI.style.display = "none";
+  menuScreen.style.display = "block";
 }
 
 
@@ -2644,7 +2689,19 @@ function backToMenu(){
   mainFrame.src="";
 }
 
-function logout(){location.reload();}
+function logout(){
+
+  // ✅ remove login session
+  sessionStorage.removeItem("loggedIn");
+
+  // ✅ show login screen again
+  loginUI.style.display = "flex";
+  menuScreen.style.display = "none";
+
+  frameContainer.style.display = "none";
+
+  mainFrame.src = "";
+}
 
 function toggleAcc(btn){
   const content=btn.nextElementSibling;
@@ -2676,12 +2733,21 @@ let lastX = 0, lastY = 0;
 let lastTX = 0, lastTY = 0;
 
 
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", {
+  alpha:true,
+  desynchronized:true
+});
+
+ctx.lineCap = "round";
+ctx.lineJoin = "round";
 ctx.imageSmoothingEnabled = true;
-ctx.imageSmoothingQuality = "high";
 
 
-let drawing = false;
+
+
+
+let drawQueue = [];
+let rendering = false;
 let tool = "pen";
 let penMode = false;
 let penColor = "red";
@@ -2724,19 +2790,28 @@ function setTool(t){
 
 
 function enablePen(){
+
   penMode = true;
+
   canvas.style.display = "block";
   canvas.style.pointerEvents = "auto";
+
+  mainFrame.style.pointerEvents = "none";
+
   penBtn.classList.add("pen-active");
 }
 
 
 function disablePen(){
+
   penMode = false;
+
   canvas.style.pointerEvents = "none";
+
+  mainFrame.style.pointerEvents = "auto";
+
   penBtn.classList.remove("pen-active");
 
-  // 🔥 FIX: Return focus to slide iframe so Next works instantly
   mainFrame.focus();
 }
 
@@ -2752,108 +2827,227 @@ function changePenSize(delta){
 
 
 
+/* ===== XP PEN + SMART BOARD UNIVERSAL SYSTEM ===== */
 
-/* ===== MOUSE MOVE SUPPORT ===== */
-canvas.addEventListener("mousedown", e => {
+/* ===== UNIVERSAL XP-PEN + PALM ERASER SYSTEM ===== */
+
+canvas.style.touchAction = "none";
+canvas.style.transform = "translateZ(0)";
+canvas.style.willChange = "transform";
+canvas.style.contain = "strict";
+
+let activePointers = new Map();
+
+canvas.addEventListener("pointerdown", pointerStart);
+canvas.addEventListener("pointermove", pointerMove, {passive:false});
+canvas.addEventListener("pointerup", pointerEnd);
+canvas.addEventListener("pointercancel", pointerEnd);
+
+function pointerStart(e){
+
   if(!penMode) return;
+
+  e.preventDefault();
+
+  activePointers.set(e.pointerId,{
+    x:e.clientX,
+    y:e.clientY,
+    type:e.pointerType
+  });
+
+  /* =========================
+     XP PEN / STYLUS
+  ========================== */
+
+  if(e.pointerType === "pen"){
+
+    activeMode = "pen";
+
+    drawLine(
+      e.clientX,
+      e.clientY,
+      e.clientX,
+      e.clientY,
+      false,
+      e.pressure
+    );
+  }
+
+  /* =========================
+     FINGER TOUCH
+  ========================== */
+
+  else if(e.pointerType === "touch"){
+
+    /*
+      MULTI TOUCH = PALM
+    */
+
+    if(activePointers.size >= 2){
+
+      activeMode = "eraser";
+
+    } else {
+
+      activeMode = "pen";
+    }
+  }
+
+  /*
+    MOUSE
+  */
+
+  else{
+
+    activeMode = "pen";
+  }
+
   drawing = true;
-  lastX = e.clientX;
-  lastY = e.clientY;
-});
+}
 
 
-canvas.addEventListener("mousemove", e => {
+function pointerMove(e){
+
   if(!drawing || !penMode) return;
 
-  const x = e.clientX;
-  const y = e.clientY;
+  e.preventDefault();
+
+  const events = e.getCoalescedEvents
+    ? e.getCoalescedEvents()
+    : [e];
+
+  for(const ev of events){
+
+    const prev = activePointers.get(ev.pointerId);
+
+    if(!prev) continue;
+
+    drawQueue.push({
+      x1: prev.x,
+      y1: prev.y,
+      x2: ev.clientX,
+      y2: ev.clientY,
+      erase: activeMode === "eraser",
+      pressure: ev.pressure
+    });
+
+    activePointers.set(ev.pointerId,{
+      x: ev.clientX,
+      y: ev.clientY,
+      type: ev.pointerType
+    });
+  }
+
+  if(!rendering){
+
+    rendering = true;
+
+    requestAnimationFrame(processDrawQueue);
+  }
+}
+
+
+
+
+function processDrawQueue(){
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
 
-  if(tool === "pen"){
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = penColor;
-    ctx.lineWidth = penSize;
-    ctx.shadowBlur = 0.4;
-    ctx.shadowColor = penColor;
-  } else {
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.lineWidth = eraserSize;
+  for(let i = 0; i < drawQueue.length; i++){
+
+    const d = drawQueue[i];
+
+    ctx.beginPath();
+
+    if(d.erase){
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = 40;
+
+    } else {
+
+      ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = penColor;
+
+      // pressure smoothing
+      ctx.lineWidth =
+        Math.max(
+          1,
+          penSize * (0.6 + d.pressure * 0.8)
+        );
+    }
+
+    ctx.moveTo(d.x1, d.y1);
+    ctx.lineTo(d.x2, d.y2);
+
+    ctx.stroke();
   }
 
-  const midX = (lastX + x) / 2;
-  const midY = (lastY + y) / 2;
+  drawQueue.length = 0;
+
+  rendering = false;
+}
+
+
+
+
+
+function pointerEnd(e){
+
+  activePointers.delete(e.pointerId);
+
+  if(activePointers.size === 0){
+    drawing = false;
+  }
+
+  lastMidX = 0;
+  lastMidY = 0;
+
+ 
+ctx.strokeStyle = penColor;
+ctx.lineCap = "round";
+ctx.lineJoin = "round";
+ctx.miterLimit = 1;
+
+ ctx.beginPath();
+}
+
+
+
+/* =========================
+   DRAW ENGINE
+========================= */
+
+let lastMidX = 0;
+let lastMidY = 0;
+
+function drawLine(x1,y1,x2,y2,erase=false,pressure=0.5){
 
   ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.quadraticCurveTo(midX, midY, x, y);
-  ctx.stroke();
 
-  lastX = x;
-  lastY = y;
-});
+  if(erase){
 
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineWidth = 40;
 
+  } else {
 
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = penColor;
 
-
-window.addEventListener("mouseup", () => {
-  drawing = false;
-  ctx.beginPath();   // 🔥 resets drawing path (VERY IMPORTANT)
-});
-
-
-/* ===== TRIPLE CLICK / TAP TO DISABLE PEN ===== */
-
-
-/* ===== MOBILE TOUCH SUPPORT ===== */
-canvas.addEventListener("touchstart", e => {
-  if(!penMode) return;
-  e.preventDefault();
-
-  drawing = true;
-  const t = e.touches[0];
-  lastTX = t.clientX;
-  lastTY = t.clientY;
-}, {passive:false});
-
-
-
-canvas.addEventListener("touchmove", e => {
-  if(!drawing || !penMode) return;
-  e.preventDefault();
-
-  const t = e.touches[0];
-  const x = t.clientX;
-  const y = t.clientY;
+    // Faster pressure handling
+    ctx.lineWidth = penSize;
+  }
 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-  if(tool === "pen"){
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = penColor;
-    ctx.lineWidth = penSize;
-    ctx.shadowBlur = 0.4;
-    ctx.shadowColor = penColor;
-  } else {
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.lineWidth = eraserSize;
-  }
-
-  ctx.beginPath();
-  ctx.moveTo(lastTX, lastTY);
-  ctx.lineTo(x, y);
-  ctx.stroke();
-
-  lastTX = x;
-  lastTY = y;
-}, {passive:false});
-
-
+  // FAST smooth drawing
+ctx.moveTo(x1, y1);
+ctx.lineTo(x2, y2);
+ctx.stroke();
+}
 
 
 
@@ -3195,6 +3389,23 @@ function goToSlide(){
   // 🔥 NO -1 → exact number
   mainFrame.src = base + "#slide=" + slideNum;
 }
+
+// ✅ KEEP LOGIN AFTER REFRESH
+window.onload = function(){
+
+  if(sessionStorage.getItem("loggedIn") === "true"){
+
+    loginUI.style.display = "none";
+    menuScreen.style.display = "block";
+
+  } else {
+
+    loginUI.style.display = "flex";
+    menuScreen.style.display = "none";
+  }
+
+}
+
 
 
 </script>
