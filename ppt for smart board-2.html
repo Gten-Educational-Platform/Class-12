@@ -1875,7 +1875,7 @@ iframe{
 
     <div class="chapter"><b>Chapter 3 Electrochemistry:</b>
       <div class="resource-row">
-        <button onclick="openLink('https://docs.google.com/presentation/d/1lrd_LmNWlqabpIn0Sush-wrgxUqisHNrCIFnJoB_Wt8/preview')">PPT</button>
+        <button onclick="openLink('https://docs.google.com/presentation/d/1lrd_LmNWlqabpIn0Sush-wrgxUqisHNrCIFnJoB_Wt8/edit?usp=sharing/preview')">PPT</button>
         <button onclick="openLink('#')">Test</button>
         <button onclick="openLink('#')">Solution</button>
       </div>
@@ -2773,22 +2773,43 @@ window.addEventListener("resize", resizeCanvas);
 
 
 function setTool(t){
+
+  // ===== CLICK PEN AGAIN → OFF =====
+  if(t === "pen" && penMode && tool === "pen"){
+
+    disablePen();
+    return;
+  }
+
+  // ===== CLICK ERASER AGAIN =====
+  if(t === "eraser" && penMode && tool === "eraser"){
+
+    // switch back to pen automatically
+    tool = "pen";
+
+    eraserBtn.classList.remove("tool-active");
+    penBtn.classList.add("tool-active");
+
+    enablePen();
+
+    return;
+  }
+
+  // ===== NORMAL TOOL SWITCH =====
   tool = t;
 
-  // remove active state from both
   penBtn.classList.remove("tool-active");
   eraserBtn.classList.remove("tool-active");
 
-  // set active state
   if(t === "pen"){
     penBtn.classList.add("tool-active");
-    enablePen();
   }
 
   if(t === "eraser"){
     eraserBtn.classList.add("tool-active");
-    enablePen(); // keep drawing enabled
   }
+
+  enablePen();
 }
 
 
@@ -2808,12 +2829,15 @@ function enablePen(){
 function disablePen(){
 
   penMode = false;
+  drawing = false;
 
   canvas.style.pointerEvents = "none";
 
   mainFrame.style.pointerEvents = "auto";
 
   penBtn.classList.remove("pen-active");
+  penBtn.classList.remove("tool-active");
+  eraserBtn.classList.remove("tool-active");
 
   mainFrame.focus();
 }
