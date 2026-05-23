@@ -19,7 +19,7 @@ body{
 }
 
 .container{
-    max-width:1200px;
+    max-width:1400px;
     margin:auto;
 }
 
@@ -82,24 +82,27 @@ button{
     background:#1d4ed8;
 }
 
-.edit-btn{
-    background:#16a34a;
-    padding:7px 10px;
-}
-
 .delete-btn{
     background:#dc2626;
-    padding:7px 10px;
+    padding:7px 12px;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
 }
 
 .search-box{
-    margin-bottom:15px;
+    margin-bottom:20px;
+}
+
+.table-wrapper{
+    overflow:auto;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    min-width:900px;
+    min-width:1300px;
 }
 
 th,
@@ -112,10 +115,8 @@ td{
 
 th{
     background:#f8fafc;
-}
-
-.table-wrapper{
-    overflow:auto;
+    position:sticky;
+    top:0;
 }
 
 @media(max-width:600px){
@@ -132,13 +133,15 @@ body{
 }
 
 </style>
-
 </head>
+
 <body>
 
 <div class="container">
 
 <h1>G10 Student Enquiry System</h1>
+
+<!-- FORM -->
 
 <div class="form-box">
 
@@ -150,14 +153,22 @@ body{
 </div>
 
 <div>
+<label>Parent Name</label>
+<input type="text" id="parentName">
+</div>
+
+<div>
 <label>Mobile Number *</label>
 <input type="text" id="mobile">
 </div>
 
 <div>
 <label>Class</label>
+
 <select id="studentClass">
+
 <option value="">Select Class</option>
+
 <option>Class 6</option>
 <option>Class 7</option>
 <option>Class 8</option>
@@ -165,7 +176,34 @@ body{
 <option>Class 10</option>
 <option>Class 11</option>
 <option>Class 12</option>
+
+<option>IIT-JEE</option>
+<option>NEET</option>
+<option>Other</option>
+
 </select>
+</div>
+
+<div>
+<label>Subject</label>
+
+<select id="subject">
+
+<option value="">Select Subject</option>
+
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Mathematics</option>
+<option>Biology</option>
+
+<option>Science</option>
+<option>English</option>
+<option>Social Science</option>
+
+<option>All Subjects</option>
+
+</select>
+
 </div>
 
 <div>
@@ -188,6 +226,7 @@ body{
 <br>
 
 <label>Remarks</label>
+
 <textarea id="remarks" rows="3"></textarea>
 
 <br><br>
@@ -198,15 +237,76 @@ Save Enquiry
 
 </div>
 
+<!-- SEARCH -->
+
 <div class="table-box">
 
 <div class="search-box">
+
+<div class="grid">
+
+<div>
+<label>Search</label>
+
 <input
 type="text"
 id="search"
-placeholder="Search by Name or Mobile"
+placeholder="Search Name or Mobile"
 onkeyup="loadData()">
+
 </div>
+
+<div>
+
+<label>Filter Class</label>
+
+<select id="filterClass" onchange="loadData()">
+
+<option value="">All Classes</option>
+
+<option>Class 6</option>
+<option>Class 7</option>
+<option>Class 8</option>
+<option>Class 9</option>
+<option>Class 10</option>
+<option>Class 11</option>
+<option>Class 12</option>
+
+<option>IIT-JEE</option>
+<option>NEET</option>
+<option>Other</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>From Date</label>
+
+<input
+type="date"
+id="fromDate"
+onchange="loadData()">
+
+</div>
+
+<div>
+
+<label>To Date</label>
+
+<input
+type="date"
+id="toDate"
+onchange="loadData()">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- TABLE -->
 
 <div class="table-wrapper">
 
@@ -215,14 +315,18 @@ onkeyup="loadData()">
 <thead>
 
 <tr>
+
 <th>Name</th>
+<th>Parent</th>
 <th>Mobile</th>
 <th>Class</th>
+<th>Subject</th>
 <th>Course</th>
 <th>School</th>
 <th>Date</th>
 <th>Remarks</th>
 <th>Actions</th>
+
 </tr>
 
 </thead>
@@ -236,6 +340,8 @@ onkeyup="loadData()">
 </div>
 
 </div>
+
+<!-- FIREBASE -->
 
 <script type="module">
 
@@ -252,6 +358,8 @@ doc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+// FIREBASE CONFIG
 
 const firebaseConfig = {
 
@@ -272,19 +380,31 @@ measurementId: "G-V4L2PXSXCX"
 };
 
 
+// INITIALIZE
+
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
 
+// SAVE ENQUIRY
+
 window.saveEnquiry = async function(){
 
-const name = document.getElementById("name").value.trim();
+const name =
+document.getElementById("name").value.trim();
 
-const mobile = document.getElementById("mobile").value.trim();
+const parentName =
+document.getElementById("parentName").value.trim();
+
+const mobile =
+document.getElementById("mobile").value.trim();
 
 const studentClass =
 document.getElementById("studentClass").value;
+
+const subject =
+document.getElementById("subject").value;
 
 const course =
 document.getElementById("course").value.trim();
@@ -299,11 +419,14 @@ const remarks =
 document.getElementById("remarks").value.trim();
 
 
+// VALIDATION
+
 if(!name || !mobile){
 
-    alert("Please fill Student Name and Mobile Number");
+alert("Please fill Student Name and Mobile");
 
-    return;
+return;
+
 }
 
 
@@ -311,14 +434,16 @@ try{
 
 await addDoc(collection(db,"enquiries"),{
 
-    name,
-    mobile,
-    studentClass,
-    course,
-    school,
-    date,
-    remarks,
-    createdAt:new Date()
+name,
+parentName,
+mobile,
+studentClass,
+subject,
+course,
+school,
+date,
+remarks,
+createdAt:new Date()
 
 });
 
@@ -326,11 +451,17 @@ await addDoc(collection(db,"enquiries"),{
 alert("Enquiry Saved Successfully");
 
 
+// CLEAR FORM
+
 document.getElementById("name").value = "";
+
+document.getElementById("parentName").value = "";
 
 document.getElementById("mobile").value = "";
 
 document.getElementById("studentClass").value = "";
+
+document.getElementById("subject").value = "";
 
 document.getElementById("course").value = "";
 
@@ -340,6 +471,8 @@ document.getElementById("date").value = "";
 
 document.getElementById("remarks").value = "";
 
+
+// RELOAD
 
 loadData();
 
@@ -355,17 +488,28 @@ alert("Error Saving Data");
 }
 
 
+// LOAD DATA
+
 window.loadData = async function(){
 
-const tbody = document.getElementById("tableBody");
+const tbody =
+document.getElementById("tableBody");
 
 tbody.innerHTML = "";
-
 
 const search =
 document.getElementById("search")
 .value
 .toLowerCase();
+
+const filterClass =
+document.getElementById("filterClass").value;
+
+const fromDate =
+document.getElementById("fromDate").value;
+
+const toDate =
+document.getElementById("toDate").value;
 
 
 const querySnapshot =
@@ -377,13 +521,52 @@ querySnapshot.forEach((docSnap)=>{
 const data = docSnap.data();
 
 
-if(
+// SEARCH FILTER
 
-data.name.toLowerCase().includes(search)
+const matchesSearch =
+
+(data.name || "")
+.toLowerCase()
+.includes(search)
 
 ||
 
-data.mobile.includes(search)
+(data.mobile || "")
+.includes(search);
+
+
+// CLASS FILTER
+
+const matchesClass =
+
+!filterClass ||
+
+data.studentClass === filterClass;
+
+
+// DATE FILTER
+
+const matchesFromDate =
+
+!fromDate ||
+
+data.date >= fromDate;
+
+const matchesToDate =
+
+!toDate ||
+
+data.date <= toDate;
+
+
+// SHOW
+
+if(
+
+matchesSearch &&
+matchesClass &&
+matchesFromDate &&
+matchesToDate
 
 ){
 
@@ -393,9 +576,13 @@ tbody.innerHTML += `
 
 <td>${data.name || ""}</td>
 
+<td>${data.parentName || ""}</td>
+
 <td>${data.mobile || ""}</td>
 
 <td>${data.studentClass || ""}</td>
+
+<td>${data.subject || ""}</td>
 
 <td>${data.course || ""}</td>
 
@@ -410,7 +597,9 @@ tbody.innerHTML += `
 <button
 class="delete-btn"
 onclick="deleteEntry('${docSnap.id}')">
+
 Delete
+
 </button>
 
 </td>
@@ -426,11 +615,12 @@ Delete
 }
 
 
+// DELETE
+
 window.deleteEntry = async function(id){
 
 const confirmDelete =
-confirm("Are you sure to delete this enquiry?");
-
+confirm("Delete this enquiry?");
 
 if(confirmDelete){
 
@@ -442,6 +632,8 @@ loadData();
 
 }
 
+
+// AUTO LOAD
 
 loadData();
 
