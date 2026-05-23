@@ -1,0 +1,39 @@
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyASonAyK1NIfvHXyk8UNMX8ofrSM5cYf7o",
+
+authDomain: "g10-enquery.firebaseapp.com",
+
+projectId: "g10-enquery",
+
+storageBucket: "g10-enquery.firebasestorage.app",
+
+messagingSenderId: "149940630975",
+
+appId: "1:149940630975:web:58f8f785613f7c5b5b5d0a",
+
+measurementId: "G-V4L2PXSXCX"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+</script>
