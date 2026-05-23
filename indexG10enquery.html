@@ -1,6 +1,452 @@
+
+
+i need a code for enquery entryfor my isntitute for my new student using firebese 
+
+You can build a complete Firebase-based Student Enquiry Entry System using HTML, CSS, and JavaScript.
+This will allow you to:
+
+Add new student enquiries
+
+Store data in Firebase Firestore
+
+View enquiry list
+
+Search students
+
+Edit/Delete entries
+
+Mobile-friendly UI
+
+You first need to create a Firebase project from:
+
+Firebase Console
+
+Then enable:
+
+Firestore Database
+
+Authentication (optional later)
+
+Here is the full working code:
+
+
+
+Replace this section with your Firebase config:
+
+const firebaseConfig = {
+ apiKey: "YOUR_API_KEY",
+ authDomain: "YOUR_PROJECT.firebaseapp.com",
+ projectId: "YOUR_PROJECT_ID",
+ storageBucket: "YOUR_PROJECT.appspot.com",
+ messagingSenderId: "XXXXXX",
+ appId: "XXXXXX"
+};
+You can get this from:
+
+Firebase Console → Project Settings → General → Your Apps
+
+Features you can add later:
+
+Student admission conversion
+
+WhatsApp button
+
+Fee tracking
+
+PDF export
+
+Excel export
+
+Admin login
+
+Follow-up reminder
+
+Google Drive backup
+
+Dark mode
+
+Dashboard charts
+
+Firebase documentation:
+
+Firebase Firestore Docs
+
+
+project is ready now what: Skip to main content
+Firebase logo
+Search for products
+Project Overview
+Settings
+What's new
+SQL Connect
+New
+Phone Verification
+New
+Product categories
+Databases & Storage
+Security
+AI services
+Hosting & Serverless
+DevOps & Engagement
+Analytics
+Billing plan:Spark
+No-cost ($0/month)
+G10 Enquery
+Try agent skills to help your AI coding assistants get started with Firebase quickly
+G10 Enquery
+Hello, Jiten
+Welcome to your Firebase project!
+Gemini can give you suggestions for Firebase services and solutions for your app
+Next steps with Gemini
+View docs
+
+Tell us about your app
+Describe your app, and Gemini will suggest products to help you get started
+
+Add Analytics and monitoring
+Learn more about Google Analytics and Firebase monitoring products
+
+Build a backend
+Firebase offers many backend services, including both SQL and NoSQL database options. Learn more about which services might be right for your app.
+
+Add AI to your app
+Learn more about integrating AI into your app
+
+Monetize your app
+Learn more about AdMob, personalizing user experience, and increasing revenue
+
+Host a web app
+Build and deploy modern, full-stack web apps
+Gemini
+in Firebase
+
+Want to do more with Gemini? Try Gemini Code Assist
+Hello, Jiten
+How can I help you?
+Hey, there! What are you building today? How can I help?
+Message input
+Ask Gemini
+Gemini can make mistakes, so double-check it 
+Finishing up…
+Supercharge your development! Try Cloud Shell to access the built-in Firebase CLI and run Firebase emulators directly in a virtual machine.
+Now you can create new conversations with Gemini
+Data Connect has a new name: SQL Connect, our PostgreSQL database powered by Cloud SQL
+Phone Number Verification is a fast and secure method for verifying user phone numbers
+
+Perfect. Your Firebase configuration is ready.
+
+Now replace the old Firebase section in your code with THIS:
+
+
+
+IMPORTANT:
+
+Remove these lines completely:
+
+import { getAnalytics } from "firebase/analytics";
+and
+
+const analytics = getAnalytics(app);
+because your enquiry system does not need Analytics right now.
+
+After that:
+
+FINAL STRUCTURE
+Your HTML should look like:
+
+<body>
+
+<!-- your form -->
+
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+// firebase imports
+
+// firebase config
+
+// firestore code
+
+</script>
+
+</body>
+Then:
+
+NEXT STEP
+Go to:
+
+Firestore Database → Rules
+
+Paste:
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+Click:
+
+Publish
+Then run your index.html.
+
+Now when you click:
+
+Save Enquiry
+student data will store inside:
+
+Firestore Database → Data → enquiries
+
+collection automatically.
+
+
+GIVE ME COMPLETE CODE
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G10 Enquiry System</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial,sans-serif;
+    background:#f1f5f9;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:#0f172a;
+    margin-bottom:20px;
+}
+
+.form-box,
+.table-box{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+label{
+    font-size:14px;
+    font-weight:bold;
+    display:block;
+    margin-bottom:5px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    font-size:14px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+button{
+    border:none;
+    border-radius:8px;
+    padding:12px 18px;
+    cursor:pointer;
+    color:white;
+    font-size:14px;
+}
+
+.save-btn{
+    background:#2563eb;
+}
+
+.save-btn:hover{
+    background:#1d4ed8;
+}
+
+.edit-btn{
+    background:#16a34a;
+    padding:7px 10px;
+}
+
+.delete-btn{
+    background:#dc2626;
+    padding:7px 10px;
+}
+
+.search-box{
+    margin-bottom:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px;
+}
+
+th,
+td{
+    border-bottom:1px solid #e2e8f0;
+    padding:12px;
+    text-align:left;
+    font-size:14px;
+}
+
+th{
+    background:#f8fafc;
+}
+
+.table-wrapper{
+    overflow:auto;
+}
+
+@media(max-width:600px){
+
+body{
+    padding:10px;
+}
+
+.form-box,
+.table-box{
+    padding:15px;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>G10 Student Enquiry System</h1>
+
+<div class="form-box">
+
+<div class="grid">
+
+<div>
+<label>Student Name *</label>
+<input type="text" id="name">
+</div>
+
+<div>
+<label>Mobile Number *</label>
+<input type="text" id="mobile">
+</div>
+
+<div>
+<label>Class</label>
+<select id="studentClass">
+<option value="">Select Class</option>
+<option>Class 6</option>
+<option>Class 7</option>
+<option>Class 8</option>
+<option>Class 9</option>
+<option>Class 10</option>
+<option>Class 11</option>
+<option>Class 12</option>
+</select>
+</div>
+
+<div>
+<label>Course Interested</label>
+<input type="text" id="course">
+</div>
+
+<div>
+<label>School Name</label>
+<input type="text" id="school">
+</div>
+
+<div>
+<label>Date</label>
+<input type="date" id="date">
+</div>
+
+</div>
+
+<br>
+
+<label>Remarks</label>
+<textarea id="remarks" rows="3"></textarea>
+
+<br><br>
+
+<button class="save-btn" onclick="saveEnquiry()">
+Save Enquiry
+</button>
+
+</div>
+
+<div class="table-box">
+
+<div class="search-box">
+<input
+type="text"
+id="search"
+placeholder="Search by Name or Mobile"
+onkeyup="loadData()">
+</div>
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Mobile</th>
+<th>Class</th>
+<th>Course</th>
+<th>School</th>
+<th>Date</th>
+<th>Remarks</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getFirestore,
@@ -36,4 +482,390 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+
+window.saveEnquiry = async function(){
+
+const name = document.getElementById("name").value.trim();
+
+const mobile = document.getElementById("mobile").value.trim();
+
+const studentClass =
+document.getElementById("studentClass").value;
+
+const course =
+document.getElementById("course").value.trim();
+
+const school =
+document.getElementById("school").value.trim();
+
+const date =
+document.getElementById("date").value;
+
+const remarks =
+document.getElementById("remarks").value.trim();
+
+
+if(!name || !mobile){
+
+    alert("Please fill Student Name and Mobile Number");
+
+    return;
+}
+
+
+try{
+
+await addDoc(collection(db,"enquiries"),{
+
+    name,
+    mobile,
+    studentClass,
+    course,
+    school,
+    date,
+    remarks,
+    createdAt:new Date()
+
+});
+
+
+alert("Enquiry Saved Successfully");
+
+
+document.getElementById("name").value = "";
+
+document.getElementById("mobile").value = "";
+
+document.getElementById("studentClass").value = "";
+
+document.getElementById("course").value = "";
+
+document.getElementById("school").value = "";
+
+document.getElementById("date").value = "";
+
+document.getElementById("remarks").value = "";
+
+
+loadData();
+
+}
+catch(error){
+
+console.log(error);
+
+alert("Error Saving Data");
+
+}
+
+}
+
+
+window.loadData = async function(){
+
+const tbody = document.getElementById("tableBody");
+
+tbody.innerHTML = "";
+
+
+const search =
+document.getElementById("search")
+.value
+.toLowerCase();
+
+
+const querySnapshot =
+await getDocs(collection(db,"enquiries"));
+
+
+querySnapshot.forEach((docSnap)=>{
+
+const data = docSnap.data();
+
+
+if(
+
+data.name.toLowerCase().includes(search)
+
+||
+
+data.mobile.includes(search)
+
+){
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>${data.name || ""}</td>
+
+<td>${data.mobile || ""}</td>
+
+<td>${data.studentClass || ""}</td>
+
+<td>${data.course || ""}</td>
+
+<td>${data.school || ""}</td>
+
+<td>${data.date || ""}</td>
+
+<td>${data.remarks || ""}</td>
+
+<td>
+
+<button
+class="delete-btn"
+onclick="deleteEntry('${docSnap.id}')">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+});
+
+}
+
+
+window.deleteEntry = async function(id){
+
+const confirmDelete =
+confirm("Are you sure to delete this enquiry?");
+
+
+if(confirmDelete){
+
+await deleteDoc(doc(db,"enquiries",id));
+
+loadData();
+
+}
+
+}
+
+
+loadData();
+
 </script>
+
+</body>
+</html>
+
+WHAT TO DO: 
+Start in production mode
+Your data is private by default. Client read/write access will only be granted as specified by your security rules.
+
+Start in test mode
+Your data is open by default to enable quick setup. However, you must update your security rules within 30 days to enable long-term client read/write access.
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+note:
+All third party reads and writes will be denied
+
+Choose:
+
+Start in test mode
+Then click:
+
+Next → Enable
+Because your enquiry app is still under development.
+
+After database is created:
+
+Go to:
+
+Firestore Database → Rules
+Replace everything with:
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /{document=**} {
+      allow read, write: if true;
+    }
+
+  }
+}
+Then click:
+
+Publish
+Now your enquiry system will work properly.
+
+Why?
+
+The default rule:
+
+allow read, write: if false;
+blocks your website from saving data.
+
+Changing to:
+
+allow read, write: if true;
+temporarily allows your HTML app to connect to Firestore.
+
+Later, after adding admin login, you should secure it properly.
+
+
+I AM NOT ABLE TO CREATE IT OR PEST IT: Skip to main content
+Firebase logo
+Search for products
+Project Overview
+Settings
+What's new
+SQL Connect
+New
+Phone Verification
+New
+Project shortcuts
+Firestore
+Authentication
+Product categories
+Databases & Storage
+Security
+AI services
+Hosting & Serverless
+DevOps & Engagement
+Analytics
+Billing plan:Spark
+No-cost ($0/month)
+G10 Enquery
+
+Cloud Firestore
+Realtime updates, powerful queries, automatic scaling, and MongoDB compatibility
+Learn more
+How do I get started?
+View the docs
+How much will Cloud Firestore cost?
+View pricing
+What can Cloud Firestore do for me?
+Learn more
+
+More products for developers
+
+Functions
+Extend and connect Firebase features
+
+Storage
+Store & retrieve user generated content
+
+Hosting
+Deploy web apps in seconds
+See more related products 
+Finishing up…
+Supercharge your development! Try Cloud Shell to access the built-in Firebase CLI and run Firebase emulators directly in a virtual machine.
+Data Connect has a new name: SQL Connect, our PostgreSQL database powered by Cloud SQL
+Phone Number Verification is a fast and secure method for verifying user phone numbers
+Phone Number Verification is a fast and secure method for verifying user phone numbers
+Data Connect has a new name: SQL Connect, our PostgreSQL database powered by Cloud SQL
+Create a database
+Editable
+Select edition
+
+Editable
+Database ID & location
+3
+Configure
+warning:
+Error creating Firestore database
+This API method requires billing to be enabled. Please enable billing on project g10-enquery by visiting https://console.developers.google.com/billing/enable?project=g10-enquery then retry. If you enabled billing for this project recently, wait a few minutes for the action to propagate to our systems and retry.
+After you define your data structure, you will need to write rules to secure your data. Learn more
+
+Start in production mode
+Your data is private by default. Client read/write access will only be granted as specified by your security rules.
+
+Start in test mode
+Your data is open by default to enable quick setup. However, you must update your security rules within 30 days to enable long-term client read/write access.
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if
+          request.time < timestamp.date(2026, 6, 22);
+    }
+  }
+}
+caution:
+The default security rules for test mode allow anyone with your database reference to view, edit and delete all data in your database for the next 30 days
+Introducing a new query engine - Pipelines
+Only available in Enterprise edition databases with Firestore in Native mode
+Learn more
+
+The problem is NOT your code.
+You selected the wrong Firestore edition.
+
+You likely selected:
+
+Enterprise Edition
+That requires billing.
+
+FIX
+Go back and create Firestore again using:
+
+Firestore in Native mode
+NOT Enterprise.
+
+EXACT STEPS
+1. Open
+Firebase Console
+
+Open your project:
+
+G10 Enquery
+2. Go To
+Firestore Database
+3. Click
+Create Database
+4. VERY IMPORTANT
+You will see edition selection.
+
+Choose:
+
+Firestore Native Mode
+NOT:
+
+Enterprise Edition
+5. Then Select
+Start in test mode
+6. Click
+Enable
+Now it will work without billing.
+
+WHY ERROR CAME
+You selected:
+
+Enterprise
+Enterprise Firestore needs:
+
+Google Cloud Billing
+
+Credit/debit card
+
+But Native Firestore works FREE in Spark Plan.
+
+AFTER SUCCESS
+You will see:
+
+Start Collection
+Then your HTML enquiry system will work correctly with Firebase.
+
+Your backend platform:
+
+Firebase
+
+https://gten-educational-platform.github.io/Class-12/indexG10enquery.html
+
