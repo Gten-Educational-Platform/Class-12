@@ -13,52 +13,54 @@
 
 body{
     margin:0;
-    padding:20px;
+    padding:10px;
     font-family:Arial,sans-serif;
     background:#f1f5f9;
+    font-size:13px;
 }
 
 .container{
-    max-width:1400px;
+    max-width:100%;
     margin:auto;
 }
 
 h1{
     text-align:center;
     color:#0f172a;
-    margin-bottom:20px;
+    margin-bottom:12px;
+    font-size:22px;
 }
 
 .form-box,
 .table-box{
     background:#fff;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
-    margin-bottom:20px;
+    padding:12px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom:15px;
 }
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:10px;
 }
 
 label{
-    font-size:14px;
+    font-size:12px;
     font-weight:bold;
     display:block;
-    margin-bottom:5px;
+    margin-bottom:4px;
 }
 
 input,
 select,
 textarea{
     width:100%;
-    padding:10px;
+    padding:7px 8px;
     border:1px solid #cbd5e1;
-    border-radius:8px;
-    font-size:14px;
+    border-radius:6px;
+    font-size:12px;
 }
 
 textarea{
@@ -67,11 +69,12 @@ textarea{
 
 button{
     border:none;
-    border-radius:8px;
-    padding:12px 18px;
+    border-radius:5px;
+    padding:5px 8px;
     cursor:pointer;
     color:white;
-    font-size:14px;
+    font-size:11px;
+    font-weight:bold;
 }
 
 .save-btn{
@@ -82,17 +85,60 @@ button{
     background:#1d4ed8;
 }
 
+.success-btn{
+    background:#16a34a;
+    margin-bottom:3px;
+}
+
+.success-btn:hover{
+    background:#15803d;
+}
+
+.not-btn{
+    background:#f59e0b;
+    margin-bottom:3px;
+}
+
+.not-btn:hover{
+    background:#d97706;
+}
+
 .delete-btn{
     background:#dc2626;
-    padding:7px 12px;
 }
 
 .delete-btn:hover{
     background:#b91c1c;
 }
+.edit-btn{
+    background:#0ea5e9;
+    margin-bottom:3px;
+}
+
+.edit-btn:hover{
+    background:#0284c7;
+}
+
+.status-success{
+    color:#16a34a;
+    font-weight:bold;
+    font-size:11px;
+}
+
+.status-not{
+    color:#dc2626;
+    font-weight:bold;
+    font-size:11px;
+}
+
+.status-pending{
+    color:#f59e0b;
+    font-weight:bold;
+    font-size:11px;
+}
 
 .search-box{
-    margin-bottom:20px;
+    margin-bottom:12px;
 }
 
 .table-wrapper{
@@ -102,15 +148,21 @@ button{
 table{
     width:100%;
     border-collapse:collapse;
-    min-width:1300px;
+    table-layout:fixed;
 }
 
 th,
 td{
     border-bottom:1px solid #e2e8f0;
-    padding:12px;
+    padding:4px;
     text-align:left;
-    font-size:14px;
+    font-size:10px;
+    white-space:normal;
+    word-break:break-word;
+    line-height:1.2;
+}
+td:nth-child(5){
+    max-width:140px;
 }
 
 th{
@@ -119,15 +171,76 @@ th{
     top:0;
 }
 
+
+
+
 @media(max-width:600px){
 
 body{
-    padding:10px;
+    padding:5px;
+}
+
+h1{
+    font-size:18px;
 }
 
 .form-box,
 .table-box{
-    padding:15px;
+    padding:8px;
+}
+
+.grid{
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:8px;
+}
+
+input,
+select,
+textarea{
+    font-size:11px;
+    padding:6px;
+}
+
+th,
+td{
+    font-size:8px;
+    padding:2px;
+    line-height:1.1;
+}
+
+button{
+    width:100%;
+    font-size:8px;
+    padding:2px;
+    margin-bottom:2px;
+}
+
+small{
+    font-size:7px;
+}
+
+td:nth-child(1){
+    width:28%;
+}
+
+td:nth-child(2){
+    width:22%;
+}
+
+td:nth-child(3){
+    width:12%;
+}
+
+td:nth-child(4){
+    width:14%;
+}
+
+td:nth-child(5){
+    width:14%;
+}
+
+td:nth-child(6){
+    width:10%;
 }
 
 }
@@ -136,6 +249,19 @@ body{
 </head>
 
 <body>
+<script>
+
+const password = prompt("Enter Password");
+
+if(password !== "0000"){
+
+    alert("Wrong Password");
+
+    document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Access Denied</h2>";
+
+}
+
+</script>
 
 <div class="container">
 
@@ -182,9 +308,11 @@ body{
 <option>Other</option>
 
 </select>
+
 </div>
 
 <div>
+
 <label>Subject</label>
 
 <select id="subject">
@@ -192,23 +320,50 @@ body{
 <option value="">Select Subject</option>
 
 <option>Physics</option>
+<option>Physics + Chemistry</option>
 <option>Chemistry</option>
 <option>Mathematics</option>
+<option>Math + Science</option>
 <option>Biology</option>
-
 <option>Science</option>
 <option>English</option>
+<option>Ecomomics</option>
 <option>Social Science</option>
 
-<option>All Subjects</option>
+<option>other Subjects</option>
 
 </select>
 
 </div>
 
 <div>
+
 <label>Course Interested</label>
-<input type="text" id="course">
+
+<select id="course">
+
+<option value="">Select Course</option>
+
+<option>Individual Coaching</option>
+
+<option>Home Tuition</option>
+
+<option>Group Coaching</option>
+
+<option>Online Coaching</option>
+
+<option>Dual Coaching</option>
+
+<option>Super Group Coaching</option>
+
+<option>Demo Class</option>
+
+<option>Study Material</option>
+
+<option>Others</option>
+
+</select>
+
 </div>
 
 <div>
@@ -246,6 +401,7 @@ Save Enquiry
 <div class="grid">
 
 <div>
+
 <label>Search</label>
 
 <input
@@ -317,13 +473,10 @@ onchange="loadData()">
 <tr>
 
 <th>Name</th>
-<th>Parent</th>
-<th>Mobile</th>
+
 <th>Class</th>
-<th>Subject</th>
-<th>Course</th>
-<th>School</th>
 <th>Date</th>
+<th>Status</th>
 <th>Remarks</th>
 <th>Actions</th>
 
@@ -354,7 +507,8 @@ collection,
 addDoc,
 getDocs,
 deleteDoc,
-doc
+doc,
+updateDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -380,7 +534,7 @@ measurementId: "G-V4L2PXSXCX"
 };
 
 
-// INITIALIZE
+// INITIALIZE FIREBASE
 
 const app = initializeApp(firebaseConfig);
 
@@ -388,6 +542,7 @@ const db = getFirestore(app);
 
 
 // SAVE ENQUIRY
+let editingId = null;
 
 window.saveEnquiry = async function(){
 
@@ -407,7 +562,7 @@ const subject =
 document.getElementById("subject").value;
 
 const course =
-document.getElementById("course").value.trim();
+document.getElementById("course").value;
 
 const school =
 document.getElementById("school").value.trim();
@@ -419,20 +574,16 @@ const remarks =
 document.getElementById("remarks").value.trim();
 
 
-// VALIDATION
-
 if(!name || !mobile){
 
-alert("Please fill Student Name and Mobile");
+alert("Please fill Student Name and Mobile Number");
 
 return;
 
 }
 
 
-try{
-
-await addDoc(collection(db,"enquiries"),{
+const enquiryData = {
 
 name,
 parentName,
@@ -442,13 +593,36 @@ subject,
 course,
 school,
 date,
-remarks,
-createdAt:new Date()
+remarks
 
-});
+};
 
+
+try{
+
+if(editingId){
+
+await updateDoc(doc(db,"enquiries",editingId), enquiryData);
+
+alert("Enquiry Updated Successfully");
+
+editingId = null;
+
+document.querySelector(".save-btn").innerText =
+"Save Enquiry";
+
+}
+else{
+
+enquiryData.status = "Pending";
+
+enquiryData.createdAt = new Date();
+
+await addDoc(collection(db,"enquiries"), enquiryData);
 
 alert("Enquiry Saved Successfully");
+
+}
 
 
 // CLEAR FORM
@@ -471,8 +645,6 @@ document.getElementById("date").value = "";
 
 document.getElementById("remarks").value = "";
 
-
-// RELOAD
 
 loadData();
 
@@ -559,7 +731,7 @@ const matchesToDate =
 data.date <= toDate;
 
 
-// SHOW
+// SHOW ROW
 
 if(
 
@@ -574,25 +746,125 @@ tbody.innerHTML += `
 
 <tr>
 
-<td>${data.name || ""}</td>
 
-<td>${data.parentName || ""}</td>
 
-<td>${data.mobile || ""}</td>
+<td>
 
-<td>${data.studentClass || ""}</td>
+${data.name || ""}
 
-<td>${data.subject || ""}</td>
+${
+data.parentName
+? `<br><small style="color:#64748b">
+Parent: ${data.parentName}
+</small>`
+: ""
+}
 
-<td>${data.course || ""}</td>
+${
+data.mobile
+? `<br><small style="color:#0f172a">
+📞 ${data.mobile}
+</small>`
+: ""
+}
 
-<td>${data.school || ""}</td>
+</td>
+
+
+
+<td>
+
+${data.studentClass || ""}
+
+${
+data.subject
+? `<br><small style="color:#64748b">
+Subject: ${data.subject}
+</small>`
+: ""
+}
+
+${
+data.course
+? `<br><small style="color:#64748b">
+Course: ${data.course}
+</small>`
+: ""
+}
+
+</td>
+
+
 
 <td>${data.date || ""}</td>
 
+
+
+<td class="${
+data.status === 'Enrolled'
+? 'status-success'
+: data.status === 'Not Enrolled'
+? 'status-not'
+: 'status-pending'
+}">
+
+${data.status || "Pending"}
+
+${
+data.enrolDate
+? `<br><small>${data.enrolDate}</small>`
+: ""
+}
+
+</td>
+
 <td>${data.remarks || ""}</td>
 
+
+
+
 <td>
+
+<button
+class="edit-btn"
+onclick="editEntry(
+'${docSnap.id}',
+'${(data.name || "").replace(/'/g, "\\'")}',
+'${(data.parentName || "").replace(/'/g, "\\'")}',
+'${(data.mobile || "").replace(/'/g, "\\'")}',
+'${(data.studentClass || "").replace(/'/g, "\\'")}',
+'${(data.subject || "").replace(/'/g, "\\'")}',
+'${(data.course || "").replace(/'/g, "\\'")}',
+'${(data.school || "").replace(/'/g, "\\'")}',
+'${(data.date || "").replace(/'/g, "\\'")}',
+'${(data.remarks || "").replace(/'/g, "\\'")}'
+)">
+
+Edit
+
+</button>
+
+<br>
+
+<button
+class="success-btn"
+onclick="markEnrolled('${docSnap.id}')">
+
+Enrolled
+
+</button>
+
+<br>
+
+<button
+class="not-btn"
+onclick="markNotEnrolled('${docSnap.id}')">
+
+Not Enrolled
+
+</button>
+
+<br>
 
 <button
 class="delete-btn"
@@ -615,7 +887,96 @@ Delete
 }
 
 
-// DELETE
+
+
+
+
+window.editEntry = function(
+id,
+name,
+parentName,
+mobile,
+studentClass,
+subject,
+course,
+school,
+date,
+remarks
+){
+
+editingId = id;
+
+document.getElementById("name").value = name;
+
+document.getElementById("parentName").value = parentName;
+
+document.getElementById("mobile").value = mobile;
+
+document.getElementById("studentClass").value =
+studentClass;
+
+document.getElementById("subject").value = subject;
+
+document.getElementById("course").value = course;
+
+document.getElementById("school").value = school;
+
+document.getElementById("date").value = date;
+
+document.getElementById("remarks").value = remarks;
+
+document.querySelector(".save-btn").innerText =
+"Update Enquiry";
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+// MARK ENROLLED
+
+window.markEnrolled = async function(id){
+
+const today = new Date();
+
+const enrolDate =
+
+today.getFullYear() + "-" +
+
+String(today.getMonth() + 1).padStart(2,"0") + "-" +
+
+String(today.getDate()).padStart(2,"0");
+
+
+await updateDoc(doc(db,"enquiries",id),{
+
+status:"Enrolled",
+enrolDate: enrolDate
+
+});
+
+loadData();
+
+}
+
+
+// MARK NOT ENROLLED
+
+window.markNotEnrolled = async function(id){
+
+await updateDoc(doc(db,"enquiries",id),{
+
+status:"Not Enrolled"
+
+});
+
+loadData();
+
+}
+
+
+// DELETE ENTRY
 
 window.deleteEntry = async function(id){
 
